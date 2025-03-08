@@ -15,39 +15,42 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLogoutMutation } from "../../redux/apis/userApiSlice";
 import { logOut } from '../../redux/features/auth/authSlice';
 import { toast } from 'react-toastify';
+import SelectedCounteSidebar from '../../pages/products/SelectedCounteSidebar';
 
 
-export default function Sidebar() {
-  const { userInfo } = useSelector(state => state.auth);
+export default function Sidebar({ setChangeWidth }) {
+  const { userInfo } = useSelector((state) => state.auth);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
-  
+
   const toggleDropDown = () => {
     setDropDownOpen(!dropDownOpen);
-  }
+  };
   const toggleSidebar = () => {
     console.log("toggle sidebar");
     setShowSidebar(!showSidebar);
-  }
+    setChangeWidth(state => !state);
+  };
   const closeSidebar = () => {
     console.log("close sidebar");
-    setShowSidebar(false)
+    setChangeWidth((state) => !state);
+    setShowSidebar(false);
     setDropDownOpen(false);
-  }
+  };
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [LogOutApi] = useLogoutMutation();
-  
+
   const logoutHandler = async () => {
     try {
       await LogOutApi().unwrap();
       dispatch(logOut());
       toast.success("You are logged out");
-      navigate("/login")
+      navigate("/login");
     } catch (err) {
       console.log(err.data.mesage);
     }
-  }
+  };
 
   return (
     <div
@@ -83,6 +86,7 @@ export default function Sidebar() {
         >
           <AiOutlineShoppingCart className=" mr-2 mt-[2rem]" size={26} />
           <span className=" hidden nav-item-name mt-[2rem] ">Cart</span>
+          <SelectedCounteSidebar selectorinStore="cart.cartItems" />
         </Link>
         <Link
           to="/favorite"
@@ -91,6 +95,7 @@ export default function Sidebar() {
         >
           <CiHeart className=" mr-2 mt-[2rem]" size={26} />
           <span className=" hidden nav-item-name mt-[2rem] ">Favorite</span>
+          <SelectedCounteSidebar selectorinStore="favorites" />
         </Link>
       </div>
 
@@ -103,13 +108,9 @@ export default function Sidebar() {
           {userInfo ? <span>{userInfo.username}</span> : <></>}
           {userInfo &&
             (dropDownOpen ? (
-              <RiArrowDropUpLine
-                size={26}
-              />
+              <RiArrowDropUpLine size={26} />
             ) : (
-              <RiArrowDropDownLine
-                size={26}
-              />
+              <RiArrowDropDownLine size={26} />
             ))}
         </button>
         {dropDownOpen && userInfo && (

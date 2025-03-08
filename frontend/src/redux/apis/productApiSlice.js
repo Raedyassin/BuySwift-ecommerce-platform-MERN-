@@ -82,7 +82,7 @@ const productApiSlice = apiSlice.injectEndpoints({
 
     // ??????????????????????????
     createReview: buil.mutation({
-      query: ({id,body}) => ({
+      query: ({id,...body}) => ({
         url: `${PRODUCT_URL}/${id}/reviews`,
         method: "POST",
         body
@@ -105,6 +105,14 @@ const productApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5
     }),
+    getFilteredProducts: buil.query({
+      query: ({ checked, radio }) => ({
+        url: `${PRODUCT_URL}/filter-products`,
+        method: "POST",
+        body: { checked, radio }
+      }),
+      keepUnusedDataFor: 5
+    }),
 
 
   })
@@ -122,6 +130,9 @@ export const {
   useGetProductDetailsQuery,
   useGetProductsQuery,
   useGetTopProductsQuery,
-  useUploadProductImageMutation
+  useUploadProductImageMutation,
+  // why i use query wiht post method because i query make auto-fetch and post don't make caching 
+  // and mutation don't make caching but i need post to but the data in the body of the reqest
+  useGetFilteredProductsQuery
 } = productApiSlice
 

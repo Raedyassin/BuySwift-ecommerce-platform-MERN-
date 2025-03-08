@@ -23,7 +23,8 @@ const addProduct = asyncHandler(
         return res.status(400).json({ status: FAIL, message:"Category is required"})
     }
     const product = new Product({ name, countInStock, discription, price, brand, quantity, category })
-    product.img = req.fields.img;
+    console.log(req.fields.img)
+    product.img = "uploads/" + req.fields.img;
     await product.save();
     res.json({status:SUCCESS,data:{product}})
   }
@@ -52,7 +53,7 @@ const updateProduct = asyncHandler(async (req, res) => {
       return res.status(400).json({ status: FAIL, message: "countInStock is required" })
   }
 
-  const product = await Product.findByIdAndUpdate(id, { name, discription, price, countInStock, brand, quantity, category, img });
+  const product = await Product.findByIdAndUpdate(id, { name, discription, price, countInStock, brand, quantity, category, img: ("uploads/" + img) });
   if (!product) {
     return res.status(404).json({ status: "FAIL", message: "Product not found" });
   }
@@ -109,7 +110,7 @@ const fetchProductById = asyncHandler(
     const { id } = req.params;
     let product = await Product.findById(id);
     if (!product) {
-      return res.status(404).json({status:FAIL,message:"Product not found"})
+      return res.status(404).json({ status: FAIL, message: "Product not found" })
     }
     res.json({ status: SUCCESS, data:{product} })
   }
@@ -173,6 +174,7 @@ const fetchTopProducts = asyncHandler(
     const products = await Product.find().sort({ rating: -1 })
       .limit(pageSize)
       .skip((page - 1) * pageSize);
+    
     res.json({
       status: SUCCESS,
       data: {
@@ -200,6 +202,34 @@ const fetchnewProducts = asyncHandler(
   }
 )
 
+const filterProduct = asyncHandler(
+  async (req, res, next) => {
+    const page = req.query.page ? +req.query.page : 1;
+    const { checked, radio } = req.body;
+    let args = {};
+    if (checked.length>0) {
+      args.category = checked;
+    }
+    if (radio.length>0) {
+      args.price = { $gte: radio[0], $lte: radio[1] }
+    }
+    const pageSize = 10;
+    const count = await Product.countDocuments(args);
+    const products = await Product.find(args)
+      .limit(pageSize)
+      .skip((page - 1) * pageSize);
+    
+    res.json({
+      status: SUCCESS,
+      data: {
+        products,
+        currentPage:page,
+        pages: Math.ceil(count / pageSize),
+      }
+    })
+  }
+)
+
 export {
   addProduct,
   updateProduct,
@@ -209,5 +239,6 @@ export {
   fetchAllProducts,
   addProductReview,
   fetchTopProducts,
-  fetchnewProducts
+  fetchnewProducts,
+  filterProduct
 }

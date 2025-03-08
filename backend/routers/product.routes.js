@@ -11,7 +11,8 @@ import {
   fetchAllProducts,
   addProductReview,
   fetchTopProducts,
-  fetchnewProducts
+  fetchnewProducts,
+  filterProduct
 } from "../controllers/product.controller.js";
 
 const route = Router();
@@ -34,9 +35,10 @@ route.route("/:id")
   .get(checkID, fetchProductById)
 
 route.route("/:id/reviews")
-  .post(authenticate, authorizeAdmin, checkID, addProductReview)
+  .post(authenticate, checkID, addProductReview)
 
 
+route.route("/filter-products").post(filterProduct)
 
 
 

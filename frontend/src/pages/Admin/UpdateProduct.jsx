@@ -25,7 +25,8 @@ export default function UpdateProduct() {
 
   const navigate = useNavigate();
 
-  const { data: product,isLoading,refetch } = useGetProductByIdQuery(id);
+  const { data: product, isLoading, refetch } = useGetProductByIdQuery(id);
+  console.log(product);
   const [deleteProduct] = useDeleteProductMutation();
   const [uploadProductImage] = useUploadProductImageMutation();
   const [updateProduct] = useUpdateProductMutation();
@@ -115,14 +116,14 @@ export default function UpdateProduct() {
     <div className="container  ">
       <div className="flex  flex-col md:flex-row">
         {/* admin menu */}
-        <AdminMenu/>
+        <AdminMenu />
         <div className="xl:w-3/4 p-3 sm:w-full">
           <div className="h-12 p-3 font-bold italic">Create Product</div>
           {imageUrl && (
             <div className="text-center">
               <img
                 src={
-                  image instanceof File ? URL.createObjectURL(image) : imageUrl
+                  image instanceof File ? URL.createObjectURL(image) : "/"+imageUrl
                 }
                 alt="product image"
                 className="block mx-auto max-h-[200px]"
@@ -135,7 +136,7 @@ export default function UpdateProduct() {
               className="border  px-4 block w-full text-center
               rounded-lg cursor-pointer font-bold py-11"
             >
-              {image ? image.name || "Upload Image" : "Upload Image"} 
+              {image ? image.name || "Upload Image" : "Upload Image"}
               <input
                 type="file"
                 name="img"

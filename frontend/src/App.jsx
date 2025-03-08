@@ -15,6 +15,10 @@ import CreateProduct from './pages/Admin/CreateProduct';
 import ProductList from './pages/Admin/ProductList';
 import UpdateProduct from './pages/Admin/UpdateProduct';
 import AllProduct from './pages/Admin/AllProduct';
+import Favorites from './pages/products/Favorites';
+import ProductDetails from './pages/products/ProductDetails';
+import Cart from './pages/user/Cart';
+import Shope from './pages/Shope';
 export default function App() {
   return (
     <Provider store={store}>
@@ -24,6 +28,10 @@ export default function App() {
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            <Route path="favorite" element={<Favorites />} />
+            <Route path="cart" element={<Cart />} />
+            <Route path="shop" element={<Shope />} />
+            <Route path="product/:id" element={<ProductDetails />} />
             <Route path="" element={<PrivateRout />}>
               <Route path="profile" element={<Profile />} />
             </Route>

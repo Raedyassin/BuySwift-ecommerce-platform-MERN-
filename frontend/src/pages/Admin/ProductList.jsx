@@ -50,7 +50,7 @@ export default function ProductList() {
     try {
       await createProduct(formData).unwrap();
       toast.success("Product created successfully");
-      navigate("/");
+      navigate("/admin/allproductslist");
     } catch (err) {
       alert("Something went wrong. Please try again later.");
       console.log(err);
