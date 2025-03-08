@@ -14,10 +14,12 @@ export default function Header() {
 
   return (
     <>
-      <div className="flex justify-between gap-5">
+      <div className="flex justify-around ">
         <div className="xl:block">
           {/* lg:hidden md:hidden sm:hidden */}
-          <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-4">
+          {/* <div className="grid lg:grid-cols-2 sm:grid-cols-1 gap-4"> */}
+          <div className=" flex  flex-wrap gap-4"> 
+            {/*grid lg:grid-cols-2 sm:grid-cols-1 */}
             {data.data.products.slice(0, 4).map((product) => (
               <div key={product._id}>
                 <SamallProduct product={product} />

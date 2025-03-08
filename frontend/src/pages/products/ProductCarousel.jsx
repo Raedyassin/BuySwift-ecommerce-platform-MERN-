@@ -26,7 +26,7 @@ export default function ProductCarousel() {
 
 
   return (
-    <div className="mb-4 p-2 ">
+    <div className="mb-2 p-2 ">
       {isLoading ? null : error ? (
         <Message variant="danger">
           {error?.data?.message || error.message}
@@ -34,14 +34,14 @@ export default function ProductCarousel() {
       ) : (
         <Slider
           {...settings}
-            className=" w-full   mx-auto xl:w-[40rem] lg:w-[40rem] sm:block "
+          className=" w-full   mx-auto xl:w-[40rem] lg:w-[40rem] sm:block "
         >
           {products.data.products.map((product) => (
             <div key={product._id}>
               <img
                 src={product.img}
                 alt={product.name}
-                className="w-full rounded-lg object-cover h-[30rem]"
+                className="w-full rounded-lg object-cover h-[27rem]"
               />
             </div>
           ))}

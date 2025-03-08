@@ -11,9 +11,10 @@ import userRoutes from "./routers/users.routes.js"
 import categoryRoutes from './routers/category.routes.js'
 import productRoutes from './routers/product.routes.js'
 import uploadRoutes from './routers/upload.routes.js'
+import orderRoutes from './routers/order.routes.js'
 
 /////////////////////utils
-import {ERROR, FAIL} from './utils/httpStatucText.js'
+import { ERROR, FAIL } from './utils/httpStatucText.js'
 import connectDB from './config/db.js'
 import AppError from './utils/appError.js'
 const PORT = process.env.PORT || 5222
@@ -28,11 +29,12 @@ app.use(cookieParser());
 
 app.use('/api/users', userRoutes)
 app.use('/api/category', categoryRoutes)
-app.use('/api/products',productRoutes )
-app.use('/api/upload',uploadRoutes )
+app.use('/api/products', productRoutes)
+app.use('/api/upload', uploadRoutes)
+app.use('/api/order', orderRoutes)
 
 const __dirname = path.resolve()
-app.use("/uploads", express.static(path.join(__dirname,'uploads')))
+app.use("/uploads", express.static(path.join(__dirname, 'uploads')))
 
 
 app.all('*', (req, res) => {

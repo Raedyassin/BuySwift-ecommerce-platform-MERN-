@@ -96,7 +96,7 @@ export default function Shope() {
     <div className="constainer mx-auto">
       <div className="flex md:flext-row ">
         <div>
-          <div className="bg-[#151515] rounded-lg my-5 p-3 ml-[1rem]">
+          <div className="bg-[#151515] w-[16rem] rounded-lg my-5 p-3 ml-[1rem]">
             <h2 className="h4 text-center text-gray-100 py-2 bg-black rounded-full mt-1 mb-2">
               Filter By Category
             </h2>
