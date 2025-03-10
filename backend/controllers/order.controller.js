@@ -12,22 +12,28 @@ const createOrder = asyncHandler(async (req, res, next) => {
   }
 
   const itemsFromDB = await Product.find({
-    _id: { $in: orderItems.map(x => x.productId) }
+    _id: { $in: orderItems.map(x => x._id) }
   })
+  // Check if all requested products exist in DB
+  const missingProducts = orderItems.filter(
+    itemFromClient => !itemsFromDB.some(item => item._id.toString() === itemFromClient._id)
+  );
+
+  if (missingProducts.length > 0) {
+    return res.status(404).json({
+      status: FAIL,
+      data: {
+        title: "Some products were not found",
+        products: missingProducts,
+      },
+    });
+  }
 
   const dbOrderItems = orderItems.map((itemFromClient) => {
     const matchingItemsFromDB = itemsFromDB.find(
-      item => item._id.toString() === itemFromClient.productId
+      item => item._id.toString() === itemFromClient._id
     );
 
-    if (!matchingItemsFromDB) {
-      return res.status(404).json({
-        status: FAIL, data: {
-          title: "Product Not found",
-          porduct: itemFromClient
-        }
-      })
-    }
     return {
       ...itemFromClient,
       productId: matchingItemsFromDB._id,
@@ -55,14 +61,12 @@ const createOrder = asyncHandler(async (req, res, next) => {
   });
 
   const createOrder = await order.save();
-  res.status(201).json({
+  return res.status(201).json({
     status: SUCCESS,
     data: {
       order: createOrder
     }
   })
-
-
 
 });
 

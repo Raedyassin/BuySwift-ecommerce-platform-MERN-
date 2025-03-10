@@ -14,7 +14,7 @@ import uploadRoutes from './routers/upload.routes.js'
 import orderRoutes from './routers/order.routes.js'
 
 /////////////////////utils
-import { ERROR, FAIL } from './utils/httpStatucText.js'
+import { ERROR, FAIL, SUCCESS } from './utils/httpStatucText.js'
 import connectDB from './config/db.js'
 import AppError from './utils/appError.js'
 const PORT = process.env.PORT || 5222
@@ -32,6 +32,11 @@ app.use('/api/category', categoryRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/order', orderRoutes)
+
+// paypal api
+app.get('/api/config/paypal', (req, res) => {
+  res.send({status:SUCCESS,data:{clientId:process.env.PAYPAL_CLIENT_ID}})
+})
 
 const __dirname = path.resolve()
 app.use("/uploads", express.static(path.join(__dirname, 'uploads')))

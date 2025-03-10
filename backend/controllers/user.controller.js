@@ -69,7 +69,7 @@ const logoutUser = asyncHandler(async (req, res, next) => {
     expires: new Date(0)
   })
   return res.status(200).json({
-    status: "success",
+    status: SUCCESS,
     data: null,
     message: "Logged out successfully"
   });

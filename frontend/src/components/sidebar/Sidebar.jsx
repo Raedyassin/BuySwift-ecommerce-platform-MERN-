@@ -1,5 +1,5 @@
-import './sidebar.css'
-import { useState } from 'react'
+import "./sidebar.css";
+import { useState } from "react";
 import {
   AiOutlineHome,
   AiOutlineShopping,
@@ -7,16 +7,17 @@ import {
   AiOutlineUserAdd,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
+import { CiDeliveryTruck } from "react-icons/ci";
+
 import { CiHeart } from "react-icons/ci";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/apis/userApiSlice";
-import { logOut } from '../../redux/features/auth/authSlice';
-import { toast } from 'react-toastify';
-import SelectedCounteSidebar from '../../pages/products/SelectedCounteSidebar';
-
+import { logOut } from "../../redux/features/auth/authSlice";
+import { toast } from "react-toastify";
+import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
 
 export default function Sidebar({ setChangeWidth }) {
   const { userInfo } = useSelector((state) => state.auth);
@@ -29,7 +30,7 @@ export default function Sidebar({ setChangeWidth }) {
   const toggleSidebar = () => {
     console.log("toggle sidebar");
     setShowSidebar(!showSidebar);
-    setChangeWidth(state => !state);
+    setChangeWidth((state) => !state);
   };
   const closeSidebar = () => {
     console.log("close sidebar");
@@ -62,7 +63,7 @@ export default function Sidebar({ setChangeWidth }) {
       hover:w-[10%] h-[100vh] fixed `}
       id="navigation-container"
     >
-      <div className="flex flex-col justify-center space-y-2">
+      <div className="flex flex-col  justify-center space-y-2">
         <Link
           to="/"
           className="flex items-center transition-transform transform 
@@ -97,6 +98,14 @@ export default function Sidebar({ setChangeWidth }) {
           <span className=" hidden nav-item-name mt-[2rem] ">Favorite</span>
           <SelectedCounteSidebar selectorinStore="favorites" />
         </Link>
+        <Link
+          to="/favorite"
+          className="flex items-center transition-transform transform 
+          hover:translate-x-2 "
+        >
+          <CiDeliveryTruck className=" mr-2 mt-[2rem]" size={26} />
+          <span className=" hidden nav-item-name mt-[2rem] ">Orders</span>
+        </Link>
       </div>
 
       <div className="realtive">
@@ -116,11 +125,11 @@ export default function Sidebar({ setChangeWidth }) {
         {dropDownOpen && userInfo && (
           <ul
             className={`absolute left-0 mt-2 space-y-1  w-48  rounded 
-            text-gray-600 bottom-20 `}
+            text-gray-600 bottom-20 bg-gray-100  border border-gray-200`}
           >
             {userInfo.isAdmin && (
               <>
-                <li>
+                <li >
                   <Link
                     to="/admin/dashboard"
                     className="block px-4 py-2  hover:bg-gray-200"
