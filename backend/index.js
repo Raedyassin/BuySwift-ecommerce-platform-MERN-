@@ -46,6 +46,11 @@ app.all('*', (req, res) => {
   res.status(400).json({ status: FAIL, data: { tiltle: "Page Not found" } })
 })
 
+app.get("/api/config/paypal", (req, res) => {
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
+});
+
+
 
 app.use((err, req, res, next) => {
   if (err instanceof AppError) {
