@@ -26,6 +26,9 @@ import {PayPalScriptProvider} from '@paypal/react-paypal-js'
 import Orders from './pages/user/Orders';
 import Dashboard from './pages/Admin/Dashboard';
 export default function App() {
+
+
+
   return (
     <Provider store={store}>
       <PayPalScriptProvider>
