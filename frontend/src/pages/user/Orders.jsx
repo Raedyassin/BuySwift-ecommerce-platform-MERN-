@@ -1,4 +1,5 @@
-import React from 'react'
+import { useGetUserOrdersQuery } from "../../redux/apis/orderSlice";
+
 
 export default function Orders() {
   return (

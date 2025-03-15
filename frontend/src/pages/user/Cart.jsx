@@ -20,6 +20,7 @@ export default function Cart() {
     dispatch(clearCartItems());
   };
   const quantityChangeHandler = (e, item) => {
+    e.preventDefault();
     dispatch(addToCart({ ...item, quantity: Number(e.target.value) }));
   };
   const removeFromCartHandler = (item) => {
@@ -63,7 +64,7 @@ export default function Cart() {
                 >
                   <div className="w-[5rem]  h-[5rem]">
                     <img
-                      src={`/uploads/${item.img.split("/").pop()}`}
+                      src={`/uploads/${item.img?.split("/").pop()}`}
                       alt={item.name}
                       className="w-full h-full object-cover rounded"
                     />

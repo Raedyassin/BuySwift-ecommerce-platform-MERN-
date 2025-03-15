@@ -28,7 +28,7 @@ export default function HeartIcon({ product, colorText, xPosition, yPosition }) 
     }
   };
   return (
-    <div className={`absolute ${xPosition} ${yPosition} cursor-pointer`}>
+    <div className={`absolute ${xPosition || "right-2"} ${yPosition || "top-2"} cursor-pointer`}>
       {isFavorite ? (
         <FaHeart
           size={24}
@@ -39,7 +39,7 @@ export default function HeartIcon({ product, colorText, xPosition, yPosition }) 
         <FaRegHeart
           size={24}
           className={`${
-            colorText !== "black" ? "text-white" : "text-black"
+            (colorText || "not-black") !== "black" ? "text-white" : "text-black"
           }  font-bold`}
           onClick={toggleFavorite}
         />
@@ -48,8 +48,8 @@ export default function HeartIcon({ product, colorText, xPosition, yPosition }) 
   );
 }
 
-HeartIcon.defaultProps = {
-  colorText: "not-black",
-  xPosition: "right-2",
-  yPosition: "top-2",
-};
+// HeartIcon.defaultProps = {
+//   colorText: "not-black",
+//   xPosition: "right-2",
+//   yPosition: "top-2",
+// };

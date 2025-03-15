@@ -7,7 +7,6 @@ export default function Ratings({ text, rating }) {
   const fullStars = Math.floor(rating);
   const halfStar = (rating - fullStars) >= 0.5 ? 1 : 0;
   const emptyStars = 5 - fullStars - halfStar;
-  console.log(fullStars, halfStar, emptyStars)
   return (
     <div className="flex items-center w-[15rem]">
       {[...Array(fullStars)].map((_, index) => (

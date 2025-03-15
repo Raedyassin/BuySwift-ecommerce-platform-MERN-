@@ -1,11 +1,11 @@
 import apiSlice from '../services/apiSlice'
 
-import { ORDER_URL, orderTage, PAYPAL_URL } from '../constance';
+import { ORDER_URL, orderTage } from '../constance';
 const orderApiSlice = apiSlice.injectEndpoints({
   endpoints: (buil) => ({
     createOrder: buil.mutation({
       query: (body) => ({
-        url: ORDER_URL,
+        url: `${ORDER_URL}/`,
         method: "POST",
         body
       }),
@@ -45,15 +45,6 @@ const orderApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags:[orderTage]
     }),
-    getPayPalClientId: buil.query({
-      query: () => ({
-        url: PAYPAL_URL,
-      }),
-      keepUnusedDataFor: 5
-    }),
-
-
-
   })
 })
 
@@ -64,5 +55,4 @@ export const {
   useGetAllOrdersQuery,
   useGetOrderDetailsQuery,
   useGetUserOrdersQuery,
-  useGetPayPalClientIdQuery
 } = orderApiSlice;

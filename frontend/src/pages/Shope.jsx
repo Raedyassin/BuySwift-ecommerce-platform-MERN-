@@ -13,10 +13,10 @@ import { toast } from "react-toastify";
 import ProductCard from "./products/ProductCard";
 export default function Shope() {
   const dispatch = useDispatch();
-  const { categories, product, checked, radio } = useSelector(
+  const {  product, checked, radio } = useSelector(
     (state) => state.shop
   );
-  console.log("radio", radio);
+
   const { data: categoriesData, isLoading: isLoadingCategory } =
     useGetAllCategoryQuery();
   const [startPrice, setStartPrice] = useState(0);
@@ -24,9 +24,10 @@ export default function Shope() {
   const [newInputRadio, setNewInputRadio] = useState("");
   const filterProducts = useGetFilteredProductsQuery({
     checked,
-    radio,
+    // startPrice, endPrice => price range
+    radio
   });
-  console.log(filterProducts.data);
+  
   useEffect(() => {
     if (categoriesData) {
       dispatch(setCategories(categoriesData.data.categories));
@@ -65,7 +66,7 @@ export default function Shope() {
     const productsByBrand = filterProducts.data?.data?.products?.filter(
       (product) => product.brand === brand
     );
-    console.log("productsByBrand", productsByBrand);
+    
 
     setNewInputRadio(e);
     dispatch(setProduct(productsByBrand));

@@ -7,8 +7,15 @@ import ProgressSteps from "../../components/ProgressSteps";
 import Loader from "../../components/Loader";
 import { useCreateOrderMutation } from "../../redux/apis/orderSlice";
 import { clearCartItems } from "../../redux/features/cart/cartSlice";
-
+import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
 const PlaceOrder = () => {
+  const [, dispatchPaypalLoader] = usePayPalScriptReducer();
+  useEffect(() => {
+    // When user reaches checkout, load the PayPal SDK
+    // setLoadingStatus do load the PayPal SDK and run the default option of the PapPalScriptProvider
+    dispatchPaypalLoader({ type: "setLoadingStatus", value: "pending" });
+  }, [dispatchPaypalLoader]);
+
   const navigate = useNavigate();
 
   const cart = useSelector((state) => state.cart);
@@ -23,6 +30,8 @@ const PlaceOrder = () => {
 
   const dispatch = useDispatch();
 
+  // the problem you change the create order in backend and this will make error
+  // also untill know i think i should splite this to create order adn create
   const placeOrderHandler = async () => {
     try {
       const res = await createOrder({
@@ -30,14 +39,14 @@ const PlaceOrder = () => {
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,
       }).unwrap();
+      console.log(res);
+      
       dispatch(clearCartItems());
       navigate(`/order/${res.data.order._id}`);
     } catch (error) {
       toast.error(error);
     }
   };
-  console.log(error);
-  console.log("====> ", error?.data?.data?.title);
 
   if (error?.status === 404) {
     toast.error(
@@ -93,7 +102,9 @@ const PlaceOrder = () => {
                     <Link
                       className="text-pink-400 font-bold underline hover:text-pink-600"
                       to={`/product/${item._id}`}
-                    >{item.name}</Link>
+                    >
+                      {item.name}
+                    </Link>
                   </td>
                   <td className="p-2">{item.quantity}</td>
                   <td className="p-2">{item.price.toFixed(2)}</td>
@@ -147,15 +158,17 @@ const PlaceOrder = () => {
             <button
               type="submit"
               className="bg-pink-500 cursor-pointer hover:bg-pink-600 text-white py-2 
-              px-4 rounded text-lg w-2/5 mt-4 mb-[5rem]"
+              px-4 rounded text-lg w-2/5 mt-4 mb-[5rem] flex items-center justify-center"
               disabled={cart.cartItems === 0}
               onClick={placeOrderHandler}
             >
-              Place Order
+              <span>
+                Place Order {" "}
+              </span>
+              {isLoading && <Loader/>}
             </button>
           </div>
 
-          {isLoading && <Loader />}
         </div>
       </div>
     </>

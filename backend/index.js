@@ -12,6 +12,7 @@ import categoryRoutes from './routers/category.routes.js'
 import productRoutes from './routers/product.routes.js'
 import uploadRoutes from './routers/upload.routes.js'
 import orderRoutes from './routers/order.routes.js'
+import paymentRoutes from './routers/payment.routes.js'
 
 /////////////////////utils
 import { ERROR, FAIL, SUCCESS } from './utils/httpStatucText.js'
@@ -32,11 +33,8 @@ app.use('/api/category', categoryRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/order', orderRoutes)
+app.use('/api/payment', paymentRoutes)
 
-// paypal api
-app.get('/api/config/paypal', (req, res) => {
-  res.send({status:SUCCESS,data:{clientId:process.env.PAYPAL_CLIENT_ID}})
-})
 
 const __dirname = path.resolve()
 app.use("/uploads", express.static(path.join(__dirname, 'uploads')))
@@ -46,9 +44,6 @@ app.all('*', (req, res) => {
   res.status(400).json({ status: FAIL, data: { tiltle: "Page Not found" } })
 })
 
-app.get("/api/config/paypal", (req, res) => {
-  res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
-});
 
 
 

@@ -6,6 +6,11 @@ const orderSchema = new mongoose.Schema({
     required: true,
     ref: "User"
   },
+  status: {
+    type: String,
+    enum: ["pending", "delivered",'ontheway', "cancelled"],
+    default : "pending"
+  },
   orderItems: [
     {
       name: { type: String, required: true },
@@ -30,12 +35,15 @@ const orderSchema = new mongoose.Schema({
     required: true,
   },
   paymentResult: {
+    // the id for transaction of paypal
     id: { type: String },
+    // ther are three status COMPLETED PENDING DECLINED
     status: { type: String },
     update_time: { type: String },
+    // email address of the payer
     email_address: { type: String },
   },
-  itmesPrice: {
+  itemsPrice: {
     type: Number,
     required: true,
     default: 0.0

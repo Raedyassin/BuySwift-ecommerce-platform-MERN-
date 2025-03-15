@@ -1,13 +1,14 @@
 import Order from "../models/order.model.js";
 import Product from "../models/product.model.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
-import { json } from "express";
 import { FAIL, SUCCESS } from "../utils/httpStatucText.js";
 import { calcTotalPrice } from '../utils/clacTotalPrice.js'
+import { generateAccessToken } from '../utils/PayPalAccessToken.js'
+import axios from 'axios'//npm install axios
 
 const createOrder = asyncHandler(async (req, res, next) => {
   const { orderItems, shippingAddress, paymentMethod } = req.body;
-  if (orderItems?.length === 0) {
+  if (!orderItems?.length) {
     return res.status(400).json({ status: FAIL, message: "No order items" })
   }
 
@@ -49,6 +50,9 @@ const createOrder = asyncHandler(async (req, res, next) => {
     totalPrice,
   } = calcTotalPrice(dbOrderItems)
 
+
+  // finish validation of the order 
+
   const order = new Order({
     orderItems: dbOrderItems,
     user: req.user._id,
@@ -60,36 +64,41 @@ const createOrder = asyncHandler(async (req, res, next) => {
     totalPrice,
   });
 
-  const createOrder = await order.save();
+  // intergrate with paypal
+
+
+  await order.save();
   return res.status(201).json({
     status: SUCCESS,
-    data: {
-      order: createOrder
-    }
-  })
+    data: { order },
+  });
 
 });
 
 const getAllOrders = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find({}).populate("user",'username email');
+  const orders = await Order.find({}).populate("user", 'username email');
   res.status(200).json({ status: SUCCESS, data: { orders } })
 })
 
 const getUserOrders = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find({ user: req.user._id });
+  const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
   res.status(200).json({ status: SUCCESS, data: { orders } })
 })
 
-// i will create it but i thing may be they in front-end dont' use it
 const getOrderDetails = asyncHandler(async (req, res, next) => {
-  const {id} = req.params
-  const order = await Order.findById(id).populate("user","username email");
+  const { id } = req.params
+  const order = await Order.findById(id).populate("user", "username email");
+  if (!order) {
+    res.status(404).json({ status: FAIL, message:"Order not found"})
+  }
   res.status(200).json({ status: SUCCESS, data: { order } })
 })
 
-const markOrderAsPaid = asyncHandler(async (req, res, next) => {
+// i make the payed after paypal
+// this is will be available for the deliver on home or not online pay
+const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
-  if (!order) { 
+  if (!order) {
     return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
   }
   if (order.isPaid) {
@@ -99,12 +108,12 @@ const markOrderAsPaid = asyncHandler(async (req, res, next) => {
   order.paidAt = Date.now();
   order.paymentResult = {
     id: req.body.id,
-    status: req.body.status ,
+    status: req.body.status,
     update_time: req.body.update_time,
     email_address: req.body?.payer?.email_address || "in test phase",
   }
   await order.save();
-  res.json({ status: SUCCESS, data: {order} })
+  res.json({ status: SUCCESS, data: { order } })
 })
 
 const markorderDeliver = asyncHandler(async (req, res, next) => {
@@ -127,6 +136,6 @@ export {
   getAllOrders,
   getUserOrders,
   getOrderDetails,
-  markOrderAsPaid,
+  markOrderAsPaidManual,
   markorderDeliver
 }

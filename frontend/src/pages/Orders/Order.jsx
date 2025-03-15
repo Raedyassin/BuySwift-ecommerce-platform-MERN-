@@ -1,17 +1,16 @@
-import { useEffect } from "react";
+
 import { Link, useParams } from "react-router-dom";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import {
   useMarkorderDeliverMutation,
   useGetOrderDetailsQuery,
+  
   useMarkOrderAsPaidMutation,
-  useGetPayPalClientIdQuery,
+
 } from "../../redux/apis/orderSlice";
-import { use } from "react";
+import PayPalContainer from "../../components/PayPalContainer";
 export default function Order() {
   const { id } = useParams();
   const {
@@ -20,40 +19,28 @@ export default function Order() {
     isLoading,
     error,
   } = useGetOrderDetailsQuery(id);
-
+  
   const [markOrderAsPaid, { isLoading: loadingPaid }] =
     useMarkOrderAsPaidMutation();
   const [markorderDeliver, { isLoading: loadingDeliver }] =
     useMarkorderDeliverMutation();
-  const { userInfo } = useSelector((state) => state.auth);
-  const [{ isPending }, dispatchPayPal] = usePayPalScriptReducer();
-  const {
-    data: paypal,
-    isLoading: loadingPayPal,
-    error: errorPayPal,
-  } = useGetPayPalClientIdQuery();
-  useEffect(() => {
-    if (!errorPayPal && !loadingPayPal && paypal.clientId) {
-      const loadPayPalScript = async () => {
-        dispatchPayPal({
-          type: "resetOptions",
-          value: {
-            "client-id": paypal.clientId,
-            currency: "USD",
-          },
-        });
-        dispatchPayPal({ type: "setLoadingStatus", value: "pending" });
-      };
-      if (order.data.order && !order.data.order.isPaid) {
-        if (!window.paypal) {
-          loadPayPalScript();
-        }
-      }
-    }
-  }, [errorPayPal, loadingPayPal, paypal, order, dispatchPayPal]);
 
-  console.log(order?.data?.order?.orderItems);
-
+  if (error) {
+    return (
+      <div className="pt-[1rem] pr-[1rem]">
+        <Message variant="dangers">
+          {error?.data?.message}{" "}
+          <Link
+            to={"/shop"}
+            className="cursor-pointer text-pink-500 hover:text-pink-600 hover:underline font-bold italic"
+          >
+            Go To Shopping
+          </Link>
+        </Message>
+      </div>
+    );
+  }
+  
   return isLoading ? (
     <Loader />
   ) : error ? (
@@ -62,7 +49,7 @@ export default function Order() {
     <div className="w-[95%] flex flex-col ml-[1rem] md:flex-row">
       <div className="w-[65%] pr-4">
         <div className="w-[100%] mt-5 p-4 mb-5">
-          {order.data.order.orderItems.length === 0 ? (
+          {order?.data?.order?.orderItems?.length === 0 ? (
             <Message variant="info">
               Order is Empty{" "}
               <Link
@@ -119,11 +106,12 @@ export default function Order() {
           )}
         </div>
       </div>
-          <div className="w-[35%] border border-gray-300 my-10">
-            <div className="p-4">
-              but the payment logic and details
-            </div>
-          </div>
+      <div className="w-[35%] border border-gray-300 my-10">
+        <div className="p-4">
+          but the payment logic and details
+          <PayPalContainer refetch={refetch} order={order} />
+        </div>
+      </div>
     </div>
   );
 }

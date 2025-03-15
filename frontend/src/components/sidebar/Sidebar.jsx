@@ -28,12 +28,10 @@ export default function Sidebar({ setChangeWidth }) {
     setDropDownOpen(!dropDownOpen);
   };
   const toggleSidebar = () => {
-    console.log("toggle sidebar");
     setShowSidebar(!showSidebar);
     setChangeWidth((state) => !state);
   };
   const closeSidebar = () => {
-    console.log("close sidebar");
     setChangeWidth((state) => !state);
     setShowSidebar(false);
     setDropDownOpen(false);
@@ -99,7 +97,7 @@ export default function Sidebar({ setChangeWidth }) {
           <SelectedCounteSidebar selectorinStore="favorites" />
         </Link>
         <Link
-          to="/favorite"
+          to="/orderslist"
           className="flex items-center transition-transform transform 
           hover:translate-x-2 "
         >
@@ -129,7 +127,7 @@ export default function Sidebar({ setChangeWidth }) {
           >
             {userInfo.isAdmin && (
               <>
-                <li >
+                <li>
                   <Link
                     to="/admin/dashboard"
                     className="block px-4 py-2  hover:bg-gray-200"

@@ -3,7 +3,7 @@ import { authenticate, authorizeAdmin } from "../middlewares/authMeddileware.js"
 import cechkID from "../middlewares/checkID.js";
 import {
   createOrder, getAllOrders, getUserOrders, getOrderDetails,
-  markOrderAsPaid, markorderDeliver
+  markOrderAsPaidManual, markorderDeliver
 } from "../controllers/order.controller.js";
 
 const router = express.Router();
@@ -14,7 +14,8 @@ router.route("/")
   .get(authenticate, authorizeAdmin, getAllOrders)
 
 router.get("/:id", authenticate, cechkID, getOrderDetails)
-router.patch("/:id/pay", authenticate, cechkID, markOrderAsPaid)
+
+router.patch("/:id/pay", authenticate,authorizeAdmin, cechkID, markOrderAsPaidManual)
 router.patch("/:id/deliver", authenticate, authorizeAdmin, cechkID, markorderDeliver)
 
 router.get("/myorders", authenticate, getUserOrders)

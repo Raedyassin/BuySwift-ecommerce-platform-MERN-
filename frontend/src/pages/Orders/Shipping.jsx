@@ -47,6 +47,7 @@ export default function Shipping() {
     dispatch(savePaymentMethod(paymentMethod));
     dispatch(saveShippingAddress({ address, city, postalCode, country }));
     navigate("/placeorder");
+    
   }
 
   return (
@@ -222,7 +223,7 @@ export default function Shipping() {
                 (will be <span className="font-bold text-[#cc2131]">
                   add
                 </span>{" "}
-                in <span className="font-bold text-[#cc2131]">future</span>)
+                in the <span className="font-bold text-[#cc2131]">future</span>)
               </span>
             </label>
             <label
@@ -278,7 +279,7 @@ export default function Shipping() {
                 (will be <span className="font-bold text-[#cc2131]">
                   add
                 </span>{" "}
-                in <span className="font-bold text-[#cc2131]">future</span>)
+                in the <span className="font-bold text-[#cc2131]">future</span>)
               </span>
             </label>
           </div>

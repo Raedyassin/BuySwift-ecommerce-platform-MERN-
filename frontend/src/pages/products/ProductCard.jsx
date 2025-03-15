@@ -54,7 +54,7 @@ export default function ProductCard({ product }) {
       <div className="flex justify-between items-center p-3 py-1">
         <Ratings rating={product.rating} />
         <AiOutlineShoppingCart
-          onClick={() => dispatch(addToCart(product))}
+          onClick={() => dispatch(addToCart({...product, quantity: 1}))}
           size={24}
           className="text-pink-600 cursor-pointer"
         />
