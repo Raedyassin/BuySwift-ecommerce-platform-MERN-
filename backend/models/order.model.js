@@ -8,13 +8,17 @@ const orderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "delivered",'ontheway', "cancelled"],
-    default : "pending"
+    enum: ["pending", "delivered", 'ontheroute',"packed", "cancelled"],
+    default: "pending"
   },
   orderItems: [
     {
       name: { type: String, required: true },
       quantity: { type: Number, required: true },
+      brand: {
+        type: String,
+        required: true,
+      },
       image: { type: String, required: true },
       price: { type: Number, required: true },
       productId: {
@@ -29,10 +33,27 @@ const orderSchema = new mongoose.Schema({
     city: { type: String, required: true },
     postalCode: { type: String, required: true },
     country: { type: String, required: true },
+    firstPhone: { type: String, required: true },
+    secondPhone: { type: String },
   },
+
   paymentMethod: {
     type: String,
     required: true,
+  },
+  orderProgress: {
+    packedAt: {
+      type: Date
+    },
+    transitAt: {
+      type: Date
+    },
+    deliveredAt: {
+      type: Date,
+    },
+    cancelledAt: {
+      type: Date,
+    },
   },
   paymentResult: {
     // the id for transaction of paypal
@@ -69,14 +90,6 @@ const orderSchema = new mongoose.Schema({
     default: false
   },
   paidAt: {
-    type: Date,
-  },
-  isDelivered: {
-    type: Boolean,
-    required: true,
-    default: false
-  },
-  deliveredAt: {
     type: Date,
   },
 }, { timestamps: true });

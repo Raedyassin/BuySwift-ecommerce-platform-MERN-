@@ -34,7 +34,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
     const matchingItemsFromDB = itemsFromDB.find(
       item => item._id.toString() === itemFromClient._id
     );
-
+    
     return {
       ...itemFromClient,
       productId: matchingItemsFromDB._id,
@@ -51,12 +51,22 @@ const createOrder = asyncHandler(async (req, res, next) => {
   } = calcTotalPrice(dbOrderItems)
 
 
-  // finish validation of the order 
+  // finish validation of the order
 
+  console.log("dbOrderItems", dbOrderItems);
+  console.log("shippingAddress", shippingAddress);
+  
   const order = new Order({
     orderItems: dbOrderItems,
     user: req.user._id,
-    shippingAddress,
+    shippingAddress:{
+      address: shippingAddress.address,
+      city: shippingAddress.city,
+      postalCode: shippingAddress.postalCode,
+      country: shippingAddress.country,
+      firstPhone: shippingAddress.firstPhone,
+      secondPhone: shippingAddress.secondPhone,
+    },
     paymentMethod,
     itemsPrice,
     taxPrice,
@@ -81,8 +91,27 @@ const getAllOrders = asyncHandler(async (req, res, next) => {
 })
 
 const getUserOrders = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
-  res.status(200).json({ status: SUCCESS, data: { orders } })
+  const page  = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.limit) > 50 ? 50 : parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * pageSize;
+  const ordersCount = await Order.countDocuments({ user: req.user._id });
+  const orders = await Order.find({ user: req.user._id }).populate("user", 'username email')
+    .limit(pageSize+1)
+    .skip(skip)
+    .sort({ createdAt: -1 });
+  const hasNextPage = orders.length > pageSize;
+  if (hasNextPage){
+    orders.pop();
+  }
+  res.status(200).json({
+    status: SUCCESS,
+    data: { orders },
+    currentPage: page,
+    ordersLength: ordersCount,
+    pageSize,
+    hasNextPage,
+    hasPrevPage: page > 1
+  })
 })
 
 const getOrderDetails = asyncHandler(async (req, res, next) => {
@@ -121,21 +150,72 @@ const markorderDeliver = asyncHandler(async (req, res, next) => {
   if (!order) {
     return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
   }
-  if (order.isDelivered) {
+  if (order.deliveredAt) {
     return res.status(409).json({ status: FAIL, data: { title: "Order already Delivered" } })
   }
-  order.isDelivered = true;
-  order.deliveredAt = Date.now();
+  if (order.status !== "ontheroute"){
+    return res.status(409).json({ status: FAIL, data: { title: "Order not on the route yet" } })
+  }
+  order.orderProgress.deliveredAt = Date.now();
+  order.status = "delivered";
+  await order.save();
+  res.json({ status: SUCCESS, data: { order } })
+})
+
+const markorderPacked = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id)
+  if (!order) {
+    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
+  }
+  if (order.orderProgress.packedAt) {
+    return res.status(409).json({ status: FAIL, data: { title: "Order already Pakced" } })
+  }
+  if (order.status !== "pending"){
+    return res.status(409).json({ status: FAIL, data: { title: "Order not on created yet" } })
+  }
+  order.orderProgress.packedAt = Date.now();
+  order.status = "packed";
+  await order.save();
+  res.json({ status: SUCCESS, data: { order } })
+})
+
+const markorderTransit = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id)
+  if (!order) {
+    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
+  }
+  if (order.orderProgress.transitAt) {
+    return res.status(409).json({ status: FAIL, data: { title: "Order already Transited" } })
+  }
+  if (order.status !== "packed"){
+    return res.status(409).json({ status: FAIL, data: { title: "Order not on packed yet" } })
+  }
+  order.orderProgress.transitAt = Date.now();
+  order.status = "ontheroute";
+  await order.save();
+  res.json({ status: SUCCESS, data: { order } })
+})
+// until now i will make the adimin cancle the order only
+const cancleOrderByAdmin = asyncHandler(async (req, res, next) => {
+  const order = await Order.findById(req.params.id)
+  if (!order) {
+    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
+  }
+  order.orderProgress.cancelledAt = Date.now();
+  order.status = "cancelled";
   await order.save();
   res.json({ status: SUCCESS, data: { order } })
 })
 
 
 export {
+  cancleOrderByAdmin,
   createOrder,
   getAllOrders,
   getUserOrders,
   getOrderDetails,
   markOrderAsPaidManual,
-  markorderDeliver
+  markorderDeliver,
+  markorderPacked,
+  markorderTransit
 }

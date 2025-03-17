@@ -11,6 +11,7 @@ export default function Cart() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
+  
   const userInfo = useSelector((state) => state.auth.userInfo);
   const checkoutHandler = () => {
     if(userInfo) return navigate("/shipping");
@@ -47,7 +48,7 @@ export default function Cart() {
                 <h1 className="text-2xl font-semibold mb-4">
                   Shopping Cart{" "}
                   <span className="text-pink-600">
-                    ({cart.cartItems.length})
+                    ({cart?.cartItems?.length})
                   </span>
                 </h1>
                 <button
@@ -57,14 +58,23 @@ export default function Cart() {
                   Clear Cart
                 </button>
               </div>
-              {cart.cartItems.map((item) => (
+              {cart?.cartItems?.map((item) => (
                 <div
                   key={item._id}
                   className="flex mb-4  items-center bg-gray-100 p-4 rounded-lg"
                 >
                   <div className="w-[5rem]  h-[5rem]">
                     <img
-                      src={`/uploads/${item.img?.split("/").pop()}`}
+                      src={
+                        item.img
+                          ? `/uploads/${
+                              item?.img?.split("/").pop() || "defaultImage.png"
+                            }`
+                          : "../../../public/userImge.png"
+                      }
+                      onError={(e) =>
+                        (e.target.src = "../../../public/userImge.png")
+                      } // Handle broken images
                       alt={item.name}
                       className="w-full h-full object-cover rounded"
                     />
@@ -132,7 +142,7 @@ export default function Cart() {
 
                   <button
                     className="cursor-pointer text-white bg-pink-600 mt-4 py-2 px-4 rounded-full text-lg w-full"
-                    disabled={cart.cartItems.length === 0}
+                    disabled={cart.cartItems?.length === 0}
                     onClick={checkoutHandler}
                   >
                     Proceed To Checkout

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useGetFilteredProductsQuery } from "../redux/apis/productApiSlice";
 import { useGetAllCategoryQuery } from "../redux/apis/categoryApiSlice";
-import Loader from "../components/Loader";
+// import Loader from "../components/Loader";
 import {
   setChecked,
   setRadio,
@@ -11,6 +11,7 @@ import {
 } from "../redux/features/shop/shopSlice";
 import { toast } from "react-toastify";
 import ProductCard from "./products/ProductCard";
+import PageLoader from "../components/PageLoader";
 export default function Shope() {
   const dispatch = useDispatch();
   const {  product, checked, radio } = useSelector(
@@ -91,7 +92,7 @@ export default function Shope() {
     dispatch(setRadio([startPrice, endPrice]));
   };
 
-  if (isLoadingCategory) return <Loader />;
+  if (isLoadingCategory || filterProducts.isLoading) return <PageLoader height="h-screen" />;
 
   return (
     <div className="constainer mx-auto">
@@ -197,15 +198,17 @@ export default function Shope() {
             {" "}Products
           </h2>
           <div className="flex flex-wrap ml-[1rem]">
-            {product.length === 0 ? (
-              <Loader />
-            ) : (
+            {
+            //   product.length === 0 ? (
+            //   <Loader />
+            // ) : (
               product?.map((prod) => (
                 <div className="p-3" key={prod._id}>
                   <ProductCard product={prod} />
                 </div>
               ))
-            )}
+              // )
+            }
           </div>
         </div>
       </div>

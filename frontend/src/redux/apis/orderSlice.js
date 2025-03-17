@@ -40,10 +40,26 @@ const orderApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: [orderTage]
     }),
     getUserOrders: buil.query({
-      query: () => ({
-        url: `${ORDER_URL}/myorders`,
+      query: ({ page, limit}) => ({
+        url: `${ORDER_URL}/myorders?page=${page}&limit=${limit}`,
       }),
-      providesTags:[orderTage]
+      providesTags: [orderTage],
+      keepUnusedDataFor: 5,
+      serializeQueryArgs: ({ endpointName }) => endpointName, // Keep cache key
+      // stable make the key of all cache data is one,share one cache for all entry
+      merge: (currentCache, newData) => {
+        return {
+          ...currentCache,
+          data: { orders: [ ...currentCache.data.orders, ...newData.data.orders ] },
+          currentPage: newData.currentPage,
+          pageSize: newData.pageSize,
+          hasNextPage: newData.hasNextPage,
+          hasPrevPage: newData.hasPrevPage
+        };
+      },
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg.page !== previousArg?.page; // Refetch on page change
+      },
     }),
   })
 })

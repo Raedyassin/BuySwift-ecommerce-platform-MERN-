@@ -27,6 +27,8 @@ export default function Shipping() {
   const [postalCode, setPostalCode] = useState(
     shippingAddress?.postalCode || ""
   );
+  const [firstPhone, setFirstPhone] = useState(shippingAddress?.firstPhone || "");
+  const [secondPhone, setSecondPhone] = useState(shippingAddress?.secondPhone || "");
   const [country, setCountry] = useState(shippingAddress?.country || "");
 
 
@@ -40,12 +42,19 @@ export default function Shipping() {
 
   const shippingSubmitHandler = (e) => {
     e.preventDefault();
-    if(!address || !city || !postalCode || !country) {
+    if (
+      !address ||
+      !city ||
+      !postalCode ||
+      !country ||
+      !firstPhone ||
+      firstPhone === secondPhone
+    ) {
       toast.error("Please enter shipping information");
       return;
     }
     dispatch(savePaymentMethod(paymentMethod));
-    dispatch(saveShippingAddress({ address, city, postalCode, country }));
+    dispatch(saveShippingAddress({ address, city, postalCode, country, firstPhone, secondPhone }));
     navigate("/placeorder");
     
   }
@@ -118,6 +127,40 @@ export default function Shipping() {
               id="country"
               value={country}
               onChange={(e) => setCountry(e.target.value)}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full
+                focus:outline-none focus:ring-1 focus:ring-pink-400"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="firstPhone"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Country:
+            </label>
+            <input
+              placeholder="Enter your phone number(required)"
+              type="text"
+              id="firstPhone"
+              value={firstPhone}
+              onChange={(e) => setFirstPhone(e.target.value)}
+              className="mt-1 p-2 border border-gray-300 rounded-md w-full
+                focus:outline-none focus:ring-1 focus:ring-pink-400"
+            />
+          </div>
+          <div className="mb-4">
+            <label
+              htmlFor="secondPhone"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Second Phone Number:
+            </label>
+            <input
+              type="text"
+              id="secondPhone"
+              value={secondPhone}
+              placeholder="Enter your second phone number(optional)"
+              onChange={(e) => setSecondPhone(e.target.value)}
               className="mt-1 p-2 border border-gray-300 rounded-md w-full
                 focus:outline-none focus:ring-1 focus:ring-pink-400"
             />

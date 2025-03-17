@@ -9,8 +9,9 @@ import { toast } from "react-toastify";
 import CategoryForm from "../../components/CategoryForm";
 import Modale from "../../components/Modale";
 import AdminMenu from "./AdminMenu";
+import PageLoader from "../../components/PageLoader";
 export default function CategoryList() {
-  const { data: categories,refetch} = useGetAllCategoryQuery();
+  const { data: categories,refetch,isLoading} = useGetAllCategoryQuery();
   const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [updatingName, setUpdatingName] = useState("");
@@ -78,7 +79,7 @@ export default function CategoryList() {
   return (
     <div className="mx-[5rem] flex w-full flex-col md:flex-row">
       {/* admin menu */}
-      <AdminMenu/>
+      <AdminMenu />
       <div className="md:3/4 w-[80%] p-3">
         <div className="h-12 text-2xl font-bold italic">Manage Categories</div>
         <CategoryForm
@@ -90,24 +91,28 @@ export default function CategoryList() {
         <br />
         <hr className="mx-3 text-[#86bcd3]" />
 
-        <div className="flex p-3 flex-wrap my-2">
-          {categories?.data?.categories?.map((categor) => (
-            <div key={categor._id}>
-              <button
-                className="mr-2 mb-2 font-bold bg-white border border-[#0094D4] text-[#0094D4] 
+        { 
+          isLoading ? (
+              <PageLoader height="h-60" />
+          ):(<div className="flex p-3 flex-wrap my-2">
+            {categories?.data?.categories?.map((categor) => (
+              <div key={categor._id}>
+                <button
+                  className="mr-2 mb-2 font-bold bg-white border border-[#0094D4] text-[#0094D4] 
                   py-2 px-4 rounded-lg cursor-pointer hover:bg-[#c9dde6]
                   focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#0094D4]"
-                onClick={() => {
-                  setModalVisiable(true);
-                  setSelectedCategory(categor);
-                  setUpdatingName(categor.name);
-                }}
-              >
-                {categor.name}
-              </button>
-            </div>
-          ))}
-        </div>
+                  onClick={() => {
+                    setModalVisiable(true);
+                    setSelectedCategory(categor);
+                    setUpdatingName(categor.name);
+                  }}
+                >
+                  {categor.name}
+                </button>
+              </div>
+            ))}
+          </div>)
+        }
         <Modale isOpen={maodalVisiable} isClose={() => setModalVisiable(false)}>
           <CategoryForm
             id={"private"}
