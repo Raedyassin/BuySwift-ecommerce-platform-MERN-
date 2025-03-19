@@ -93,7 +93,7 @@ const fechProducts = asyncHandler(
 
     const products = await Product.find({ ...keyword })
       .select("-__v")
-      .limit(pageSize)
+      .limit(pageSize+10)
       .skip((page - 1) * pageSize);
     res.json({
       status: SUCCESS, data: {

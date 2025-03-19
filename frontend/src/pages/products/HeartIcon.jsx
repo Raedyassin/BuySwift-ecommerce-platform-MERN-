@@ -23,7 +23,16 @@ export default function HeartIcon({ product, colorText, xPosition, yPosition }) 
       dispatch(removeFromFavorite(product._id));
       removeFavoriteFromLocalStorage(product._id);
     } else {
-      dispatch(addToFavorite(product));
+      // dispatch(addToFavorite(product));
+      dispatch(
+        addToFavorite({
+          price: product.price,
+          discription: product.discription,
+          name: product.name,
+          _id: product._id,
+          img: product.img,
+        })
+      );
       addFavoriteToLocalStorage(product);
     }
   };
