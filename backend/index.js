@@ -41,7 +41,7 @@ app.use("/uploads", express.static(path.join(__dirname, 'uploads')))
 
 
 app.all('*', (req, res) => {
-  res.status(400).json({ status: FAIL, data: { tiltle: "Page Not found" } })
+  res.status(400).json({ status: FAIL, message: "Page Not found" })
 })
 
 
