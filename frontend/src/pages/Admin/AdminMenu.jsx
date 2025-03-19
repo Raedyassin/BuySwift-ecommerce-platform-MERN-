@@ -12,7 +12,7 @@ export default function AdminMenu() {
     <>
       <button
         className={`${isMenuOpen ? "top-2 right-2" : "top-5 right-7"} 
-        cursor-pointer p-2 fixed rounded-lg text-black hover:bg-gray-100`}
+        cursor-pointer p-2 fixed rounded-lg text-black hover:bg-gray-200 bg-gray-100`}
         onClick={toggleMenu}
       >
         {isMenuOpen ? <FaTimes /> : <TiThMenu size={20} />}

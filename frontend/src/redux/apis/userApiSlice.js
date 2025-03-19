@@ -36,9 +36,18 @@ const userApi = apiSlice.injectEndpoints({
       }),
     }),
     /// admin actions
+    makeAsAdmin: build.mutation({
+      query: (id) => ({
+        url: USERS_URL + `/${id}/admin`,
+        method: "PATCH",
+      }),
+      invalidatesTags: [userTage],
+    }),
     ////////////////////////
     getAllUsersByAdmin: build.query({
-      query: () => ({ url: USERS_URL }),
+      query: ({ page, limit, isAdmin, createdAt, email, name, id }) => ({
+        url: `${USERS_URL}?page=${page}&limit=${limit}&isAdmin=${isAdmin}&createdAt=${createdAt}&email=${email}&name=${name}&id=${id}`,
+      }),
       providTage: [userTage],
       keepUnusedDataFor: 5
     }),
@@ -76,5 +85,6 @@ export const {
   useGetAllUsersByAdminQuery,
   useDeleteUserByAdminMutation,
   useUserGetDetailsByAdminQuery,
-  useUserUpdateDetailsByAdminMutation
+  useUserUpdateDetailsByAdminMutation,
+  useMakeAsAdminMutation
 } = userApi

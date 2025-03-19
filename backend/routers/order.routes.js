@@ -14,6 +14,7 @@ router.route("/")
   .post(authenticate, createOrder)
   .get(authenticate, authorizeAdmin, getAllOrders)
 
+
   router.get("/myorders", authenticate, getUserOrders)
   
   router.get("/:id", authenticate, cechkID, getOrderDetails)
@@ -25,7 +26,7 @@ router.route("/")
 router.patch("/:id/transited", authenticate, authorizeAdmin, cechkID, markorderTransit)
 
 // utill now i will make the admin only can cancel the order
-router.post("/:id/cancel", authenticate, authorizeAdmin, cechkID,cancleOrderByAdmin)
+router.patch("/:id/cancel", authenticate, authorizeAdmin, cechkID,cancleOrderByAdmin)
 
 
 export default router;

@@ -4,9 +4,11 @@ import {
   getAllUsers,
   updateCurrentUserProfile, getCurrentUserProfile,
   deleteUserByIdByAdmin, getUserByIdByAdmin,
-  updateUserByIdByAdmin
+  updateUserByIdByAdmin,
+  makeAsAdmin
 } from "../controllers/user.controller.js";
 import { authenticate, authorizeAdmin } from '../middlewares/authMeddileware.js'
+import ckekID from "../middlewares/checkID.js";
 const router = Router();
 
 // user actions
@@ -25,10 +27,12 @@ router.route("/profile")
 
 // admin actions
 router.route("/:id")
-  .delete(authenticate, authorizeAdmin, deleteUserByIdByAdmin)
-  .get(authenticate, authorizeAdmin, getUserByIdByAdmin)
-  .patch(authenticate, authorizeAdmin, updateUserByIdByAdmin)
+.delete(authenticate, authorizeAdmin, deleteUserByIdByAdmin)
+.get(authenticate, authorizeAdmin, getUserByIdByAdmin)
+.patch(authenticate, authorizeAdmin, updateUserByIdByAdmin)
 
+router.route("/:id/admin")
+  .patch(authenticate, authorizeAdmin, ckekID, makeAsAdmin)
 
 
 

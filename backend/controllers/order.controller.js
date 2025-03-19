@@ -53,8 +53,6 @@ const createOrder = asyncHandler(async (req, res, next) => {
 
   // finish validation of the order
 
-  console.log("dbOrderItems", dbOrderItems);
-  console.log("shippingAddress", shippingAddress);
   
   const order = new Order({
     orderItems: dbOrderItems,
@@ -86,8 +84,74 @@ const createOrder = asyncHandler(async (req, res, next) => {
 });
 
 const getAllOrders = asyncHandler(async (req, res, next) => {
-  const orders = await Order.find({}).populate("user", 'username email');
-  res.status(200).json({ status: SUCCESS, data: { orders } })
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.limit) > 50 ? 50 : parseInt(req.query.limit) || 50;
+  const { status, createdAt, price, payment } = req.query
+  
+  // start validatiaon
+  const filter = {};
+  if (status && status !== "") {
+    if (!["pending", "delivered", "ontheroute", "packed", "cancelled"].includes(status)) {
+      return res.status(400).json({ status: "FAIL", data: { title: "Invalid status" } });
+    }
+    filter.status = status;
+  }
+  if (createdAt && createdAt !== "") {
+    const [year, month, day] = createdAt.split("-"); // e.g., "2025-03-18"
+    // console.log("year", year, "month", month, "day", day)
+    if (parseInt(year) < 2025 || (parseInt(year) <= 2025 && parseInt(month) < 3) || (parseInt(year) <= 2025 && parseInt(month) <= 3 && parseInt(day) < 16)) {
+      return res.status(400).json({ status: "FAIL", data: { title: "this date is not valid" } });
+    }
+    const date = new Date(year, month - 1, day); // Month is 0-based
+    filter.createdAt = {
+      $gte: date,                // Start of day (e.g., 2025-03-18 00:00:00)
+      $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000), // Start of next day (2025-03-19 00:00:00)
+    };
+  }
+  if (price && price !== "") {
+    const [start, end] = price.split("-").map(Number); // e.g., "100-500"
+    filter.totalPrice = { $gte: parseInt(start)||Infinity, $lte: parseInt(end)||Infinity };
+    // console.log("filter.totalPrice", filter.totalPrice)
+  }
+  if (payment && payment !== "") {
+    filter.isPaid = payment === "paid";
+  }
+  
+  // const filter = {};
+  // if (status!=="" && !["pending", "delivered", 'ontheroute', "packed", "cancelled"].includes(status)) {
+  //   return res.status(400).json({ status: FAIL, data: { title: "Invalid status" } })
+  // } else if (status !== "") {
+  //   filter.status = status
+  // }
+  // if (price) {
+  //   const start = price.split('-')[0];
+  //   const middle = price.split('-')[1];
+  //   const end = price.split('-')[2];
+  //   log(start, middle, end)
+  // }
+  // if (createAt) filter.createdAt = createAt;
+  // if (payment) filter.isPaid = payment === 'paid' ? true : false;
+
+  const skip = (page - 1) * pageSize;
+  const ordersCount = await Order.countDocuments(filter);
+  const orders = await Order.find(filter).populate("user", 'username')
+    .select("-__v -shippingAddress  -paymentResult -paidAt -updatedAt -shippingPrice -taxPrice -itemsPrice -orderItems ")
+    .limit(pageSize + 1)
+    .skip(skip)
+    .sort({ createdAt: -1 });
+  const hasNextPage = orders.length > pageSize;
+  if (hasNextPage) {
+    orders.pop();
+  }
+  res.status(200).json({
+    status: SUCCESS,
+    data: { orders },
+    currentPage: page,
+    ordersLength: ordersCount,
+    pageSize,
+    hasNextPage,
+    hasPrevPage: page > 1
+  })
 })
 
 const getUserOrders = asyncHandler(async (req, res, next) => {
@@ -133,6 +197,9 @@ const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
   if (order.isPaid) {
     return res.status(409).json({ status: FAIL, data: { title: "Order already Paid" } })
   }
+  if (order.status === "cancelled") {
+    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
+  }
   order.isPaid = true;
   order.paidAt = Date.now();
   order.paymentResult = {
@@ -156,6 +223,10 @@ const markorderDeliver = asyncHandler(async (req, res, next) => {
   if (order.status !== "ontheroute"){
     return res.status(409).json({ status: FAIL, data: { title: "Order not on the route yet" } })
   }
+  if (order.status === "cancelled") {
+    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
+  }
+
   order.orderProgress.deliveredAt = Date.now();
   order.status = "delivered";
   await order.save();
@@ -173,6 +244,9 @@ const markorderPacked = asyncHandler(async (req, res, next) => {
   if (order.status !== "pending"){
     return res.status(409).json({ status: FAIL, data: { title: "Order not on created yet" } })
   }
+  if (order.status === "cancelled") {
+    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
+  }
   order.orderProgress.packedAt = Date.now();
   order.status = "packed";
   await order.save();
@@ -189,6 +263,9 @@ const markorderTransit = asyncHandler(async (req, res, next) => {
   }
   if (order.status !== "packed"){
     return res.status(409).json({ status: FAIL, data: { title: "Order not on packed yet" } })
+  }
+  if (order.status === "cancelled") {
+    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
   }
   order.orderProgress.transitAt = Date.now();
   order.status = "ontheroute";

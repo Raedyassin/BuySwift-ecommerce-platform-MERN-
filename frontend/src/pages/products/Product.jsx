@@ -3,7 +3,6 @@ import HeartIcon from "./HeartIcon";
 
 export default function Product({ product }) {
   
-  console.log("product.img", product.img);
   return (
     <div className="w-[24rem] ml-[2rem] p-3 relative ">
       <div className="relative">

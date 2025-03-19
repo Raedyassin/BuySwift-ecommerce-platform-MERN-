@@ -76,8 +76,75 @@ const logoutUser = asyncHandler(async (req, res, next) => {
 })
 
 const getAllUsers = asyncHandler(async (req, res, next) => {
-  const users = await User.find();
-  return res.status(200).json({ status: SUCCESS, data: { users } })
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.limit) > 50 ? 50 : parseInt(req.query.limit) || 50;
+  let { isAdmin, createdAt, email, name, id } = req.query;
+
+  // the frontend sends undefined for empty fields this because i use query 
+  // params to send data and send general case for empty fields
+  if (email === "undefined") {
+    email = "";
+  }
+  if (name === "undefined") {
+    name = "";
+  }
+  if (id === "undefined") {
+    id = "";
+  }
+  console.log(email);
+  
+  const skip = (page - 1) * pageSize;
+  const filter = {};
+
+  if (isAdmin && isAdmin !== "") {
+    filter.isAdmin = isAdmin === "admin" ? true : false;
+  }
+
+  if (createdAt && createdAt !== "") {
+    const [year, month, day] = createdAt.split("-"); // e.g., "2025-03-18"
+    if (parseInt(year) < 2025 || (parseInt(year) <= 2025 && parseInt(month) < 2) || (parseInt(year) <= 2025 && parseInt(month) <= 3 && parseInt(day) < 5)) {
+      return res.status(400).json({ status: "FAIL", data: { title: "this date is not valid" } });
+    }
+    const date = new Date(year, month - 1, day); // Month is 0-based
+    filter.createdAt = {
+      $gte: date,                // Start of day (e.g., 2025-03-18 00:00:00)
+      $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000), // Start of next day (2025-03-19 00:00:00)
+    };
+  }
+  if ((email && name) || (id && email) || (name && id)) {
+    return res.status(400).json({ status: "FAIL", data: { title: "Invalid query parameters we only support one query at a time (email, name, id) one at a time" } });
+  }
+  if (email && email !== "") {
+    filter.email = { $regex: email, $options: "i" };
+  }
+  if (name && name !== "") {
+    filter.username = { $regex: name, $options: "i" };
+  }
+  if (id && id !== "") {
+    filter._id = id;
+  }
+  
+  const usersCount = await User.countDocuments(filter);
+  const users = await User.find(filter)
+  .select("-__v -updatedAt -password")
+  .limit(pageSize + 1)
+  .skip(skip)
+  .sort({ createdAt: -1 });
+
+  const hasNextPage = users.length > pageSize;
+  if (hasNextPage) {
+    users.pop();
+  }
+  res.status(200).json({
+    status: SUCCESS,
+    data: { users },
+    currentPage: page,
+    usersLength: usersCount,
+    pageSize,
+    hasNextPage,
+    hasPrevPage: page > 1
+  })
+
 })
 
 const updateCurrentUserProfile = asyncHandler(async (req, res, next) => {
@@ -157,9 +224,23 @@ const updateUserByIdByAdmin = asyncHandler(async (req, res, next) => {
   next(new AppError(404, FAIL, "User not found"))
 })  
 
+const makeAsAdmin = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.params.id).select("-password -__v");
+  if(user?.isAdmin) {
+    return next(new AppError(400, FAIL, "User is already admin"))
+  }
+  if (user) {
+    user.isAdmin = true;
+    await user.save();
+    return res.status(200).json({ status: SUCCESS, data: { user } })
+  }
+  next(new AppError(404, FAIL, "User not found"))
+})
+
 export {
   createUser, loginUser, logoutUser, getAllUsers,
   updateCurrentUserProfile, getCurrentUserProfile,
   deleteUserByIdByAdmin, getUserByIdByAdmin,
-  updateUserByIdByAdmin, deleteUserBySelf
+  updateUserByIdByAdmin, deleteUserBySelf,
+  makeAsAdmin
 }

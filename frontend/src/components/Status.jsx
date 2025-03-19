@@ -1,29 +1,58 @@
+import { GoDotFill } from "react-icons/go";
 
-export default function Status({ status }) {
-  console.log("status", status);
-  
+export default function Status({ status,border }) {
   return (
     <div>
       {status === "pending" ? (
-        <span className="text-yellow-500 bg-yellow-300 font-semibold rounded-full px-3 py-1">
-          Pending
-        </span>
+        <div
+          className={`flex items-center gap-1 text-[#FFB302] px-3 py-1
+        bg-[#FCF6F0] w-[7rem] rounded-full fontbold border-${
+          border ? "1" : "0"
+        } border-[#FFB302]`}
+        >
+          <GoDotFill />
+          <span>Pending</span>
+        </div>
       ) : status === "packed" ? (
-        <span className="text-blue-500 bg-blue-300 font-semibold rounded-full px-3 py-1">
-          Packed
-        </span>
+        <div
+          className={`flex items-center gap-1 text-[#2DCCFF] px-3 py-1
+        bg-[#f0f9fc] w-[7rem] rounded-full fontbold border-${
+          border ? "1" : "0"
+        } border-[#2DCCFF]`}
+        >
+          <GoDotFill />
+          <span>Packed</span>
+        </div>
       ) : status === "ontheroute" ? (
-        <span className="text-purple-500 bg-purple-300 font-semibold rounded-full px-3 py-1">
-          On The Route
-        </span>
+        <div
+          className={`flex items-center gap-1 text-[#5b9bbb] px-3 py-1
+        bg-[#ECF4FF] w-[9rem] rounded-full fontbold border-${
+          border ? "1" : "0"
+        } border-[#5b9bbb]`}
+        >
+          <GoDotFill />
+          <span>On The Route</span>
+        </div>
       ) : status === "delivered" ? (
-        <span className="text-green-500 bg-green-300 font-semibold rounded-full px-3 py-1">
-          Delivered
-        </span>
+        <div
+          className={`flex items-center gap-1 text-[#56F000] px-3 py-1
+        bg-[#EEFAF6] w-[7rem] rounded-full fontbold border-${
+          border ? "1" : "0"
+        } border-[#56F000]`}
+        >
+          <GoDotFill />
+          <span>Delivered</span>
+        </div>
       ) : (
-        <span className="text-red-500 bg-red-300 font-semibold rounded-full px-3 py-1">
-          Cancelled
-        </span>
+        <div
+          className={`flex items-center gap-1 text-[#FF3838] px-3 py-1
+        bg-[#FDEAE9] w-[7rem] rounded-full fontbold border-${
+          border ? "1" : "0"
+        } border-[#FF3838]`}
+        >
+          <GoDotFill />
+          <span>Cancelled</span>
+        </div>
       )}
     </div>
   );

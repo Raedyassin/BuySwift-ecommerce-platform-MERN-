@@ -1,10 +1,9 @@
 import { Discuss } from "react-loader-spinner";
 
 export default function PageLoader({height}) {
-  console.log("height", height);
   
   return (
-    <div className={`flex justify-center items-center ${height} `}>
+    <div className={`flex justify-center items-center ${height || 'h-screen'} `}>
       <Discuss
         className="w-full h-full "
         visible={true}

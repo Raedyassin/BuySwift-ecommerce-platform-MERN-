@@ -9,7 +9,7 @@ import {
   
   useMarkOrderAsPaidMutation,
 
-} from "../../redux/apis/orderSlice";
+} from "../../redux/apis/orderApiSlice";
 import PayPalContainer from "../../components/PayPalContainer";
 export default function Order() {
   const { id } = useParams();
