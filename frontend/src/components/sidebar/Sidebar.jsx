@@ -57,7 +57,7 @@ export default function Sidebar({ setChangeWidth }) {
       onMouseLeave={closeSidebar}
       style={{ zIndex: 1000 }}
       className={`${showSidebar ? "hidden" : "flex"} xl:flex lg:flex md:hidden 
-      sm:hidden flex-col justify-between p-4 bg-gray-100  text-black w-[4%]
+      hidden flex-col justify-between p-4 bg-gray-100  text-black w-[5%]
       hover:w-[10%] h-[100vh] fixed `}
       id="navigation-container"
     >

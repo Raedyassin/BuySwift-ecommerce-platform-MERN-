@@ -5,14 +5,14 @@ export default function Product({ product }) {
   
   return (
     <div
-      className={`w-[20rem] h-[20rem]  border-10 border-sky-50
+      className={`w-full sm:w-[45%]  lg:w-[32%] xl:w-[23%] h-[20rem]  border-10 border-sky-50
       relative rounded-2xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  `}
     >
       <div className="relative p-4 pb-2 ">
         <img
           src={product.img}
           alt={product.name}
-          className="w-[20rem] h-[10rem] object-fill cursor-pointer rounded-xl"
+          className="w-[100%] h-[10rem] object-fill cursor-pointer rounded-xl"
         />
         <HeartIcon product={product} />
       </div>

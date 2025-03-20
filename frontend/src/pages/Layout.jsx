@@ -19,7 +19,7 @@ export default function Layout() {
     <>
       <ToastContainer autoClose={2000} />
       <Sidebar setChangeWidth={setChangeWidth} />
-      <main className={`main-content ${changeWidth ? "ml-[10%]" : "ml-[5%]"} `}>
+      <main className={`main-content ${changeWidth ? "lg:ml-[10%]" : "lg:ml-[5%]"} ml-0 `}>
         <Outlet />
       </main>
     </>

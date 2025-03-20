@@ -18,19 +18,20 @@ import {
 const route = Router();
 
 route.route("/")
-  .get(fechProducts)
   .post(authenticate, authorizeAdmin, formidable(), addProduct)
+  .get(fechProducts)
 
 route.route("/allproducts")
   .get(fetchAllProducts)
-
 route.route("/top")
   .get(fetchTopProducts)
 route.route("/new")
   .get(fetchnewProducts)
+route.route("/filter-products")
+  .post(filterProduct)
 
 route.route("/:id")
-  .put(authenticate, authorizeAdmin,checkID,formidable(),updateProduct)
+  .put(authenticate, authorizeAdmin, checkID, formidable(), updateProduct)
   .delete(authenticate, authorizeAdmin, checkID, deleteProduct)
   .get(checkID, fetchProductById)
 
@@ -38,7 +39,6 @@ route.route("/:id/reviews")
   .post(authenticate, checkID, addProductReview)
 
 
-route.route("/filter-products").post(filterProduct)
 
 
 

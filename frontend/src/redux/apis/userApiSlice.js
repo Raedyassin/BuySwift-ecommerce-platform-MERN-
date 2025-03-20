@@ -35,6 +35,13 @@ const userApi = apiSlice.injectEndpoints({
         body
       }),
     }),
+    uploadUserImage: build.mutation({
+      query: (formData) => ({
+        url: USERS_URL + "/profile/img",
+        method: "POST",
+        body: formData,
+      }),
+    }),
     /// admin actions
     makeAsAdmin: build.mutation({
       query: (id) => ({
@@ -86,5 +93,6 @@ export const {
   useDeleteUserByAdminMutation,
   useUserGetDetailsByAdminQuery,
   useUserUpdateDetailsByAdminMutation,
-  useMakeAsAdminMutation
+  useMakeAsAdminMutation,
+  useUploadUserImageMutation
 } = userApi

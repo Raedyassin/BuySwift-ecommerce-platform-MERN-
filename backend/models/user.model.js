@@ -20,6 +20,10 @@ const UserShema = new Schema({
     type: Boolean,
     required: true,
     default: false
+  },
+  img: {
+    type: String,
+    default:'../uploads/user/defaultImage.png'
   }
 },{timestamps:true})
 

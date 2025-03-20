@@ -12,6 +12,8 @@ import {
 import { toast } from "react-toastify";
 import ProductCard from "./products/ProductCard";
 import PageLoader from "../components/PageLoader";
+import Loader from "../components/Loader";
+import PageHeader from "../components/PageHeader";
 export default function Shope() {
   const dispatch = useDispatch();
   const {  product, checked, radio } = useSelector(
@@ -95,8 +97,13 @@ export default function Shope() {
   if (isLoadingCategory || filterProducts.isLoading) return <PageLoader height="h-screen" />;
 
   return (
-    <div className="constainer mx-auto">
+    <div className="constainer mx-[2rem]">
+      <h2 className="mb-3 pt-[2rem]  ">
+        <PageHeader>Shopping</PageHeader>
+      </h2>
+
       <div className="flex md:flext-row ">
+        {/* filter */}
         <div>
           <div className="bg-[#151515] w-[16rem] rounded-lg my-5 p-3 ml-[1rem]">
             <h2 className="h4 text-center text-gray-100 py-2 bg-black rounded-full mt-1 mb-2">
@@ -193,15 +200,11 @@ export default function Shope() {
           </div>
         </div>
         <div className="p-3">
-          <h2 className="h4 text-xl font-bold mt-1 ml-[2rem] mb-1">
-            <span className="text-pink-600">({product?.length})</span>
-            {" "}Products
-          </h2>
           <div className="flex flex-wrap ml-[1rem]">
             {
-            //   product.length === 0 ? (
-            //   <Loader />
-            // ) : (
+              //   product.length === 0 ? (
+              //   <Loader />
+              // ) : (
               product?.map((prod) => (
                 <div className="p-3" key={prod._id}>
                   <ProductCard product={prod} />

@@ -1,9 +1,12 @@
 import User from "../models/user.model.js";
 import AppError from "../utils/appError.js";
 import { FAIL, SUCCESS } from "../utils/httpStatucText.js";
+import fs from "fs/promises";
+import path from "path";
 import bycrypt from "bcryptjs"
 import generateJWT from "../utils/createJWT.js";
 import asyncHandler from "../middlewares/asyncHandler.js"
+import { log } from "console";
 
 
 
@@ -91,7 +94,6 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
   if (id === "undefined") {
     id = "";
   }
-  console.log(email);
   
   const skip = (page - 1) * pageSize;
   const filter = {};
@@ -150,7 +152,7 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
 const updateCurrentUserProfile = asyncHandler(async (req, res, next) => {
   const id  = req.user._id;
   
-  const { username, email,password } = req.body;
+  const { username, email, password } = req.body;
   const user = await User.findById(id).select("-password -__v");
   if (user) {
     user.username = username || user.username;
@@ -166,6 +168,37 @@ const updateCurrentUserProfile = asyncHandler(async (req, res, next) => {
     }
   }
   res.status(404).json({ status: FAIL, message: "User not found" })
+})
+
+// update user image
+const updateUserImage = asyncHandler(async (req, res, next) => {
+  const id = req.user._id; // From authenticate middleware
+  const user = await User.findById(id).select("-password -__v -updatedAt -createdAt");
+
+  if (!user) {
+    return res.status(404).json({ status: FAIL, message: "User not found" });
+  }
+
+  const imageUrl = "uploads/user/" + req.file.filename  // From upload route response
+  if (!imageUrl) {
+    return res.status(400).json({ status: FAIL, message: "No image provided" });
+  }
+
+  // Delete old image if it exists
+  if (user.img && user.img !== "../uploads/user/defaultImage.png") {
+    const oldImagePath = path.join(process.cwd(), user.img);
+    try {
+      await fs.unlink(oldImagePath);
+      // console.log(`Deleted old image: ${oldImagePath}`);
+    } catch (err) {
+      // console.error(`Failed to delete old image: ${err.message}`);
+      return res.status(500).json({ status: FAIL, message: "Server error" });
+    }
+  }
+  user.img = imageUrl;  
+  await user.save();
+
+  res.status(200).json({ status: SUCCESS, data: { user } });
 })
 
 const getCurrentUserProfile = asyncHandler(async (req, res, next) => {
@@ -242,5 +275,5 @@ export {
   updateCurrentUserProfile, getCurrentUserProfile,
   deleteUserByIdByAdmin, getUserByIdByAdmin,
   updateUserByIdByAdmin, deleteUserBySelf,
-  makeAsAdmin
+  makeAsAdmin, updateUserImage
 }

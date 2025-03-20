@@ -23,7 +23,6 @@ const addProduct = asyncHandler(
         return res.status(400).json({ status: FAIL, message:"Category is required"})
     }
     const product = new Product({ name, countInStock, discription, price, brand, quantity, category })
-    console.log(req.fields.img)
     product.img = "uploads/" + req.fields.img;
     await product.save();
     res.json({status:SUCCESS,data:{product}})
