@@ -32,7 +32,8 @@ const createUser = asyncHandler(async (req, res, next) => {
           _id: newUser._id,
           username: newUser.username,
           email: newUser.email,
-          isAdmin: newUser.isAdmin
+          isAdmin: newUser.isAdmin,
+          img: newUser.img
         }
       }
     })
@@ -55,7 +56,8 @@ const loginUser = asyncHandler(async (req, res, next) => {
             _id: UserExist._id,
             username: UserExist.username,
             email: UserExist.email,
-            isAdmin: UserExist.isAdmin
+            isAdmin: UserExist.isAdmin,
+            img: UserExist.img
           }
         }
       });

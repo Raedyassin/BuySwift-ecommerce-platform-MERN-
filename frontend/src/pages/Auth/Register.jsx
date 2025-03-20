@@ -5,11 +5,13 @@ import { useCreateUserMutation } from "../../redux/apis/userApiSlice";
 import { setCredientials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
-export default function Login() {
+
+export default function Register() {
   const [password, setPassword] = useState("");
-  const [confirmPassword, setconfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [createUserFech, { isLoading }] = useCreateUserMutation();
@@ -17,118 +19,133 @@ export default function Login() {
   const { search } = useLocation();
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
+
   const handleRegister = async (e) => {
     e.preventDefault();
-    if (!email || !password ||!username||!confirmPassword) {
-      toast.error("Please enter information");
+    if (!email || !password || !username || !confirmPassword) {
+      toast.error("Please enter all information");
       return;
     }
     if (userInfo?.email === email) {
-      toast.success("You are already registered in");
+      toast.success("You are already registered");
       navigate(redirect);
       return;
     }
     if (password !== confirmPassword) {
-      toast.error("Password do not match");
+      toast.error("Passwords do not match");
       return;
     }
     try {
-      const res = await createUserFech({ username ,password, email }).unwrap();
+      const res = await createUserFech({ username, password, email }).unwrap();
       dispatch(setCredientials(res.data.user));
-      toast.success(res.data.user.username + " Register");
+      toast.success(`${res.data.user.username} registered successfully`);
       navigate(redirect);
     } catch (err) {
-      if (err.status === 409) {
+      if (err.status === 409 || err.status === 400) {
         toast.error(err.data.message);
-      }
-      else if (err.status === 400) {
-        toast.error(err.data.message);
-      }
-      else {
+      } else {
         alert("Something went wrong. Please try again later.");
       }
     }
   };
+
   return (
-    <section className="pl-[5rem] w-full   overflow-hidden flex justify-between  flex-wrap">
-      <div className="mr-[4rem] lg:w-[33%] sm:w-[30rem] mt-[5rem]">
-        <h1 className="text-2xl font-bold mb-4">Register</h1>
-        <form onSubmit={handleRegister} className="container w-full">
-          <div className="my-[1rem]">
-            <label htmlFor="username" className="block text-sm font-medium ">
-              User Name
-            </label>
-            <input
-              type="text"
-              id="username"
-              className="mt-1 p-2 border rounded w-full"
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-            />
+    <section className="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-start bg-white lg:bg-[url('https://images.unsplash.com/photo-1576502200916-3808e07386a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2065&q=80')] lg:bg-no-repeat lg:bg-right lg:bg-cover">
+      {/* Form Section */}
+      <div className="w-full lg:w-1/2 flex justify-center items-center p-4 md:p-6 lg:p-8">
+        <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-lg p-6 sm:p-8">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-center ">
+            Register
+          </h1>
+          <form onSubmit={handleRegister} className="w-full">
+            <div className="mb-4">
+              <label
+                htmlFor="username"
+                className="block text-sm md:text-base font-medium italic text-gray-600"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                className="mt-1 w-full p-2 sm:p-3 text-sm md:text-base text-gray-600 border border-gray-300 rounded-md focus:border-gray-400 focus:outline-none"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="email"
+                className="block text-sm md:text-base font-medium italic text-gray-600"
+              >
+                Email Address
+              </label>
+              <input
+                type="email"
+                id="email"
+                required
+                className="mt-1 w-full p-2 sm:p-3 text-sm md:text-base text-gray-600 border border-gray-300 rounded-md focus:border-gray-400 focus:outline-none"
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="password"
+                className="block text-sm md:text-base font-medium italic text-gray-600"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                className="mt-1 w-full p-2 sm:p-3 text-sm md:text-base text-gray-600 border border-gray-300 rounded-md focus:border-gray-400 focus:outline-none"
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
+              />
+            </div>
+            <div className="mb-6">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm md:text-base font-medium italic text-gray-600"
+              >
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                id="confirmPassword"
+                className="mt-1 w-full p-2 sm:p-3 text-sm md:text-base text-gray-600 border border-gray-300 rounded-md focus:border-gray-400 focus:outline-none"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={confirmPassword}
+              />
+            </div>
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="w-full cursor-pointer  p-2 sm:p-3 bg-gradient-to-r from-[#0094D4] to-[#00C4B4] text-white font-bold rounded-md hover:from-[#0083d4] hover:to-[#00b3a3] focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
+              >
+                {isLoading ? <Loader loaderText="Registering" /> : "Register"}
+              </button>
+            </div>
+          </form>
+          <div className="mt-4 text-center lg:text-left">
+            <p className="text-sm md:text-base text-gray-600 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-1">
+              <span className="font-semibold italic">
+                Already have an account?
+              </span>
+              <Link
+                className="text-pink-500 font-bold hover:underline"
+                to={redirect ? `/login?redirect=${redirect}` : "/login"}
+              >
+                Login
+              </Link>
+            </p>
           </div>
-          <div className="my-[1rem]">
-            <label htmlFor="email" className="block text-sm font-medium ">
-              Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              className="mt-1 p-2 border rounded w-full"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-            />
-          </div>
-          <div className="my-[1rem]">
-            <label htmlFor="password" className="block text-sm font-medium ">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="mt-1 p-2 border rounded w-full"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-            />
-          </div>
-          <div className="my-[1rem]">
-            <label htmlFor="password" className="block text-sm font-medium ">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              className="mt-1 p-2 border rounded w-full"
-              onChange={(e) => setconfirmPassword(e.target.value)}
-              value={confirmPassword}
-            />
-          </div>
-          <div className="my-[1rem] w-full flex justify-center items-center">
-            <button
-              className="mt-1 p-2 border rounded font-bold w-full cursor-pointer
-              bg-[#0094D4] text-white flex justify-center items-center"
-            >
-              {isLoading ? <Loader loaderText="Registering" /> : "Register"}
-            </button>
-          </div>
-        </form>
-        <div className="mt-4">
-          <p>
-            Have arleady an account ?{" "}
-            <Link
-              className="text-yellow-500 font-black hover:underline"
-              to={redirect ? `/login?redirect=${redirect}` : "/login"}
-            >
-              Login
-            </Link>
-          </p>
         </div>
       </div>
-      <img
-        src="https://images.unsplash.com/photo-1576502200916-3808e07386a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2065&q=80"
-        // src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80"
-        alt="register image"
-        className="h-[100vh]  w-[59%] lg:block  md:hidden sm:hidden   "
-      />
+
+      {/* Empty div for background image space on large screens */}
+      <div className="hidden lg:block lg:w-1/2"></div>
     </section>
   );
 }

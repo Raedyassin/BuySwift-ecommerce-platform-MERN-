@@ -59,14 +59,6 @@ export default function ProductDetails() {
   }
   return (
     <>
-      <div>
-        <Link
-          to={"/"}
-          className="text-2xl font-semibold hover:underline ml-[3rem]"
-        >
-          {/* Go Back */}
-        </Link>
-      </div>
 
       {isLoading ? (
         <Loader />
@@ -76,7 +68,7 @@ export default function ProductDetails() {
         </Message>
       ) : (
         <>
-          <div className="flex flex-wrap relative items-between mt-[2rem] ml-[3rem]">
+          <div className="flex flex-wrap relative items-between pt-[2rem] ml-[3rem]">
             <div>
               <img
                 src={`/uploads/${product.img.split("/").pop()}`}
@@ -154,7 +146,10 @@ export default function ProductDetails() {
                   Add To Cart
                 </button>
               </div>
-            </div>
+                </div>
+                
+
+                {/* deleted part */}
             <div
               className="mt-[5rem] container flex flex-wrap items-start 
                 justify-between mb-[5rem]"
