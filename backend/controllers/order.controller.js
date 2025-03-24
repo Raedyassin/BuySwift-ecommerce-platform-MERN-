@@ -139,10 +139,12 @@ const getAllOrders = asyncHandler(async (req, res, next) => {
     .limit(pageSize + 1)
     .skip(skip)
     .sort({ createdAt: -1 });
+  
   const hasNextPage = orders.length > pageSize;
   if (hasNextPage) {
     orders.pop();
   }
+
   res.status(200).json({
     status: SUCCESS,
     data: { orders },

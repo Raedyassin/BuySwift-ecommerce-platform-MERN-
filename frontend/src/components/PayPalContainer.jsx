@@ -98,6 +98,7 @@ export default function PayPalContainer({ refetch, order }) {
       <PayPalButtons
         style={{ layout: "vertical", color: "blue", tagline: false }}
         fundingSource={FUNDING.PAYPAL}
+        deferLoading={false}
         createOrder={createOrder}
         onApprove={onApprove}
         onError={(err) => console.error(err)}

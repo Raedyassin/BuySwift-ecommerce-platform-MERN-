@@ -6,6 +6,10 @@ const reviewSchema = new mongoose.Schema({
     type: String,
     required:true
   },
+  img: {
+    type: String,
+    default:'../uploads/user/defaultImage.png'
+  },
   rating: {
     type: Number,
     required: true,

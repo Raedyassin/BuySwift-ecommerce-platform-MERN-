@@ -13,6 +13,7 @@ const userTage = "User";
 const categoryTage = "Category"
 const orderTage = "Order"
 const productTage = "Product"
+const productReviewTage = "ProductReview"
 
 
-export { BASE_URL, USERS_URL, PAYMENT_URL, CATEGORY_URL, ORDER_URL,orderTage, PRODUCT_URL, UPLOAD_URL, userTage, categoryTage,  productTage }
+export { BASE_URL, USERS_URL, productReviewTage, PAYMENT_URL, CATEGORY_URL, ORDER_URL,orderTage, PRODUCT_URL, UPLOAD_URL, userTage, categoryTage,  productTage }
