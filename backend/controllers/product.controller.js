@@ -276,7 +276,6 @@ const addOrUpdateProductRating = asyncHandler(
     //   return res.status(400).json({ status: FAIL, message: "Product already rating" })
     // }
     if (isNaN(rating) || !(+rating >= 0 && +rating <= 5)) {
-      console.log("rating", rating)
       return res.status(400).json({ status: FAIL, message: "the rating should be number between 0 and 5" })
     }
 

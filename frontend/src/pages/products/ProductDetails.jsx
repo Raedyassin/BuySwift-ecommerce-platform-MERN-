@@ -131,10 +131,8 @@ export default function ProductDetails() {
         id,
         rating: +e.target.value,
       }).unwrap();
-      console.log("hoverStart", hoverStart);
       if (reviews?.data?.reviews[0]?.user === userInfo?._id) {
         const createdRating = updatedRatingResponse.data.review;
-        console.log("hello", createdRating);
         dispatch(
           apiSlice.util.updateQueryData(
             "getReviewsProductById",
@@ -164,7 +162,6 @@ export default function ProductDetails() {
         comment,
       }).unwrap();
       setComment("");
-      console.log("updatedReviewResponse", updatedReviewResponse.data.review);
 
       const createdReview = updatedReviewResponse.data.review;
       if (reviews?.data?.reviews[0]?.user === userInfo?._id) {

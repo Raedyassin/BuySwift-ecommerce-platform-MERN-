@@ -137,7 +137,7 @@ export default function zSidebar({ setChangeWidth }) {
                 </li>
                 <li>
                   <Link
-                    to="/admin/productlist"
+                    to="/admin/createproduct"
                     className="block px-4 py-2 hover:bg-gray-200"
                   >
                     Products

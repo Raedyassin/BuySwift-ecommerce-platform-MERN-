@@ -26,6 +26,7 @@ import Orders from "./pages/user/Orders";
 import Dashboard from "./pages/Admin/Dashboard";
 import PayPalWraper from "./components/PayPalWraper";
 import OrdersList from "./pages/Admin/OrdersList";
+// import ProductList from "./pages/Admin/ProductList";
 export default function App() {
   return (
     <Provider store={store}>
@@ -52,8 +53,8 @@ export default function App() {
               <Route path="admin" element={<AdminRoutes />}>
                 <Route path="userlist" element={<UserList />} />
                 <Route path="categoryList" element={<CategoryList />} />
-                <Route path="createproduct" element={<CreateProduct />} />
                 <Route path="productlist" element={<ProductList />} />
+                <Route path="createproduct" element={<CreateProduct />} />
                 <Route path="allproductslist" element={<AllProduct />} />
                 <Route path="product/update/:id" element={<UpdateProduct />} />
                 <Route path="dashboard" element={<Dashboard />} />

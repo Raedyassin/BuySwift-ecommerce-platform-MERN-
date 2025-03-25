@@ -62,8 +62,6 @@ const productApiSlice = apiSlice.injectEndpoints({
     // ??????????????????????????
     updateProduct: buil.mutation({
       query: ({ id, body }) => {
-        console.log(body)
-        console.log(id)
         return {
           url: `${PRODUCT_URL}/${id}`,
           method: "PUT",
@@ -118,9 +116,7 @@ const productApiSlice = apiSlice.injectEndpoints({
           productId: newData.productId,  
         };
       },
-      forceRefetch: ({ currentArg, previousArg }) => {
-        console.log(currentArg, previousArg);
-        
+      forceRefetch: ({ currentArg, previousArg }) => {        
         return currentArg.id !== previousArg?.id &&
           currentArg.page !== previousArg?.page
       }

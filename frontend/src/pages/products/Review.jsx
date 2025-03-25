@@ -9,7 +9,6 @@ import { useDispatch } from "react-redux";
 import apiSlice from "../../redux/services/apiSlice";
 
 export default function Review({ review, userInfo, productId  }) {
-  console.log(review);
   const [showMoreDescription, setShowMoreDescription] = useState([]);
   const dispatch = useDispatch();
   const [showEdite, setShowEdit] = useState(false);

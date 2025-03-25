@@ -47,7 +47,7 @@ export default function AdminMenu() {
             <li>
               <NavLink
                 className="list-item py-2 px-3 hover:bg-gray-100 rounded-sm "
-                to="/admin/productlist"
+                to="/admin/createproduct"
                 style={({ isActive }) => ({
                   color: isActive ? "#0094D4" : "#000",
                   fontWeight: isActive ? "bold" : "normal",
