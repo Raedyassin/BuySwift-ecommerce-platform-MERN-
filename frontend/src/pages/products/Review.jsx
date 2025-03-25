@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Ratings from "./Ratings";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoMdCheckmark } from "react-icons/io";
@@ -8,7 +8,8 @@ import Loader from "../../components/Loader";
 import { useDispatch } from "react-redux";
 import apiSlice from "../../redux/services/apiSlice";
 
-export default function Review({ review, userInfo, productId }) {
+export default function Review({ review, userInfo, productId  }) {
+  console.log(review);
   const [showMoreDescription, setShowMoreDescription] = useState([]);
   const dispatch = useDispatch();
   const [showEdite, setShowEdit] = useState(false);
@@ -18,11 +19,11 @@ export default function Review({ review, userInfo, productId }) {
 
   const EditeReviewtHandler = async (e) => {
     if (editeText.trim() === review.comment.trim()) {
-      toast.info("You Don't Edite The Review ")
+      toast.info("You Don't Edite The Review ");
       setShowEdit(false);
-      return
+      return;
     }
-      e.preventDefault();
+    e.preventDefault();
     try {
       const updatedReviewResponse = await editeProductReview({
         id: productId,
@@ -49,9 +50,15 @@ export default function Review({ review, userInfo, productId }) {
         )
       );
     } catch (error) {
+      console.log(error);
       toast.error("Please try Edit your review again later.");
     }
   };
+  // useEffect(() => {
+  //   if (review.user === userInfo?._id) {
+  //     setHoveredStar(review?.rating||-1);
+  //   }
+  // }, [userInfo, review, setHoveredStar]);
 
   return (
     <div
@@ -76,7 +83,7 @@ export default function Review({ review, userInfo, productId }) {
           <div className="text-sm sm:text-base">
             <strong className="text-[#B0B0B0]">{review.name}</strong>
             <p className="text-[#B0B0B0]">
-              {review.updatedAt.substring(0, 10)}
+              {review?.updatedAt?.substring(0, 10)}
             </p>
           </div>
         </div>
@@ -135,9 +142,9 @@ export default function Review({ review, userInfo, productId }) {
         ) : (
           <p className="my-2 mt-1 text-sm sm:text-base">
             {!showMoreDescription.includes(review._id) &&
-            review?.comment.length > 70 ? (
+            review?.comment?.length > 150 ? (
               <>
-                <span>{review.comment.substring(0, 70)}</span>
+                <span>{review.comment.substring(0, 150)}</span>
                 <span
                   onClick={() =>
                     setShowMoreDescription([showMoreDescription, review._id])
@@ -150,7 +157,7 @@ export default function Review({ review, userInfo, productId }) {
               </>
             ) : (
               <>
-                <span>{review.comment}</span>
+                <span>{review?.comment}</span>
                 {showMoreDescription.includes(review._id) && (
                   <span
                     onClick={() =>
@@ -168,7 +175,11 @@ export default function Review({ review, userInfo, productId }) {
             )}
           </p>
         )}
-        <Ratings rating={review.rating} text={``} />
+        {review.rating === -1 ? (
+          <p className="text-sm sm:text-base italic text-gray-600">No rating</p>
+        ) : (
+          <Ratings rating={review.rating} text={``} />
+        )}
       </div>
     </div>
   );

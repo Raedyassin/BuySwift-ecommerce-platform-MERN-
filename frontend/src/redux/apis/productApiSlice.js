@@ -133,11 +133,25 @@ const productApiSlice = apiSlice.injectEndpoints({
         body: { comment }
       }),
     }),
+    // editeProductRating: buil.mutation({
+    //   query: ({ id, reviewId, rating }) => ({
+    //     url: `${PRODUCT_URL}/ratingsedit/${id}/${reviewId}`,
+    //     method: "PATCH",
+    //     body: { rating }
+    //   }),
+    // }),
 
     // ??????????????????????????
     createReview: buil.mutation({
       query: ({ id, ...body }) => ({
         url: `${PRODUCT_URL}/${id}/reviews`,
+        method: "POST",
+        body
+      }),
+    }),
+    createRating: buil.mutation({
+      query: ({ id, ...body }) => ({
+        url: `${PRODUCT_URL}/${id}/rating`,
         method: "POST",
         body
       }),
@@ -206,6 +220,8 @@ export const {
   useGetFilteredProductsQuery,
   useRelatedProductsQuery,
   useGetReviewsProductByIdQuery,
-  useEditeProductReviewMutation
+  useEditeProductReviewMutation,
+  // useEditeProductRatingMutation,
+  useCreateRatingMutation
 } = productApiSlice
 

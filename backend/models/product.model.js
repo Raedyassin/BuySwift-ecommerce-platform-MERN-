@@ -12,11 +12,12 @@ const reviewSchema = new mongoose.Schema({
   },
   rating: {
     type: Number,
-    required: true,
+    // required: true,
+    default:-1,
   },
   comment:{
     type: String,
-    required:true,
+    // required:true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

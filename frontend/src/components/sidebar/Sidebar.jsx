@@ -19,7 +19,7 @@ import { logOut } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
 
-export default function Sidebar({ setChangeWidth }) {
+export default function zSidebar({ setChangeWidth }) {
   const { userInfo } = useSelector((state) => state.auth);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -55,7 +55,7 @@ export default function Sidebar({ setChangeWidth }) {
     <div
       onMouseEnter={toggleSidebar}
       onMouseLeave={closeSidebar}
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 10000 }}
       className={`${showSidebar ? "hidden" : "flex"} xl:flex lg:flex md:hidden 
       hidden flex-col justify-between p-4 bg-gray-100  text-black w-[5%]
       hover:w-[10%] h-[100vh] fixed `}

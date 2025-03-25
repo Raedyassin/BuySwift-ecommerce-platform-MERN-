@@ -4,7 +4,7 @@ import {
   FaStarHalfAlt
 } from 'react-icons/fa'
 export default function Ratings({ text, rating ,className}) {
-  const fullStars = Math.floor(rating);
+  const fullStars = Math.floor(rating)<0 ? 0 : Math.floor(rating);
   const halfStar = (rating - fullStars) >= 0.5 ? 1 : 0;
   const emptyStars = 5 - fullStars - halfStar;
   return (

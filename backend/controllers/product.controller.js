@@ -126,11 +126,13 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
   const pageSize = req.query.limit ? (+req.query.limit > 50 ? 50 : +req.query.limit) : 10; // make the page size configurable
   const skip = (page - 1) * pageSize;
 
-  const product = await Product.findById(id).select("reviews"); // Only fetch reviews field to optimize
-
+  let product = await Product.findById(id).select("reviews"); // Only fetch reviews field to optimize
+  
   if (!product) {
     return res.status(404).json({ status: FAIL, message: "Product not found" });
   }
+
+  product.reviews = product.reviews.filter(review => review.rating !== -1);
 
   // if (product.reviews.length === 0) {
   //   return res.status(404).json({ status: FAIL, message: "Product has no reviews" });
@@ -188,47 +190,135 @@ const editProductReview = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ status: FAIL, message: "Product not found" });
   }
   const review = product.reviews.find(review => review._id.toString() === reviewId);
-  if (!review) {
+  if (!review || !review?.comment) {
     return res.status(404).json({ status: FAIL, message: "Review not found" });
   }
   review.comment = comment;
   review.img = req.user.img;
   review.name = req.user.username
-  await product.save(); 
+  await product.save();
   res.json({ status: SUCCESS, data: { review } });
 });
 
 const addProductReview = asyncHandler(
   async (req, res, next) => {
-    const { rating, comment } = req.body;
+    const { comment } = req.body;
     const product = await Product.findById(req.params.id)
     if (!product) {
       return res.status(404).json({ status: FAIL, message: "Product not found" });
     }
+    let alreadyIndex = -1;
     const alreadyReviewed = product.reviews.find(
-      r => r.user.toString() === req.user._id.toString());
-    if (alreadyReviewed) {
+      (r, index) => {
+        if (r.user.toString() === req.user._id.toString()) {
+          alreadyIndex = index;
+          return true
+        }
+        return false;
+      });
+      if (alreadyReviewed?.comment) {
       return res.status(400).json({ status: FAIL, message: "Product already reviewed" })
     }
-    const review = {
-      name: req.user.username,
-      rating: +rating,
-      comment,
-      img: req.user.img,
-      user: req.user._id,
+    if (alreadyIndex !== -1) { // that mean the user is make comment in this product before
+      product.reviews[alreadyIndex] = {
+        ...product.reviews[alreadyIndex],
+        comment,
+        rating: product.reviews[alreadyIndex].rating,
+        name: req.user.username,
+        img: req.user.img,
+        user: req.user._id,
+      }
+    } else {
+      const review = {
+        comment,
+        name: req.user.username,
+        img: req.user.img,
+        user: req.user._id,
+      }
+      product.reviews.push(review)
     }
-    product.reviews.push(review)
+
     product.numReview = product.reviews.length;
 
-    // product.rating = product.reviews.reduce((acc, review) => {
-    //   return review.rating + acc;
-    // }, 0) / product.reviews.length;
     await product.save();
+    let sendingReview = {};
+    if (alreadyIndex !== -1) {
+      sendingReview = product.reviews[alreadyIndex].toObject();
+    } else {
+      sendingReview = product.reviews.at(-1).toObject(); // because it will return all Mongoose Document object search on it 
+    }
 
-    res.status(201).json({ status: SUCCESS, data: { review: { ...review, createdAt: new Date(), updatedAt: new Date() } } })
+    res.status(201).json({
+      status: SUCCESS, data:
+      {
+        review: sendingReview
+      }
+    })
   }
 )
+const addOrUpdateProductRating = asyncHandler(
+  async (req, res, next) => {
+    const { rating } = req.body;
+    const product = await Product.findById(req.params.id)
+    if (!product) {
+      return res.status(404).json({ status: FAIL, message: "Product not found" });
+    }
+    let alreadyIndex = -1;
+    const alreadyRating = product.reviews.
+      find((r, index) => {
+        if (r.user.toString() === req.user._id.toString()) {
+          alreadyIndex = index;
+          return true;
+        }
+        return false;
+      });
+    // if (alreadyRating?.rating !== undefined && alreadyRating?.rating !== -1) {
+    //   return res.status(400).json({ status: FAIL, message: "Product already rating" })
+    // }
+    if (isNaN(rating) || !(+rating >= 0 && +rating <= 5)) {
+      console.log("rating", rating)
+      return res.status(400).json({ status: FAIL, message: "the rating should be number between 0 and 5" })
+    }
 
+    if (alreadyIndex !== -1) { // that mean the user is make comment in this product before
+      product.reviews[alreadyIndex] = {
+        ...product.reviews[alreadyIndex],
+        comment: product.reviews[alreadyIndex].comment,
+        rating: +rating,
+        name: req.user.username,
+        img: req.user.img,
+        user: req.user._id,
+      }
+    } else {
+      const review = {
+        rating: +rating,
+        name: req.user.username,
+        img: req.user.img,
+        user: req.user._id,
+      }
+      product.reviews.push(review)
+    }
+    product.numReview = product.reviews.length;
+
+    // it is not correct but form performance but correct forom logic and i will add it
+    // untill now and update the performance
+    product.rating = product.reviews.reduce((acc, review) => {
+      if (review.rating === -1) {
+        return acc;
+      }
+      return review.rating + acc;
+    }, 0) / product.reviews.length;
+    await product.save();
+    let sendingReview = {};
+    if (alreadyIndex !== -1){
+      sendingReview = product.reviews[alreadyIndex].toObject();
+    } else {
+      sendingReview = product.reviews.at(-1).toObject(); // because it will return all Mongoose Document object search on it 
+    }
+
+    res.status(201).json({ status: SUCCESS, data: { review: sendingReview } })
+  }
+)
 
 
 /**********************
@@ -370,7 +460,16 @@ const getRelatedProductsByCategory = asyncHandler(
     })
   }
 )
-
+const clearReviews  = asyncHandler(async (req, res, next) => {
+  const products = await Product.find();
+  products.map(product => {
+    product.reviews = [];
+    product.numReview = 0;
+    product.rating = 0;
+  });
+  await products.save();
+  res.json({ status: "SUCCESS", data: null });
+})
 
 export {
   addProduct,
@@ -385,5 +484,7 @@ export {
   filterProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,
-  editProductReview
+  editProductReview,
+  addOrUpdateProductRating,
+  clearReviews
 }

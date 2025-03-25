@@ -15,7 +15,10 @@ import {
   filterProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,
-  editProductReview
+  editProductReview,
+  addOrUpdateProductRating,
+  // editProductRating,
+  clearReviews
 } from "../controllers/product.controller.js";
 
 const route = Router();
@@ -40,11 +43,18 @@ route.route("/:id")
   .delete(authenticate, authorizeAdmin, checkID, deleteProduct)
   .get(checkID, fetchProductById)
 
-  route.route("/:id/reviews")
-    .post(authenticate, checkID, addProductReview)
-    .get(ifAuthenticate,checkID, fetchProductReviews)
+route.route("/:id/reviews")
+  .post(authenticate, checkID, addProductReview)
+  .get(ifAuthenticate, checkID, fetchProductReviews)
+
+route.route("/:id/rating")
+  .post(authenticate, checkID, addOrUpdateProductRating)
 
 route.route("/reviewsedit/:id/:reviewId")
   .patch(authenticate, checkID, editProductReview)
 
+// route.route("/ratingsedit/:id/:reviewId")
+//   .patch(authenticate, checkID, editProductRating)
+
+route.route("/clear").get(clearReviews);
 export default route;
