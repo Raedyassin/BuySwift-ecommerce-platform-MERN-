@@ -2,6 +2,8 @@ import Product from "../models/product.model.js";
 import AppError from "../utils/appError.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import { FAIL, SUCCESS } from "../utils/httpStatucText.js";
+import { minMaxConvertFromString } from "../utils/min-max-convertFromString.js";
+import mongoose from "mongoose";
 
 const addProduct = asyncHandler(
   async (req, res, next) => {
@@ -28,7 +30,6 @@ const addProduct = asyncHandler(
     res.json({ status: SUCCESS, data: { product } })
   }
 )
-
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -127,7 +128,7 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
   const skip = (page - 1) * pageSize;
 
   let product = await Product.findById(id).select("reviews"); // Only fetch reviews field to optimize
-  
+
   if (!product) {
     return res.status(404).json({ status: FAIL, message: "Product not found" });
   }
@@ -216,7 +217,7 @@ const addProductReview = asyncHandler(
         }
         return false;
       });
-      if (alreadyReviewed?.comment) {
+    if (alreadyReviewed?.comment) {
       return res.status(400).json({ status: FAIL, message: "Product already reviewed" })
     }
     if (alreadyIndex !== -1) { // that mean the user is make comment in this product before
@@ -309,7 +310,7 @@ const addOrUpdateProductRating = asyncHandler(
     }, 0) / product.reviews.length;
     await product.save();
     let sendingReview = {};
-    if (alreadyIndex !== -1){
+    if (alreadyIndex !== -1) {
       sendingReview = product.reviews[alreadyIndex].toObject();
     } else {
       sendingReview = product.reviews.at(-1).toObject(); // because it will return all Mongoose Document object search on it 
@@ -325,23 +326,111 @@ const addOrUpdateProductRating = asyncHandler(
  * ********************
  */
 
+// query params
+// { page, limit, createdAt, id, name, brand, category, price, quantity, stock }
 const fetchAllProducts = asyncHandler(
   async (req, res, next) => {
-    const pageSize = 10;
-    const page = req.query.page ? +req.query.page : 1;
-    const count = await Product.countDocuments();
-    const products = await Product.find().populate("category",
+    console.log("hello")
+    const pageSize = req.query.limit >= 50 ? 50 : +req.query.limit || 10;
+    const page = (req.query.page ? +req.query.page : 1) || 1;
+
+    // { page, limit, createdAt, id, name, brand, category, price, rating, stock }
+    let { createdAt, id, name, brand, category, price, rating, stock } = req.query;
+    
+    // the udefind send as a string so it is go as a string 
+    if (createdAt === "undefined") {
+      createdAt = "";
+    }
+    if (name === "undefined") {
+      name = "";
+    }
+    if (id === "undefined") {
+      id = "";
+    }
+    if (brand === "undefined") {
+      brand = "";
+    }
+    if (category === "undefined") {
+      category = "";
+    }
+    if (price === "undefined") {
+      price = "";
+    }
+    if (rating === "undefined") {
+      rating = "";
+    }
+    if (stock === "undefined") {
+      stock = "";
+    }
+    
+    let filter = {};
+    if (createdAt && createdAt?.trim() !== "") {
+      const [year, month, day] = createdAt.split("-"); // e.g., "2025-03-18"
+      if (parseInt(year) < 2025 || (parseInt(year) <= 2025 && parseInt(month) < 2) || (parseInt(year) <= 2025 && parseInt(month) <= 3 && parseInt(day) < 5)) {
+        return res.status(400).json({ status: "FAIL", data: { title: "this date is not valid" } });
+      }
+      const date = new Date(year, month - 1, day); // Month is 0-based
+      filter.createdAt = {
+        $gte: date,                // Start of day (e.g., 2025-03-18 00:00:00)
+        $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000), // Start of next day (2025-03-19 00:00:00)
+      };
+    }
+    if (name && name?.trim() !== "") {
+      filter.name = { $regex: name, $options: "i" };
+    }
+    if (id && id.trim() !== "") {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ status: "FAIL", message: "Invalid id" });
+      }
+      filter._id = id;
+    }
+    if (brand && brand.trim() !== "") {
+      filter.brand = { $regex: brand, $options: "i" };
+    }
+    if (category && category.trim() !== "") {
+      if (!mongoose.Types.ObjectId.isValid(category)) {
+        return res.status(400).json({ status: "FAIL", message: "Invalid category" });
+      }
+      filter.category = { $eq: category };
+    }
+    if (rating && rating.trim() !== "") {
+      if (isNaN(rating) || !(+rating >= 0 && +rating <= 5)) {
+        return res.status(400).json({ status: FAIL, message: "the rating should be number between 0 and 5" })
+      }
+      filter.rating = { $gte: +rating };
+    }
+    if (price && price.trim() !== "") {
+      filter.price = minMaxConvertFromString(res,price, "-");
+    }
+    if (stock && stock !== "") {
+      filter.countInStock = minMaxConvertFromString(res, stock, "-")
+    }
+    
+    
+    const productsCount = await Product.countDocuments(filter);
+    const products = await Product.find(filter).populate("category",
       "-updatedAt -createdAt -creatorId -__v")
-      .limit(pageSize)
+      .sort({ createdAt: -1 })
+      .limit(pageSize + 1)
       .skip((page - 1) * pageSize)
-      .select("-updatedAt -__v")
+      .select("-updatedAt -__v -reviews");
+
+    let hasNextPage = false;
+    if (products.length > pageSize) {
+      hasNextPage = true;
+      products.pop();
+    }
+
     res.json({
       status: SUCCESS,
       data: {
         products,
-        page,
-        pages: Math.ceil(count / pageSize)
-      }
+      },
+      page,
+      pageSize,
+      productsLength: productsCount,
+      hasPrevPage: page > 1,
+      hasNextPage
     })
   }
 )
@@ -382,6 +471,8 @@ const fetchnewProducts = asyncHandler(
   }
 )
 
+// the differ between fetchAllProducts is i don't wanna change filterProduct logic
+// because i make it befor and i don't want to change it
 const filterProduct = asyncHandler(
   async (req, res, next) => {
     const page = req.query.page ? +req.query.page : 1;
@@ -459,7 +550,9 @@ const getRelatedProductsByCategory = asyncHandler(
     })
   }
 )
-const clearReviews  = asyncHandler(async (req, res, next) => {
+
+// should delate after testing phase
+const clearReviews = asyncHandler(async (req, res, next) => {
   const products = await Product.find();
   products.map(product => {
     product.reviews = [];

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import {motion} from 'motion/react'
 import {
   useGetProductDetailsQuery,
   useCreateReviewMutation,
@@ -28,7 +29,6 @@ import PageLoader from "../../components/PageLoader";
 import DontHave from "../../components/DontHave";
 import Review from "./Review";
 import apiSlice from "../../redux/services/apiSlice";
-import { set } from "mongoose";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -223,7 +223,11 @@ export default function ProductDetails() {
   return (
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Product Details */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl p-6">
+      <motion.div
+        initial={{ opacity: 0,  }}
+        animate={{ opacity: 1,   }}
+        transition={{ duration: 1 }}
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl p-6">
         {/* Image Section */}
         <div className="relative">
           <img
@@ -323,11 +327,15 @@ export default function ProductDetails() {
             Add to Cart
           </button>
         </div>
-      </div>
+      </motion.div>
 
       {/* Related Products */}
       {relatedProducts?.data?.data?.products.length > 0 && (
-        <div className="mt-12 shadow-lg p-4 rounded-2xl">
+        <motion.div
+          initial={{ opacity: 0, x: 100 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 1 }}
+          className="mt-12 shadow-lg p-4 rounded-2xl">
           <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
             Related Products
           </h1>
@@ -339,11 +347,15 @@ export default function ProductDetails() {
           ) : (
             <ProductsSlider relatedProducts={relatedProducts} />
           )}
-        </div>
+        </motion.div>
       )}
 
       {/* Product Reviews */}
-      <div className="mt-12 bg-white shadow-lg rounded-xl p-6">
+      <motion.div
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+        className="mt-12 bg-white shadow-lg rounded-xl p-6">
         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
           Product Reviews ({product?.data?.product?.numReview})
         </h1>
@@ -540,7 +552,7 @@ export default function ProductDetails() {
             </div>
           )}
         </section>
-      </div>
+      </motion.div>
     </div>
   );
 }

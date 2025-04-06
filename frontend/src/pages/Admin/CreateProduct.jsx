@@ -7,6 +7,7 @@ import {
 import { useGetAllCategoryQuery } from "../../redux/apis/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
+import {motion} from 'motion/react'
 
 export default function CreateProduct() {
   const [image, setImage] = useState("");
@@ -78,7 +79,12 @@ export default function CreateProduct() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <motion.div
+      initial={{ opacity: 0, y:100 }}
+      animate={{ opacity: 1 ,y:0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1  }}
+      className="min-h-screen flex flex-col lg:flex-row">
       {/* Admin Menu */}
       <AdminMenu />
 
@@ -257,6 +263,6 @@ export default function CreateProduct() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

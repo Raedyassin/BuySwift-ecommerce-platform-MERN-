@@ -18,7 +18,7 @@ import PageSlider from "../../components/PageSlider";
 export default function OrdersList() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [page, setPage] = useState(1);
-  const [pagesCount, setPagesCount] = useState(0);
+  const [pagesCount, setPagesCount] = useState(1);
   const [searchById, setSearchById] = useState("");
   const [filterSet, setFilterSet] = useState({
     status: "",
@@ -37,21 +37,17 @@ export default function OrdersList() {
     isError,
     error,
   } = useGetAllOrdersByAdminQuery({ page, limit: 10, ...filterSet });
+  
   useEffect(() => {
-    setPagesCount(Math.ceil(orders?.ordersLength / orders?.pageSize));
+    if (
+      orders &&
+      orders.ordersLength !== undefined &&
+      orders.pageSize !== undefined
+    ) {
+      setPagesCount(Math.ceil(orders.ordersLength / orders.pageSize));
+    }
   }, [orders]);
 
-  console.log(error);
-  if (isLoading) {
-    return <PageLoader />;
-  }
-  if (isError) {
-    return (
-      <Message variant="error">
-        {error?.data?.message || error?.message}
-      </Message>
-    );
-  }
   const searchByIdhandler = () => {
     if (/^[0-9a-fA-F]{24}$/.test(searchById)) {
       navigate(`/order/${searchById}`);
@@ -87,6 +83,20 @@ export default function OrdersList() {
     setSelectedOrder(userId);
   };
 
+  useEffect(() => {
+    if (error && error?.status < 500) {
+      toast.error(error?.data?.data?.title || error?.data?.message);
+    }
+  }, [error]);
+  if (isLoading) return <PageLoader />;
+  if (error && error.status >= 500) {
+    return (
+      <Message variant="danger">
+        {error?.data?.message || error?.message || "Something went wrong"}
+      </Message>
+    );
+  }
+
   if (isError && error?.data?.data?.title) {
     return (
       <Message variant="error">
@@ -96,7 +106,7 @@ export default function OrdersList() {
   }
 
   return (
-    <div className={`mx-[3rem] pt-[2rem] `}>
+    <div className={`mx-[3rem] pt-[2rem]  `}>
       <motion.div
         initial={{ opacity: 0, y: -100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -122,7 +132,7 @@ export default function OrdersList() {
               defaultValue={""}
             >
               <option value="">All</option>
-              <option value="createdAt">Create At</option>
+              <option value="createdAt">Date</option>
               <option value="status">Status</option>
               <option value="price">Price</option>
               <option value="payment">Payment</option>
@@ -192,8 +202,8 @@ export default function OrdersList() {
                 rounded-xl "
                 />
                 <div
-                  className="p-2 w-10 rounded-full text-center bg-gray-100
-                cursor-pointer text-gray-500   hover:bg-gray-200"
+                  className="p-2 w-10 rounded-full text-center bg-gray-50
+                cursor-pointer text-gray-500   hover:bg-gray-100"
                   onClick={addPriceFilterHandler}
                 >
                   go
@@ -201,7 +211,9 @@ export default function OrdersList() {
               </div>
             )}
           </div>
-          <div className="border-2 mt-2 w-full justify-between lg:w-[20rem] lg:order-2 order-1 border-gray-100 rounded-2xl p-1 focus-within:border-gray-200 flex items-center gap-2">
+          <div className="border-2 mt-2 w-full justify-between lg:w-[20rem] 
+          lg:order-2 order-1 border-gray-100 rounded-2xl p-2
+          focus-within:border-gray-200 flex items-center gap-2">
             <input
               type="text"
               value={searchById}
@@ -301,7 +313,7 @@ export default function OrdersList() {
         transition={{ duration: 1 }}
         className="  mb-[1rem] pb-5   w-full overflow-x-auto  rounded shadow-[0px_2px_10px_rgba(0,0,0,0.1)]"
       >
-        <table className=" w-full">
+        <table className=" w-full ">
           <thead>
             <tr>
               <th className="p-4 pl-6 text-start bg-[#FAFAFC] "> ID</th>
@@ -312,48 +324,67 @@ export default function OrdersList() {
               <th className="p-4 text-start bg-[#FAFAFC]"> Payment</th>
             </tr>
           </thead>
+          {error?.status < 500 && (
+            <tbody className="text-gray-500">
+              <tr>
+                <td colSpan={6} className="p-4 text-center">
+                  {error?.data?.message || "Something went wrong"}
+                </td>
+              </tr>
+            </tbody>
+          )}
+          {orders?.data?.products?.length === 0 && (
+            <tbody className="text-gray-500">
+              <tr>
+                <td colSpan={6} className="p-4 text-center">
+                  No Orders Found
+                </td>
+              </tr>
+            </tbody>
+          )}
           {!isFetching && (
-            <tbody>
-              {orders?.data?.orders?.map((order) => (
-                <tr
-                  key={order._id}
-                  className={`${selectedOrder === order._id && "bg-sky-50"}`}
-                >
-                  <td className="min-w-65 p-4 pl-6 flex items-center gap-2 ">
-                    <input
-                      type="checkbox"
-                      checked={selectedOrder === order._id}
-                      onChange={() => slectedUserHandler(order._id)}
-                      className="cursor-pointer w-4 h-4"
-                    />
-                    <span
-                      className=" cursor-pointer hover:text-pink-500 hover:underline "
-                      onClick={() => navigate(`/order/${order._id}`)}
-                    >
-                      {order._id}
-                    </span>
-                  </td>
-                  <td className="min-w-40 p-4">
-                    {order.createdAt.substring(0, 10)}
-                  </td>
-                  <td className="min-w-50 p-4">{order.user?.username}</td>
-                  <td className="min-w-50 p-4">
-                    <Status border={true} status={order.status} />
-                  </td>
-                  <td className="min-w-50 p-4">${order.totalPrice}</td>
-                  <td className="min-w-40 min p-4">
-                    {order.isPaid ? (
-                      <span className="text-green-300 font-semibold italic border-1 border-green-300 rounded-full px-3 py-1">
-                        Paid
+            <tbody className="text-gray-500">
+              {!error &&
+                orders?.data?.orders?.map((order) => (
+                  <tr
+                    key={order._id}
+                    className={`${selectedOrder === order._id && "bg-sky-50"}`}
+                  >
+                    <td className="min-w-60 p-4 pl-6 flex items-center gap-2 ">
+                      <input
+                        type="checkbox"
+                        checked={selectedOrder === order._id}
+                        onChange={() => slectedUserHandler(order._id)}
+                        className="cursor-pointer w-4 h-4"
+                      />
+                      <span
+                        className=" cursor-pointer hover:text-pink-500 hover:underline "
+                        onClick={() => navigate(`/order/${order._id}`)}
+                      >
+                        {order._id}
                       </span>
-                    ) : (
-                      <span className="text-red-300 font-semibold italic border-1 border-red-300 rounded-full px-3 py-1">
-                        Not Paid
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="min-w-40 p-4">
+                      {order.createdAt.substring(0, 10)}
+                    </td>
+                    <td className="min-w-50 p-4">{order.user?.username}</td>
+                    <td className="min-w-50 p-4">
+                      <Status border={true} status={order.status} />
+                    </td>
+                    <td className="min-w-50 p-4">${order.totalPrice}</td>
+                    <td className="min-w-40 min p-4">
+                      {order.isPaid ? (
+                        <span className="text-green-300 font-semibold italic border-1 border-green-300 rounded-full px-3 py-1">
+                          Paid
+                        </span>
+                      ) : (
+                        <span className="text-red-300 font-semibold italic border-1 border-red-300 rounded-full px-3 py-1">
+                          Not Paid
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           )}
         </table>

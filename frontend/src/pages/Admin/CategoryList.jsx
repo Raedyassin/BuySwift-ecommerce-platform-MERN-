@@ -11,11 +11,11 @@ import Modale from "../../components/Modale";
 import AdminMenu from "./AdminMenu";
 import PageLoader from "../../components/PageLoader";
 import Message from "../../components/Message";
-import PageHeader from "../../components/PageHeader";
-import PageHeaderSecond from "../../components/PageHeaderSecond";
 import Loader from "../../components/Loader";
 import { motion } from "motion/react";
-export default function CategoryList() {
+import PageHeader from "../../components/PageHeader";
+
+export default function CategoryManagement() {
   const {
     data: categories,
     refetch,
@@ -26,67 +26,54 @@ export default function CategoryList() {
   const [name, setName] = useState("");
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [updatingName, setUpdatingName] = useState("");
-  const [maodalVisiable, setModalVisiable] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const [createCategory, { error: createCategoryError }] =
-    useCreateCategoryMutation();
-  const [updateCategory, { error: updateCategoryError }] =
-    useUpdateCategoryMutation();
-  const [deleteCategory, { error: deleteCategoryError }] =
-    useDeleteCategoryMutation();
+  const [createCategory] = useCreateCategoryMutation();
+  const [updateCategory] = useUpdateCategoryMutation();
+  const [deleteCategory] = useDeleteCategoryMutation();
 
   const deleteCategoryHandler = async (e) => {
     e.preventDefault();
     try {
       await deleteCategory(selectedCategory._id).unwrap();
-      setModalVisiable(false);
+      setModalVisible(false);
       setSelectedCategory(null);
+      toast.success("Category deleted successfully");
       refetch();
     } catch (err) {
-      if (err.status === 404) {
-        toast.error(err.data.message);
-      } else {
-        alert("Something went wrong. Please try again later.");
-      }
+      toast.error(err?.data?.message || "Failed to delete category");
     }
   };
+
   const updateCategoryHandler = async (e) => {
     e.preventDefault();
-    if (!updatingName) return toast.error("Name is required");
+    if (!updatingName) return toast.error("Category name is required");
     try {
       await updateCategory({
         id: selectedCategory._id,
         body: { name: updatingName },
       }).unwrap();
-      setModalVisiable(false);
+      setModalVisible(false);
       setSelectedCategory(null);
       setUpdatingName("");
+      toast.success("Category updated successfully");
       refetch();
     } catch (err) {
-      console.log(err);
-      if (err.status === 400 || err.status == 400 || err.status == 409) {
-        toast.error(err.data.message);
-      } else {
-        alert("Something went wrong. Please try again later.");
-      }
+      toast.error(err?.data?.message || "Failed to update category");
     }
   };
 
   const handleCreateCategory = async (e) => {
     e.preventDefault();
-    setName(name.toLowerCase());
-    if (!name) return toast.error("Name is required");
+    const formattedName = name.trim().toLowerCase();
+    if (!formattedName) return toast.error("Category name is required");
     try {
-      await createCategory({ name }).unwrap();
+      await createCategory({ name: formattedName }).unwrap();
       setName("");
+      toast.success("Category created successfully");
       refetch();
     } catch (err) {
-      console.log(err);
-      if (err.status === 400 || err.status == 409) {
-        toast.error(err.data.message);
-      } else {
-        alert("Something went wrong. Please try again later.");
-      }
+      toast.error(err?.data?.message || "Failed to create category");
     }
   };
 
@@ -94,92 +81,117 @@ export default function CategoryList() {
   if (error) {
     return (
       <Message variant="error">
-        {error?.data?.message || error?.message}
+        {error?.data?.message || "An error occurred"}
       </Message>
     );
   }
 
   return (
-    <div className="mx-[2rem] pt-[2rem] flex  flex-col md:flex-row">
-      {/* admin menu */}
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 min-h-screen">
       <AdminMenu />
-      {/* <div className="md:3/4 w-[80%] p-3"> */}
-      <div className=" w-full  p-3">
-        <motion.div
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: -100 }}
-          transition={{ duration: 1 }}
-        >
-          <PageHeader>Manage Categories</PageHeader>
-        </motion.div>
-        <motion.div
-          animate={{ opacity: 1, x: 0 }}
-          initial={{ opacity: 0, x: -100 }}
-          transition={{ duration: 1 }}
-          className="p-5 shadow-[0px_-5px_10px_rgba(0,0,0,0.1)] rounded-2xl
-          my-[1rem] mx-auto lg:w-[30rem] w-full"
-        >
-          <CategoryForm
-            id={"public"}
-            value={name}
-            setValue={setName}
-            handleSubmit={handleCreateCategory}
-            button={"Create"}
-          />
-        </motion.div>
-        {/* <br /> */}
-        {/* <hr className="mx-3 text-[#86bcd3]" /> */}
-
-        <motion.div
-          animate={{ opacity: 1, y: 0 }}
-          initial={{ opacity: 0, y: 100 }}
-          transition={{ duration: 1 }}
-          className="p-5 min-h-[22rem] shadow-[0px_5px_10px_rgba(0,0,0,0.1)]"
-        >
-          <div className="w-full lg:w-2/5">
-            <PageHeaderSecond>Category List</PageHeaderSecond>
-          </div>
-          <div
-            className="flex mt-4 flex-wrap my-2 rounded-lg
-        "
+      <div className="flex flex-col lg:flex-row gap-8">
+        {/* Main Content */}
+        <div className="w-full">
+          <motion.div
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            {isFetching && (
-              <div className="w-full h-full flex justify-center items-center">
-                <Loader />
-              </div>
-            )}
-            {!isFetching &&
-              categories?.data?.categories?.map((categor) => (
-                <div key={categor._id}>
-                  <button
-                    className="mr-2 mb-2 font-bold bg-green-50 border border-green-500 text-green-500 
-                  py-2 px-4 rounded-lg cursor-pointer hover:bg-green-500 hover:text-white
-                  focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-green-400 "
-                    //   className="mr-2 mb-2 font-bold bg-white border border-[#0094D4] text-[#0094D4]
-                    // py-2 px-4 rounded-lg cursor-pointer hover:bg-[#c9dde6]
-                    // focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:ring-[#0094D4]"
-                    onClick={() => {
-                      setModalVisiable(true);
-                      setSelectedCategory(categor);
-                      setUpdatingName(categor.name);
-                    }}
-                  >
-                    {categor.name}
-                  </button>
-                </div>
-              ))}
-          </div>
-        </motion.div>
-        <Modale isOpen={maodalVisiable} isClose={() => setModalVisiable(false)}>
+            <PageHeader>
+              {" "}
+              <h1
+                className="text-2xl font-medium tracking-wider flex 
+              items-center gap-3"
+              >
+                Category Management
+              </h1>
+            </PageHeader>
+          </motion.div>
+
+          {/* Create Category Form */}
+          <motion.div
+            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: -50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mt-8 bg-white rounded-xl shadow-md p-6 max-w-lg mx-auto border border-teal-100"
+          >
+            <h2 className="text-lg font-semibold text-teal-900 mb-4">
+              Create New Category
+            </h2>
             <CategoryForm
-              id={"private"}
-              value={updatingName}
-              setValue={(value) => setUpdatingName(value)}
-              handleDelete={deleteCategoryHandler}
-              handleSubmit={updateCategoryHandler}
-              button={"Update"}
+              id="public"
+              value={name}
+              setValue={setName}
+              handleSubmit={handleCreateCategory}
+              button="Create"
+              className="space-y-4"
             />
-        </Modale>
+          </motion.div>
+
+          {/* Category List */}
+          <motion.div
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 50 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="mt-8 bg-white rounded-xl shadow-md overflow-hidden border border-teal-100"
+          >
+            {/* <div className="bg-gradient-to-r from-fuchsia-500 to-slate-200 text-white px-6 py-4"> */}
+            <div className="  px-6 py-4">
+              <h2 className="text-lg font-medium uppercase tracking-wider">
+                Category List
+              </h2>
+            </div>
+            <div className="p-6">
+              {isFetching ? (
+                <div className="flex justify-center items-center h-32">
+                  <Loader />
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {categories?.data?.categories?.map((category) => (
+                    <button
+                      key={category._id}
+                      onClick={() => {
+                        setModalVisible(true);
+                        setSelectedCategory(category);
+                        setUpdatingName(category.name);
+                      }}
+                      className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-lg 
+                        hover:bg-teal-100 hover:border-teal-300 transition-all duration-200 focus:outline-none focus:ring-2 
+                        focus:ring-teal-400 focus:ring-opacity-50 cursor-pointer"
+                    >
+                      <span className="font-medium truncate">
+                        {category.name}
+                      </span>
+                      <span className="text-sm text-teal-700">Edit</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </motion.div>
+
+          {/* Modal for Update/Delete */}
+          <Modale isOpen={modalVisible} isClose={() => setModalVisible(false)}>
+            <div className="p-6 bg-white rounded-xl  ">
+              {/* <div className="bg-gradient-to-r from-teal-900 to-teal-700 text-white px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4"> */}
+              <div className=" px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4">
+                <h2 className="text-lg font-medium uppercase tracking-wider">
+                  Edit Category
+                </h2>
+              </div>
+              <CategoryForm
+                id="private"
+                value={updatingName}
+                setValue={setUpdatingName}
+                handleDelete={deleteCategoryHandler}
+                handleSubmit={updateCategoryHandler}
+                button="Update"
+                className="space-y-4"
+              />
+            </div>
+          </Modale>
+        </div>
       </div>
     </div>
   );

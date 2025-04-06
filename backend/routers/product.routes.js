@@ -27,7 +27,7 @@ route.route("/")
   .post(authenticate, authorizeAdmin, formidable(), addProduct)
   .get(fechProducts)
 
-route.route("/allproducts")
+route.route("/products-list")
   .get(fetchAllProducts)
 route.route("/top")
   .get(fetchTopProducts)
@@ -35,6 +35,8 @@ route.route("/new")
   .get(fetchnewProducts)
 route.route("/filter-products")
   .post(filterProduct)
+
+
 route.route("/related/:id")
   .get(getRelatedProductsByCategory)
 

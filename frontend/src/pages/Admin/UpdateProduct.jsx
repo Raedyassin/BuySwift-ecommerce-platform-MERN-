@@ -10,7 +10,8 @@ import { useGetAllCategoryQuery } from "../../redux/apis/categoryApiSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import AdminMenu from "./AdminMenu";
-
+import { motion } from "motion/react";
+import PageLoader from "../../components/PageLoader";
 export default function UpdateProduct() {
   const { id } = useParams();
   const [image, setImage] = useState("");
@@ -112,10 +113,16 @@ export default function UpdateProduct() {
     }
   };
 
-  if (isLoading) return <Loader />;
+  if (isLoading) return <PageLoader/>;
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <motion.div
+      initial={{ opacity: 0, y: 100 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+      className="min-h-screen flex flex-col lg:flex-row"
+    >
       {/* Admin Menu */}
       <AdminMenu />
 
@@ -304,6 +311,6 @@ export default function UpdateProduct() {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

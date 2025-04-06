@@ -1,16 +1,15 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import moment from 'moment'
-import { useAllProductsQuery } from '../../redux/apis/productApiSlice'
+import { useGetAllProductsQuery } from "../../redux/apis/productApiSlice";
 import Loader from "../../components/Loader";
 import AdminMenu from './AdminMenu';
 export default function AllProduct() {
   
-  const { data: products, isLoading, isError } = useAllProductsQuery()
-  console.log(products)
+  const { data: products, isLoading, isError } = useGetAllProductsQuery({});
+  const navigate = useNavigate();
   
   if (isLoading) return <Loader />;
   if (isError) return <div>Error Loading Products</div>;
-
   
 
 
@@ -50,8 +49,8 @@ export default function AllProduct() {
                       </p>
 
                       <div className="flex justify-between">
-                        <Link
-                          to={`/admin/product/update/${product._id}`}
+                        <div
+                          onClick={()=>navigate(`/admin/product/update/${product._id}`)}
                           className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800"
                         >
                           Update Product
@@ -70,7 +69,7 @@ export default function AllProduct() {
                               d="M1 5h12m0 0L9 1m4 4L9 9"
                             />
                           </svg>
-                        </Link>{" "}
+                        </div>{" "}
                         <p>$ {product.price}</p>
                       </div>
                     </div>

@@ -13,13 +13,6 @@ const productApiSlice = apiSlice.injectEndpoints({
     }),
 
     // ??????????????????????????
-    allProducts: buil.query({
-      query: () => ({
-        url: `${PRODUCT_URL}/allproducts`,
-      }),
-    }),
-
-    // ??????????????????????????
     getProductDetails: buil.query({
       query: (id) => ({
         url: `${PRODUCT_URL}/${id}`,
@@ -100,7 +93,7 @@ const productApiSlice = apiSlice.injectEndpoints({
         if (!currentCache.productId || currentCache.productId !== newData.productId) {
           return {
             ...newData,
-            productId: newData.productId, 
+            productId: newData.productId,
           };
         }
         // Same id, append reviews for pagination
@@ -113,10 +106,10 @@ const productApiSlice = apiSlice.injectEndpoints({
           pageSize: newData.pageSize,
           hasNextPage: newData.hasNextPage,
           hasPrevPage: newData.hasPrevPage,
-          productId: newData.productId,  
+          productId: newData.productId,
         };
       },
-      forceRefetch: ({ currentArg, previousArg }) => {        
+      forceRefetch: ({ currentArg, previousArg }) => {
         return currentArg.id !== previousArg?.id &&
           currentArg.page !== previousArg?.page
       }
@@ -153,6 +146,17 @@ const productApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
+    /******************
+     * product groups *
+     ******************
+    */
+
+    // ??????????????????????????
+    getAllProducts: buil.query({
+      query: ({ page, limit, createdAt, id, name, brand, category, price, rating, stock }) => ({
+        url: `${PRODUCT_URL}/products-list?page=${page}&limit=${limit}&createdAt=${createdAt}&id=${id}&name=${name}&brand=${brand}&category=${category}&price=${price}&rating=${rating}&stock=${stock}`,
+      }),
+    }),
 
     // ??????????????????????????
     getTopProducts: buil.query({
@@ -200,7 +204,7 @@ const productApiSlice = apiSlice.injectEndpoints({
 
 
 export const {
-  useAllProductsQuery,
+  useGetAllProductsQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useCreateReviewMutation,

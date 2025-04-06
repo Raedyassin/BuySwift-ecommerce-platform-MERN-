@@ -1,12 +1,15 @@
 import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 export default function PageSlider({ page, setPage, pagesCount }) {
+  console.log("pagesCount", pagesCount);
+  console.log("page", page);
   return (
     <div
         className="flex justify-center  items-center gap-5"
       >
         <MdKeyboardDoubleArrowLeft
           onClick={() => setPage(1)}
-          className="cursor-pointer text-gray-400 w-12 h-12 hover:bg-gray-100 p-1 rounded-full"
+        className="cursor-pointer text-gray-400 w-12 h-12 hover:bg-gray-100 
+          p-1 rounded-full"
         />
         {
           <div className="flex items-center gap-2">
@@ -42,7 +45,8 @@ export default function PageSlider({ page, setPage, pagesCount }) {
           onClick={() => {
             setPage(pagesCount);
           }}
-          className="cursor-pointer text-gray-400 w-12 h-12 hover:bg-gray-100 p-1 rounded-full"
+        className="cursor-pointer text-gray-400 w-12 h-12 hover:bg-gray-100 
+          p-1 rounded-full"
         />
       </div>
   )

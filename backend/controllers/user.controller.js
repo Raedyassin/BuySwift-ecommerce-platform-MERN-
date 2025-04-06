@@ -6,8 +6,7 @@ import path from "path";
 import bycrypt from "bcryptjs"
 import generateJWT from "../utils/createJWT.js";
 import asyncHandler from "../middlewares/asyncHandler.js"
-import { log } from "console";
-
+import mongoose from "mongoose";
 
 
 const createUser = asyncHandler(async (req, res, next) => {
@@ -96,6 +95,12 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
   if (id === "undefined") {
     id = "";
   }
+  if (isAdmin === "undefined") {
+    isAdmin = "";
+  }
+  if (createdAt === "undefined") {
+    createdAt = "";
+  }
   
   const skip = (page - 1) * pageSize;
   const filter = {};
@@ -114,17 +119,22 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
       $gte: date,                // Start of day (e.g., 2025-03-18 00:00:00)
       $lt: new Date(date.getTime() + 24 * 60 * 60 * 1000), // Start of next day (2025-03-19 00:00:00)
     };
-  }
+  } 
+  // take selected fields value one only 
   if ((email && name) || (id && email) || (name && id)) {
     return res.status(400).json({ status: "FAIL", data: { title: "Invalid query parameters we only support one query at a time (email, name, id) one at a time" } });
   }
-  if (email && email !== "") {
+
+  if (email && email.trim() !== "") {
     filter.email = { $regex: email, $options: "i" };
   }
-  if (name && name !== "") {
+  if (name && name.trim() !== "") {
     filter.username = { $regex: name, $options: "i" };
   }
-  if (id && id !== "") {
+  if (id && id.trim() !== "") {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ status: "FAIL", message: "Invalid id"  });
+    }
     filter._id = id;
   }
   

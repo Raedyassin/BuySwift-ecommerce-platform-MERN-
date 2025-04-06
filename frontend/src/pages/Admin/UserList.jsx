@@ -43,7 +43,7 @@ export default function UserList() {
     isLoading,
   } = useGetAllUsersByAdminQuery({
     page,
-    limit: 50,
+    limit: 5,
     ...filterSet,
     ...finalFilterBy,
   });
@@ -57,7 +57,13 @@ export default function UserList() {
   const [userDateBeforUpdate, setUserDateBeforUpdate] = useState({});
 
   useEffect(() => {
-    setPagesCount(Math.ceil(users?.usersLength / users?.pageSize));
+    if (
+      users &&
+      users.usersLength !== undefined &&
+      users.pageSize !== undefined
+    ) {
+      setPagesCount(Math.ceil(users.usersLength / users.pageSize));
+    }
   }, [users]);
   const deleteHandler = async (id) => {
     if (!window.confirm("Are you Sure?")) {
@@ -134,8 +140,8 @@ export default function UserList() {
       isAdmin: "",
     });
     if (searchBy === "id") setFinalFilterBy({ id: searchValue });
-    if (searchBy === "name") setFinalFilterBy({ name: searchValue });
-    if (searchBy === "email") setFinalFilterBy({ email: searchValue });
+    else if (searchBy === "name") setFinalFilterBy({ name: searchValue });
+    else if (searchBy === "email") setFinalFilterBy({ email: searchValue });
   };
 
   useEffect(() => {
@@ -152,8 +158,13 @@ export default function UserList() {
     }
   }, [filterBy]);
 
+  useEffect(() => {
+    if (error && error?.status < 500) {
+      toast.error(error?.data?.data?.title || error?.data?.message);
+    }
+  }, [error]);
   if (isLoading) return <PageLoader />;
-  if (error) {
+  if (error && error.status >= 500) {
     return (
       <Message variant="danger">
         {error?.data?.data?.title || error?.data?.message}
@@ -168,7 +179,7 @@ export default function UserList() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <PageHeader>Users ({users.usersLength})</PageHeader>
+        <PageHeader>Users List ({users.usersLength})</PageHeader>
       </motion.div>
       {/* filter */}
       <motion.div
@@ -188,7 +199,7 @@ export default function UserList() {
               defaultValue={"all"}
             >
               <option value="all">All</option>
-              <option value="createdAt">Create At</option>
+              <option value="createdAt">Date</option>
               <option value="isAdmin">Is Admin</option>
             </select>
             {filterBy !== "all" && filterBy !== "" && (
@@ -310,137 +321,168 @@ export default function UserList() {
                 <th className="p-4 text-start bg-[#FAFAFC]">Actions</th>
               </tr>
             </thead>
+            {error?.status < 500 && (
+              <tbody className="text-gray-500">
+                <tr>
+                  <td colSpan={6} className="p-4 text-center">
+                    {error?.data?.message || "Something went wrong"}
+                  </td>
+                </tr>
+              </tbody>
+            )}
+            {users?.data?.users?.length === 0 && (
+              <tbody className="text-gray-500">
+                <tr>
+                  <td colSpan={6} className="p-4 text-center">
+                    No User Found
+                  </td>
+                </tr>
+              </tbody>
+            )}
             {!isFetching && (
-              <tbody>
-                {users?.data.users.map((user) => (
-                  <tr
-                    key={user._id}
-                    className={`${selectedUser === user._id && "bg-sky-50"}`}
-                  >
-                    <td
-                      className={`flex items-center gap-2 justify-start  p-4 pl-6 min-w-50 `}
+              <tbody className="text-gray-500">
+                {!error &&
+                  users?.data?.users?.map((user) => (
+                    <tr
+                      key={user._id}
+                      className={`${selectedUser === user._id && "bg-sky-50"}`}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selectedUser === user._id}
-                        onChange={() => slectedUserHandler(user._id)}
-                        className="cursor-pointer w-4 h-4"
-                      />
-                      <span className="py-2">{user._id}</span>
-                    </td>
-                    <td className=" p-4   min-w-50 ">
-                      {user.createdAt?.substring(0, 10)}
-                    </td>
-                    <td className=" p-4 min-w-50 ">
-                      {editableuserId === user._id ? (
-                        <div className="flext items-center">
-                          <input
-                            type="text"
-                            value={editableName}
-                            onChange={(e) => setEditableName(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-lg"
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex items-center">
-                          {user.username}{" "}
-                          {!user.isAdmin && (
-                            <button
-                              className="cursor-pointer"
-                              onClick={() =>
-                                toggleEdite(user._id, user.username, user.email)
-                              }
-                            >
-                              <FaEdit className="ml-[1rem]" />
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </td>
-                    <td className=" p-4 min-w-50 ">
-                      {editableuserId === user._id ? (
-                        <div className="flext items-center">
-                          <input
-                            type="text"
-                            value={editableEmail}
-                            onChange={(e) => setEditableEmail(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-lg"
-                          />
-                        </div>
-                      ) : (
-                        <div className="flex items-center">
-                          {user.email}{" "}
-                          {!user.isAdmin && (
-                            <button
-                              className="cursor-pointer"
-                              onClick={() =>
-                                toggleEdite(user._id, user.username, user.email)
-                              }
-                            >
-                              <FaEdit className="ml-[1rem]" />
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </td>
-                    <td className=" p-2 min-w-60 ">
-                      {user.isAdmin ? (
-                        <span
-                          className="flex items-center justify-center 
-                        text-green-800 w-18 p-1 border-1 bg-[#EEFAF6] border-green-800 rounded-full"
-                        >
-                          <FaCheck />
-                          <span className="ml-2  font-semibold">Yse</span>
-                        </span>
-                      ) : (
-                        <div className="flex  items-center justify-between">
-                          <span
-                            className="flex items-center justify-center 
-                        text-red-700 w-18 p-1 border-1 bg-[#FDEAE9] border-red-700 rounded-full"
-                          >
-                            <FaTimes />
-                            <span className="ml-2  font-semibold">No</span>
-                          </span>
-                          <div
-                            className="cursor-pointer border-2  border-green-500 text-green-500 rounded-full p-1 px-3 hover:bg-green-500 hover:text-white"
-                            onClick={() => makeAdminHandler(user._id)}
-                          >
-                            {isLoadingMakeAsAdmin ? (
-                              <Loader />
-                            ) : (
-                              "Make as Admin"
+                      <td
+                        className={`flex items-center gap-2 justify-start  p-4 pl-6 min-w-50 `}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selectedUser === user._id}
+                          onChange={() => slectedUserHandler(user._id)}
+                          className="cursor-pointer w-4 h-4"
+                        />
+                        <span className="py-2">{user._id}</span>
+                      </td>
+                      <td className=" p-4   min-w-50 ">
+                        {user.createdAt?.substring(0, 10)}
+                      </td>
+                      <td className=" p-4 min-w-50 ">
+                        {editableuserId === user._id ? (
+                          <div className="flext items-center">
+                            <input
+                              type="text"
+                              value={editableName}
+                              onChange={(e) => setEditableName(e.target.value)}
+                              className="w-full p-2 border border-gray-300 rounded-lg"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center">
+                            {user.username}{" "}
+                            {!user.isAdmin && (
+                              <button
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  toggleEdite(
+                                    user._id,
+                                    user.username,
+                                    user.email
+                                  )
+                                }
+                              >
+                                <FaEdit className="ml-[1rem]" />
+                              </button>
                             )}
                           </div>
-                        </div>
-                      )}
-                    </td>
-                    <td className="flex min-w-30 justify-center p-4 items-center">
-                      {!user.isAdmin && (
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() =>
-                              updateHandler(user._id, user.username, user.email)
-                            }
-                            className="ml-2 cursor-pointer hover:bg-gray-100 bg-[#FAFAFC] text-blue-500 py-2 px-4 rounded-lg"
-                          >
-                            {editableuserId === user._id ? (
-                              <FaCheck />
-                            ) : (
-                              <FaEdit />
+                        )}
+                      </td>
+                      <td className=" p-4 min-w-50 ">
+                        {editableuserId === user._id ? (
+                          <div className="flext items-center">
+                            <input
+                              type="text"
+                              value={editableEmail}
+                              onChange={(e) => setEditableEmail(e.target.value)}
+                              className="w-full p-2 border border-gray-300 rounded-lg"
+                            />
+                          </div>
+                        ) : (
+                          <div className="flex items-center">
+                            {user.email}{" "}
+                            {!user.isAdmin && (
+                              <button
+                                className="cursor-pointer"
+                                onClick={() =>
+                                  toggleEdite(
+                                    user._id,
+                                    user.username,
+                                    user.email
+                                  )
+                                }
+                              >
+                                <FaEdit className="ml-[1rem]" />
+                              </button>
                             )}
-                          </button>
-                          <button
-                            onClick={() => deleteHandler(user._id)}
-                            className="bg-[#FAFAFC] hover:bg-gray-100 text-red-500 font-bold
-                              p-2 rounded cursor-pointer"
+                          </div>
+                        )}
+                      </td>
+                      <td className=" p-2 min-w-60 ">
+                        {user.isAdmin ? (
+                          <span
+                            className="flex items-center justify-center 
+                        text-green-800 w-18 p-1 border-1 bg-[#EEFAF6] border-green-800 rounded-full"
                           >
-                            <FaTrash />
-                          </button>
-                        </div>
-                      )}
-                    </td>
-                  </tr>
-                ))}
+                            <FaCheck />
+                            <span className="ml-2  font-semibold">Yse</span>
+                          </span>
+                        ) : (
+                          <div className="flex  items-center justify-between">
+                            <span
+                              className="flex items-center justify-center 
+                        text-red-700 w-18 p-1 border-1 bg-[#FDEAE9] border-red-700 rounded-full"
+                            >
+                              <FaTimes />
+                              <span className="ml-2  font-semibold">No</span>
+                            </span>
+                            <div
+                              className="cursor-pointer border-2  border-green-500 text-green-500 rounded-full p-1 px-3 hover:bg-green-500 hover:text-white"
+                              onClick={() => makeAdminHandler(user._id)}
+                            >
+                              {isLoadingMakeAsAdmin ? (
+                                <Loader />
+                              ) : (
+                                "Make as Admin"
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                      <td className="flex min-w-30 justify-center p-4 items-center">
+                        {!user.isAdmin && (
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() =>
+                                updateHandler(
+                                  user._id,
+                                  user.username,
+                                  user.email
+                                )
+                              }
+                              className="ml-2 cursor-pointer hover:bg-gray-100 bg-[#FAFAFC] text-blue-500 py-2 px-4 rounded-lg"
+                            >
+                              {editableuserId === user._id ? (
+                                <FaCheck />
+                              ) : (
+                                <FaEdit />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => deleteHandler(user._id)}
+                              className="bg-[#FAFAFC] hover:bg-gray-100 text-red-500 font-bold
+                              p-2 rounded cursor-pointer"
+                            >
+                              <FaTrash />
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             )}
           </table>
@@ -450,7 +492,7 @@ export default function UserList() {
             </div>
           )}
         </div>
-        {!isFetching && (
+        {!isFetching && pagesCount > 1 && (
           <div className="flex justify-center  items-center gap-5">
             <PageSlider setPage={setPage} page={page} pagesCount={pagesCount} />
           </div>
