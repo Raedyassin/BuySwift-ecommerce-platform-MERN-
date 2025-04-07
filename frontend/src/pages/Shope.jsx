@@ -13,7 +13,6 @@ import { toast } from "react-toastify";
 import ProductCard from "./products/ProductCard";
 import PageLoader from "../components/PageLoader";
 import Loader from "../components/Loader";
-import PageHeader from "../components/PageHeader";
 export default function Shope() {
   const dispatch = useDispatch();
   const {  product, checked, radio } = useSelector(
@@ -98,9 +97,6 @@ export default function Shope() {
 
   return (
     <div className="constainer mx-[2rem]">
-      <h2 className="mb-3 pt-[2rem]  ">
-        <PageHeader>Shopping</PageHeader>
-      </h2>
 
       <div className="flex md:flext-row ">
         {/* filter */}

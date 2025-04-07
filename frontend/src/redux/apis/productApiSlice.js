@@ -152,7 +152,29 @@ const productApiSlice = apiSlice.injectEndpoints({
     */
 
     // ??????????????????????????
-    getAllProducts: buil.query({
+
+    // getAllProductsPage  and getAllProductsTable call the same api endpoint 
+    getAllProductsPage: buil.query({
+      query: ({ page, limit}) => ({
+        url: `${PRODUCT_URL}/products-list?page=${page}&limit=${limit}`,
+      }),
+      invalidatesTags: [productTage],
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      merge: (currentCache, newData) => {
+        return {
+          ...currentCache,
+          data: { products: [...currentCache.data.products , ...newData.data.products] },
+          currentPage: newData.currentPage,
+          pageSize: newData.pageSize,
+          hasNextPage: newData.hasNextPage,
+          hasPrevPage: newData.hasPrevPage
+        }
+      },
+      forceRefetch: ({ currentArg, previousArg }) => {
+        return currentArg.page !== previousArg?.page
+      }
+    }),
+    getAllProductsTable: buil.query({
       query: ({ page, limit, createdAt, id, name, brand, category, price, rating, stock }) => ({
         url: `${PRODUCT_URL}/products-list?page=${page}&limit=${limit}&createdAt=${createdAt}&id=${id}&name=${name}&brand=${brand}&category=${category}&price=${price}&rating=${rating}&stock=${stock}`,
       }),
@@ -204,7 +226,8 @@ const productApiSlice = apiSlice.injectEndpoints({
 
 
 export const {
-  useGetAllProductsQuery,
+  useGetAllProductsTableQuery,
+  useGetAllProductsPageQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useCreateReviewMutation,

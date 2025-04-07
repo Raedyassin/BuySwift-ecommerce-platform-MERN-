@@ -15,6 +15,7 @@ import { CiFilter } from "react-icons/ci";
 import { FaDeleteLeft } from "react-icons/fa6";
 import Loader from "../../components/Loader";
 import PageSlider from "../../components/PageSlider";
+import AdminMenu from "./AdminMenu";
 export default function OrdersList() {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [page, setPage] = useState(1);
@@ -305,6 +306,7 @@ export default function OrdersList() {
           </div>
         )}
       </motion.div>
+      <AdminMenu/>
 
       {/* order table */}
       <motion.div

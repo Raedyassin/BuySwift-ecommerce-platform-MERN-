@@ -59,7 +59,7 @@ export default function Orders() {
         observer.unobserve(showMoreOrdersObserver.current);
       }
     };
-  }, [isError, isFetching, data?.hasNextPage]);
+  }, [isError, isFetching, data?.hasNextPage,page]);
   if (isLoading) {
     return <PageLoader height="h-screen" />;
   }

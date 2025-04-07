@@ -1,61 +1,111 @@
-import { Link, useNavigate } from 'react-router-dom'
-import moment from 'moment'
-import { useGetAllProductsQuery } from "../../redux/apis/productApiSlice";
+import { Link, useNavigate } from "react-router-dom";
+import moment from "moment";
+import { useGetAllProductsPageQuery } from "../../redux/apis/productApiSlice";
 import Loader from "../../components/Loader";
-import AdminMenu from './AdminMenu';
-export default function AllProduct() {
-  
-  const { data: products, isLoading, isError } = useGetAllProductsQuery({});
-  const navigate = useNavigate();
-  
-  if (isLoading) return <Loader />;
-  if (isError) return <div>Error Loading Products</div>;
-  
+import Message from "../../components/Message";
+import PageHeader from "../../components/PageHeader";
+import AdminMenu from "./AdminMenu";
+import PageLoader from "../../components/PageLoader";
+import { useEffect, useRef, useState } from "react";
 
+export default function AllProduct() {
+  const [page, setPage] = useState(1);
+  const {
+    data: products,
+    isLoading,
+    isError,
+    isFetching,
+    error,
+  } = useGetAllProductsPageQuery({ limit: 1, page });
+  const navigate = useNavigate();
+  const loaderRef = useRef(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (
+          entries[0].isIntersecting &&
+          !isFetching &&
+          !isError &&
+          products?.hasNextPage
+        ) {
+          setPage(page + 1);
+        }
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+    if (loaderRef.current) {
+      observer.observe(loaderRef.current);
+    }
+    return () => {
+      if (loaderRef.current) {
+        observer.unobserve(loaderRef.current);
+      }
+    };
+  }, [isError, isFetching, products?.hasNextPage, page]);
+
+  if (isLoading) return <PageLoader />;
+  if (isError)
+    return (
+      <Message variant="error">
+        {error?.data?.message || error?.message || "Something went wrong"}
+      </Message>
+    );
 
   return (
     <>
-      <div className="container  mr-[9rem]">
-        <div className="flex flex-col md:flex-row">
-          <div className="p-3">
-            <div className=" text-xl font-black h-12">
-              All Products ({products.data.products.length})
+      <div className="w-[80%] mx-auto px-4 py-8">
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex-1">
+            <div className="mb-4">
+              <PageHeader>
+                All Products ({products.data.products.length})
+              </PageHeader>
             </div>
-            <div className="flex flex-wrap justify-around items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.data.products.map((product) => (
                 <Link
                   key={product._id}
                   to={`/admin/product/update/${product._id}`}
-                  className="block bg-gray-50 rounded-lg p-4 mb-4 overflow-hidden "
+                  className="block bg-white rounded-xl p-4 shadow-lg 
+                  hover:shadow-xl transition-all duration-300 border 
+                  border-gray-100  w-full"
                 >
-                  <div className="flex">
-                    <img
-                      src={`/${product.img}`}
-                      alt={product.name}
-                      className="w-[10rem] object-cover"
-                    />
-                    <div className="p-4 flex flex-col justify-around">
-                      <div className="flex justify-between">
-                        <h5 className="text-xl font-semibold mb-2">
+                  <div className="flex items-start gap-4">
+                    <div className="relative flex-shrink-0">
+                      <img
+                        src={`/${product.img}`}
+                        alt={product.name}
+                        className="w-24 h-24 object-cover rounded-lg 
+                        transition-transform duration-300 hover:scale-105"
+                      />
+                      <span
+                        className="absolute top-1 right-1 bg-gray-900/80 
+                      text-white text-xs px-1.5 py-0.5 rounded-full"
+                      >
+                        {moment(product.createdAt).format("MMM YYYY")}
+                      </span>
+                    </div>
+                    <div className="flex-1 flex flex-col justify-between">
+                      <div>
+                        <h5 className="text-base font-bold text-gray-900 mb-1 line-clamp-1">
                           {product.name}
                         </h5>
-                        <p className="text-gray-400 text-sm">
-                          {moment(product.createdAt).format("MMMM Do YYYY")}
+                        <p className="text-gray-600 text-xs line-clamp-2">
+                          {product.discription}
                         </p>
                       </div>
-
-                      <p className="text-gray-400 xl:w-[30rem]  md:w-[20rem] sm:w-[10rem] text-sm mb-4">
-                        {product.discription.substring(0, 160)}...
-                      </p>
-
-                      <div className="flex justify-between">
+                      <div className="mt-2 flex items-center justify-between">
                         <div
-                          onClick={()=>navigate(`/admin/product/update/${product._id}`)}
-                          className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800"
+                          onClick={() =>
+                            navigate(`/admin/product/update/${product._id}`)
+                          }
+                          className="group inline-flex items-center px-2 py-1 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-xs"
                         >
-                          Update Product
+                          Update
                           <svg
-                            className="w-3.5 h-3.5 ml-2"
+                            className="w-3 h-3 ml-1 group-hover:translate-x-1 transition-transform"
                             aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -69,19 +119,36 @@ export default function AllProduct() {
                               d="M1 5h12m0 0L9 1m4 4L9 9"
                             />
                           </svg>
-                        </div>{" "}
-                        <p>$ {product.price}</p>
+                        </div>
+                        <p className="text-base font-semibold text-gray-900">
+                          ${product.price}
+                        </p>
                       </div>
                     </div>
                   </div>
                 </Link>
               ))}
-            </div>
-          </div>
-          <div className="md:w-1/4 p-3 mt-2 ">
-            <AdminMenu />
+                    </div>
+              {isFetching && (
+                <>
+                  <div>
+                    <div
+                      className="
+                        bg-white rounded-xl p-4 mt-5 shadow-lg 
+                        hover:shadow-xl transition-all duration-300 border 
+                        border-gray-100 h-30 flex items-center justify-center 
+                        hover:bg-gray-100 cursor-pointer"
+                    >
+                      <Loader />
+                    </div>
+                  </div>
+                </>
+              )}
+              {/* load more Orders */}
+              <div ref={loaderRef} className="h-10"></div>
           </div>
         </div>
+        <AdminMenu />
       </div>
     </>
   );

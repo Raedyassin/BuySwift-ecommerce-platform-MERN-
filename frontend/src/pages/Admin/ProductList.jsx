@@ -3,7 +3,7 @@ import Loader from "../../components/Loader";
 import { toast } from "react-toastify";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import {
-  useGetAllProductsQuery,
+  useGetAllProductsTableQuery,
   useDeleteProductMutation,
 } from "../../redux/apis/productApiSlice";
 import { motion } from "motion/react";
@@ -47,7 +47,7 @@ export default function UserList() {
     isFetching,
     error,
     isLoading,
-  } = useGetAllProductsQuery({
+  } = useGetAllProductsTableQuery({
     page,
     limit: 5,
     ...filterSet,

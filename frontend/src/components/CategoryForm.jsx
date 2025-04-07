@@ -14,7 +14,7 @@ export default function CategoryForm({
         <label htmlFor={id} className="block text-sm  font-simibold italic mb-2">
           {/* <PageHeader>
           </PageHeader> */}
-          Create Category
+          Category Name
         </label>
         <input
           type="text"

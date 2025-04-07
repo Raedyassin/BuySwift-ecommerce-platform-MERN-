@@ -47,12 +47,14 @@ export default function CategoryManagement() {
 
   const updateCategoryHandler = async (e) => {
     e.preventDefault();
-    if (!updatingName) return toast.error("Category name is required");
+    if (!updatingName.trim()) return toast.error("Category name is required");
     try {
-      await updateCategory({
+      const res = await updateCategory({
         id: selectedCategory._id,
         body: { name: updatingName },
       }).unwrap();
+      console.log("res", res);
+      
       setModalVisible(false);
       setSelectedCategory(null);
       setUpdatingName("");
@@ -137,7 +139,7 @@ export default function CategoryManagement() {
           >
             {/* <div className="bg-gradient-to-r from-fuchsia-500 to-slate-200 text-white px-6 py-4"> */}
             <div className="  px-6 py-4">
-              <h2 className="text-lg font-medium uppercase tracking-wider">
+              <h2 className="text-lg font-medium  tracking-wider">
                 Category List
               </h2>
             </div>
@@ -176,7 +178,7 @@ export default function CategoryManagement() {
             <div className="p-6 bg-white rounded-xl  ">
               {/* <div className="bg-gradient-to-r from-teal-900 to-teal-700 text-white px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4"> */}
               <div className=" px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4">
-                <h2 className="text-lg font-medium uppercase tracking-wider">
+                <h2 className="text-lg font-medium  tracking-wider">
                   Edit Category
                 </h2>
               </div>
