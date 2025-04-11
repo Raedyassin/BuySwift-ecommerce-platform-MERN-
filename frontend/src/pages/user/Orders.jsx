@@ -14,7 +14,7 @@ import { FaMoneyBill1Wave } from "react-icons/fa6";
 import Status from "../../components/Status";
 import { GoListOrdered } from "react-icons/go";
 import { motion } from "motion/react";
-import Loader from '../../components/Loader'
+import Loader from "../../components/Loader";
 import PageLoader from "../../components/PageLoader";
 export default function Orders() {
   const [page, setPage] = useState(1);
@@ -24,11 +24,11 @@ export default function Orders() {
   const showMoreOrdersObserver = useRef();
   const navigate = useNavigate();
   const [openOrders, setOpenOrders] = useState(false);
-  const { data, isLoading,isFetching, isError,error } = useGetUserOrdersQuery(
+  const { data, isLoading, isFetching, isError, error } = useGetUserOrdersQuery(
     {
       page,
       limit: 10,
-    },
+    }
     // {
     //   // Keep data from previous pages in cache
     //   refetchOnMountOrArgChange: true,
@@ -59,15 +59,15 @@ export default function Orders() {
         observer.unobserve(showMoreOrdersObserver.current);
       }
     };
-  }, [isError, isFetching, data?.hasNextPage,page]);
+  }, [isError, isFetching, data?.hasNextPage, page]);
   if (isLoading) {
     return <PageLoader height="h-screen" />;
   }
-  if (isError) { 
+  if (isError) {
     return (
-      <Message variant="error">{
-        error?.data?.message || error?.message || "Something went wrong"
-      }</Message>
+      <Message variant="error">
+        {error?.data?.message || error?.message || "Something went wrong"}
+      </Message>
     );
   }
   return (

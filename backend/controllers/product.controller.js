@@ -336,7 +336,7 @@ const fetchAllProducts = asyncHandler(
 
     // { page, limit, createdAt, id, name, brand, category, price, rating, stock }
     let { createdAt, id, name, brand, category, price, rating, stock } = req.query;
-    
+
     // the udefind send as a string so it is go as a string 
     if (createdAt === "undefined") {
       createdAt = "";
@@ -362,7 +362,7 @@ const fetchAllProducts = asyncHandler(
     if (stock === "undefined") {
       stock = "";
     }
-    
+
     let filter = {};
     if (createdAt && createdAt?.trim() !== "") {
       const [year, month, day] = createdAt.split("-"); // e.g., "2025-03-18"
@@ -400,13 +400,13 @@ const fetchAllProducts = asyncHandler(
       filter.rating = { $gte: +rating };
     }
     if (price && price.trim() !== "") {
-      filter.price = minMaxConvertFromString(res,price, "-");
+      filter.price = minMaxConvertFromString(res, price, "-");
     }
     if (stock && stock !== "") {
       filter.countInStock = minMaxConvertFromString(res, stock, "-")
     }
-    
-    
+
+
     const productsCount = await Product.countDocuments(filter);
     const products = await Product.find(filter).populate("category",
       "-updatedAt -createdAt -creatorId -__v")
@@ -476,27 +476,55 @@ const fetchnewProducts = asyncHandler(
 const filterProduct = asyncHandler(
   async (req, res, next) => {
     const page = req.query.page ? +req.query.page : 1;
-    const { checked, radio } = req.body;
+    const pageSize = req.query.limit ? (+req.query.limit > 50 ? 50 : +req.query.limit) : 10;
+    let searchName = req.query.searchName?.trim();
+    const categoriesID = req.query.cateogries?.split(',') || []; 
+    const price = req.query.price?.split(',').map(value => +value) || []; 
     let args = {};
-    if (checked.length > 0) {
-      args.category = checked;
+
+    // validation
+    if (searchName === "undefined" || searchName === "" || searchName === null || searchName === undefined) {
+      searchName = "";
     }
-    if (radio.length > 0) {
-      args.price = { $gte: radio[0], $lte: radio[1] }
+    if (searchName !== "") {
+      args.name = { $regex: searchName, $options: "i" }
     }
-    const pageSize = 10;
-    const count = await Product.countDocuments(args);
+    if (req.query.cateogries !== "" && req.query.cateogries !== "undefined" && categoriesID.length > 0) {
+      const validCategoryIds = categoriesID.filter(id =>mongoose.Types.ObjectId.isValid(id));
+      if (validCategoryIds.length !== categoriesID.length) {
+        return res.status(400).json({ status: FAIL, message: "The category id is not structured correctly" });
+      }
+      args.category = {
+        $in: validCategoryIds
+      };
+    }
+    if (req.query.price.trim() !== "" && req.query.price.trim() !== "undefined" && price.length === 1) {
+      args.price = { $eq: price[0] }
+    } else if (price.length === 2) {
+      args.price = { $gte: price[0], $lte: price[1] }
+    } else if (price.length > 2) {
+      return res.status(400).json({ status: FAIL, message: "the price should be start or start-end" })
+    }
     const products = await Product.find(args)
-      .limit(pageSize)
-      .skip((page - 1) * pageSize);
+      .limit(pageSize + 1)
+      .skip((page - 1) * pageSize)
+      .sort({ createdAt: -1 })
+      .select("-updatedAt -__v -reviews -creatorId -quantity -countInStock -category -numReview" );
+
+    const hasNextPage = products.length > pageSize;
+    if (hasNextPage) {
+      products.pop();
+    }
 
     res.json({
       status: SUCCESS,
       data: {
-        products,
-        currentPage: page,
-        pages: Math.ceil(count / pageSize),
-      }
+        products
+      },
+      currentPage: page,
+      pageSize,
+      hasPrevPage: page > 1,
+      hasNextPage
     })
   }
 )

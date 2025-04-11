@@ -196,14 +196,45 @@ const productApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5
     }),
 
-    getFilteredProducts: buil.query({
-      query: ({ checked, radio }) => ({
-        url: `${PRODUCT_URL}/filter-products`,
-        method: "POST",
-        body: { checked, radio }
+      getSearchedProducts: buil.query({
+        query: ({ selectedCategory, price, page, searchName, limit }) => ({
+          url: `${PRODUCT_URL}/search?page=${page}&limit=${limit}&searchName=${searchName}&cateogries=${selectedCategory}&price=${price}`,
+        }),
+        transformResponse: (response, meta, arg) => ({
+          ...response,
+          searchName: arg.searchName,
+          selectedCategory: arg.selectedCategory,
+          price: arg.price
+        }),
+        serializeQueryArgs: ({ endpointName }) => endpointName,
+        forceRefetch({ currentArg, previousArg }) {
+          return (
+            currentArg.page !== previousArg?.page ||
+            currentArg.selectedCategory !== previousArg?.selectedCategory ||
+            currentArg.price !== previousArg?.price ||
+            currentArg.searchName !== previousArg?.searchName
+          );
+        },
+        merge: (currentCache = {}, newData) => {
+          if (currentCache.searchName !== newData.searchName ||
+            currentCache.selectedCategory !== newData.selectedCategory ||
+            currentCache.price !== newData.price) {
+            return newData
+          }
+          return {
+            ...currentCache,
+            data: { products: [...currentCache.data.products , ...newData.data.products] },
+            currentPage: newData.currentPage,
+            pageSize: newData.pageSize,
+            hasNextPage: newData.hasNextPage,
+            hasPrevPage: newData.hasPrevPage,
+            searchName: newData.searchName,
+            selectedCategory: newData.selectedCategory,
+            price: newData.price
+          }
+        },
       }),
-      keepUnusedDataFor: 5
-    }),
+
     RelatedProducts: buil.query({
       query: ({ id }) => ({
         url: `${PRODUCT_URL}/related/${id}`,
@@ -240,7 +271,7 @@ export const {
   useUploadProductImageMutation,
   // why i use query wiht post method because i query make auto-fetch and post don't make caching 
   // and mutation don't make caching but i need post to but the data in the body of the reqest
-  useGetFilteredProductsQuery,
+  useGetSearchedProductsQuery,
   useRelatedProductsQuery,
   useGetReviewsProductByIdQuery,
   useEditeProductReviewMutation,

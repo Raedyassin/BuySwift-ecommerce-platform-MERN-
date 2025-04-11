@@ -31,7 +31,7 @@ const categoryApiSlice = apiSlice.injectEndpoints({
     getAllCategory: build.query({
       query: () => CATEGORY_URL + "/categories",
       providesTags: [categoryTage],
-      keepUnusedDataFor: 5
+      keepUnusedDataFor: Infinity
     }),
 
     /// get single category

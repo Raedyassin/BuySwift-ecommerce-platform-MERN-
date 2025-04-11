@@ -46,7 +46,7 @@ export default function Cart() {
           </h2>
           <Link
             to="/shop"
-            className="mt-4 inline-block text-sm sm:text-base md:text-lg text-indigo-500 hover:text-indigo-600 underline transition-colors duration-300"
+            className="mt-4 inline-block text-sm sm:text-base md:text-lg text-pink-500 hover:text-pink-700 underline transition-colors duration-300"
           >
             Explore the Shop
           </Link>
@@ -61,16 +61,20 @@ export default function Cart() {
             className="w-full lg:w-2/3"
           >
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-300 to-indigo-500 bg-clip-text text-transparent">
+              <h1
+                className="text-xl sm:text-2xl md:text-3xl font-bold 
+              text-pink-500
+              bg-clip-text "
+              >
                 Shopping Cart{" "}
-                <span className="text-indigo-400">
+                <span className="text-pink-500">
                   ({cart?.cartItems?.length})
                 </span>
               </h1>
               <button
                 onClick={clearCartItemsHandler}
-                  className="mt-4 sm:mt-0  bg-red-600  text-white py-2 px-4 sm:px-6 
-                rounded-xl  hover:bg-red-700 transition-all duration-300 cursor-pointer
+                className="mt-4 sm:mt-0 text-white font-bold    py-2 px-4 sm:px-6 
+                rounded-xl  bg-red-600 hover:bg-red-700 transition-all duration-300 cursor-pointer
                 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 
                 text-sm sm:text-base shadow-md"
               >
@@ -81,10 +85,9 @@ export default function Cart() {
               {cart?.cartItems?.map((item) => (
                 <div
                   key={item._id}
-
                   className="flex flex-row items-start sm:items-center
                   bg-white p-4 rounded-xl border border-gray-200
-                  hover:border-indigo-300 transition-all duration-300 
+                    transition-all duration-300 
                   shadow-sm hover:shadow-md"
                 >
                   <div className="w-20 h-20 sm:w-24 sm:h-24  flex-shrink-0">
@@ -107,7 +110,7 @@ export default function Cart() {
                     <Link
                       to={`/product/${item._id}`}
                       className="text-base sm:text-lg md:text-xl font-semibold 
-                      text-indigo-500 hover:text-indigo-600 transition-colors 
+                      text-indigo-500 hover:text-pink-600 transition-colors 
                       duration-300"
                     >
                       {item.name}
@@ -116,15 +119,19 @@ export default function Cart() {
                       <span className="font-medium italic">Brand:</span>{" "}
                       {item.brand}
                     </p>
-                    <p className="text-sm sm:text-base md:text-lg font-bold 
-                    text-gray-800">
+                    <p
+                      className="text-sm sm:text-base md:text-lg font-bold 
+                    text-gray-800"
+                    >
                       ${item.price}
                     </p>
                   </div>
                   <div className="mt-4 sm:mt-0 sm:ml-4 flex items-center gap-3">
                     <div className="flex items-center">
-                      <span className="text-xs sm:text-sm md:text-base 
-                      text-gray-600 italic mr-2">
+                      <span
+                        className="text-xs sm:text-sm md:text-base 
+                      text-gray-600 italic mr-2"
+                      >
                         Qty:
                       </span>
                       <select
@@ -144,7 +151,7 @@ export default function Cart() {
                     </div>
                     <FaTrash
                       onClick={() => removeFromCartHandler(item._id)}
-                      className="text-red-500 hover:text-red-600 cursor-pointer 
+                      className="text-red-600 hover:text-red-700 cursor-pointer 
                       w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300"
                     />
                   </div>
@@ -161,7 +168,10 @@ export default function Cart() {
             className="w-full lg:w-1/3 mt-6 lg:mt-0"
           >
             <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-md">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-indigo-600 mb-4">
+              <h2
+                className="text-lg font-bold sm:text-xl md:text-2xl 
+                text-pink-500 mb-4"
+              >
                 Order Summary
               </h2>
               <div className="space-y-4">
@@ -186,7 +196,11 @@ export default function Cart() {
               <button
                 onClick={checkoutHandler}
                 disabled={cart.cartItems?.length === 0}
-                className="w-full mt-6 cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
+                className="w-full mt-6 cursor-pointer bg-gradient-to-r 
+              from-pink-600 to-pink-700 text-white py-3 px-4 rounded-lg 
+              font-semibold hover:from-pink-700 hover:to-pink-800 
+              transition-all duration-300 
+                disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
               >
                 Proceed to Checkout
               </button>

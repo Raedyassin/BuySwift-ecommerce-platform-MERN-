@@ -33,8 +33,8 @@ route.route("/top")
   .get(fetchTopProducts)
 route.route("/new")
   .get(fetchnewProducts)
-route.route("/filter-products")
-  .post(filterProduct)
+route.route("/search")
+  .get(filterProduct)
 
 
 route.route("/related/:id")

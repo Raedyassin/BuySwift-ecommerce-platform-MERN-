@@ -279,7 +279,7 @@ export default function ProductDetails() {
               <p className="flex items-center text-gray-700 text-sm sm:text-base">
                 <FaStar className="mr-2 w-5 h-5 text-indigo-500" />{" "}
                 <span className="font-medium mr-1">Rating:</span>{" "}
-                {product?.data?.product?.rating}
+                {product?.data?.product?.rating.toFixed(2)} 
               </p>
               <p className="flex items-center text-gray-700 text-sm sm:text-base">
                 <FaShoppingCart className="mr-2 w-5 h-5 text-indigo-500" />{" "}
@@ -503,13 +503,13 @@ export default function ProductDetails() {
             {comment.length > 0 && (
               <div className="flex justify-end gap-4 mt-4">
                 <button
-                  className="py-2 px-6 bg-gray-200 text-gray-700 rounded-lg font-medium text-sm sm:text-base hover:bg-gray-300 transition-colors duration-300 shadow-sm"
+                  className="py-2 px-6 bg-gray-200 cursor-pointer text-gray-700 rounded-lg font-medium text-sm sm:text-base hover:bg-gray-300 transition-colors duration-300 shadow-sm"
                   onClick={() => setComment("")}
                 >
                   Clear
                 </button>
                 <button
-                  className="py-2 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-colors duration-300 flex items-center gap-2 shadow-sm"
+                  className="py-2 px-6 bg-gradient-to-r cursor-pointer from-indigo-600 to-purple-600 text-white rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-colors duration-300 flex items-center gap-2 shadow-sm"
                   onClick={createReviewtHandler}
                 >
                   Submit

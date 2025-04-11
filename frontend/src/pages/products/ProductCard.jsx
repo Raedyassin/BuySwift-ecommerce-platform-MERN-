@@ -3,61 +3,62 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import { toast } from "react-toastify";
-// import Loader from "../../components/Loader";
 import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings";
+
 export default function ProductCard({ product }) {
   const dispatch = useDispatch();
 
   return (
-    <div className="max-w-sm rounded w-[20rem] h-[310px]   shadow-lg relative">
+    <div className="w-full max-w-sm h-full rounded-lg shadow-md bg-white border
+    border-gray-100 hover:shadow-lg transition-all duration-300 relative flex
+    flex-col ">
       <section className="relative">
         <Link to={`/product/${product._id}`}>
-          <span
-            className="absolute bottom-5 right-3 bg-pink-100 text-pink-800 
-          text-sm font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300"
-          >
+          <span className="absolute bottom-3 right-3 bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full">
             {product.brand}
           </span>
           <img
             src={"/uploads/" + product.img.split("/").pop()}
-            className="w-full p-3 rounded-xl cursor-pointer "
+            className="w-full h-40 sm:h-48 md:h-52 object-cover rounded-2xl cursor-pointer p-2"
             alt={product.name}
-            style={{ height: "170px", objectFit: "cover" }}
           />
         </Link>
-        <HeartIcon product={product} yPosition="top-4" xPosition="right-4" />
+        <HeartIcon product={product} yPosition="top-3" xPosition="right-3" />
       </section>
-      <div className="p-4 py-1">
-        <div className="flex justify-between">
-          <Link to={`/product/${product._id}`}>
-            <h5
-              className="mb-1 text-lg font-bold hover:underline hover:text-pink-800
-              tracking-tight text-gray-900"
+      <div className="p-3 flex-1 flex flex-col justify-between">
+        <div>
+          <div className="flex justify-between items-start">
+            <Link to={`/product/${product._id}`}>
+              <h5 className="text-base sm:text-lg font-bold text-gray-900 hover:text-indigo-600 hover:underline transition-colors duration-200 line-clamp-1">
+                {product.name}
+              </h5>
+            </Link>
+            <p className="text-indigo-700 font-semibold text-sm sm:text-base">
+              ${product.price}
+            </p>
+          </div>
+          <p className="text-gray-600 text-xs sm:text-sm mt-1 line-clamp-2">
+            {product.discription.substring(0, 65)}
+            {product.discription.length > 65 && "..."}
+            {/* <Link
+              to={`/product/${product._id}`}
+              className="text-indigo-500 italic font-medium hover:text-indigo-600 transition-colors duration-200"
             >
-              {product.name}
-            </h5>
-          </Link>
-          <p className="text-pink-700 font-semibold ">{"$" + product.price}</p>
+              {" "}
+              read more...
+            </Link> */}
+          </p>
         </div>
-        <p className="mb-1  font-normal text-gray-700">
-          {product.discription.substring(0, 65)}
-          <Link
-            to={`/product/${product._id}`}
-            className="text-pink-600 italic font-bold"
-          >
-            {" "}
-            read more...
-          </Link>
-        </p>
-      </div>
-      <div className="flex justify-between items-center p-3 py-1">
-        <Ratings rating={product.rating} />
-        <AiOutlineShoppingCart
-          onClick={() => dispatch(addToCart({...product, quantity: 1}))}
-          size={24}
-          className="text-pink-600 cursor-pointer"
-        />
+        <div className="flex justify-between items-center mt-2">
+          <Ratings rating={product.rating} />
+          <AiOutlineShoppingCart
+            onClick={() => dispatch(addToCart({ ...product, quantity: 1 }))}
+            className="text-indigo-600 cursor-pointer hover:text-indigo-900 
+            transition-colors duration-200 w-6 h-6  lg:w-7 lg:h-7 
+            xl:w-8 xl:h-8 2xl:w-9 2xl:h-9"
+          />
+        </div>
       </div>
     </div>
   );
