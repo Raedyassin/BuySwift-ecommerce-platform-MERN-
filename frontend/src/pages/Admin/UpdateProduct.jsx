@@ -100,6 +100,10 @@ export default function UpdateProduct() {
       console.log(err);
     }
   };
+    useEffect(() => {
+      window.document.title = "Update Product: " + product?.data?.product?.name;
+    }, [product]);
+
 
   const handleDelete = (e) => {
     e.preventDefault();

@@ -14,7 +14,7 @@ export default function AdminMenu() {
       <button
         className={`fixed z-50 p-2 rounded-full  cursor-pointer shadow-md hover:shadow-lg 
           transition-all duration-300 bg-gray-50 hover:bg-gray-100 text-gray-700 ${
-            isMenuOpen ? "top-5 right-7" : "top-5 right-7"
+            isMenuOpen ? "top-25 lg:top-20 right-2" : "top-25 lg:top-20 right-2"
           }`}
         onClick={toggleMenu}
       >
@@ -22,7 +22,7 @@ export default function AdminMenu() {
       </button>
       {isMenuOpen && (
         <section
-          className="fixed top-12 right-7 bg-white shadow-xl rounded-xl p-4 
+          className="fixed top-25 lg:top-20 right-7 bg-white shadow-xl rounded-xl p-4 
         w-64 z-40 transition-all duration-300 ease-in-out"
         >
           <ul className="list-none space-y-1">

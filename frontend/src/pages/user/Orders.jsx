@@ -85,10 +85,10 @@ export default function Orders() {
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 1 }}
-          className={`fixed z-1000 lg:relative left-0 right-0 w-[50%] bg-white 
-            h-full overflow-auto lg:h-auto lg:ml-2  lg:w-[15rem] lg:block rounded-3xl mt-2 mb-20 ${
-              openOrders ? "block" : "hidden"
-            }  `}
+          className={`fixed z-1000  left-0 lg:left-[70px] top-22 sm:top-24 md:top-14  
+            lg:top-15 w-[50%]  bg-white 
+            h-screen overflow-auto lg:h-[90%]  lg:ml-2   lg:w-[15rem] lg:block  
+            mt-2  pb-20 lg:pb-0 ${openOrders ? "block" : "hidden"}  `}
         >
           <div className="shadow-[5px_0px_8px_rgba(0,0,0,0.1)]  rounded flex  justify-center h-20 items-center ">
             <h1 className=" text-lg   font-bold italic">
@@ -159,7 +159,7 @@ export default function Orders() {
       )}
 
       {/* the right side */}
-      <div className="flex flex-col lg:flex-grow ">
+      <div className="flex flex-col lg:flex-grow lg:ml-[15rem]">
         {data?.data?.orders.length === 0 ? (
           <motion.h1
             key={selectedItem}

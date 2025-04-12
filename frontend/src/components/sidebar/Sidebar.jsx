@@ -1,5 +1,5 @@
-import "./sidebar.css";
-import { useState } from "react";
+// import "./sidebar.css";
+import {  useState } from "react";
 import {
   AiOutlineHome,
   AiOutlineShopping,
@@ -17,21 +17,24 @@ import { useLogoutMutation } from "../../redux/apis/userApiSlice";
 import { logOut } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
+import { FaTimes } from "react-icons/fa";
 
-export default function Sidebar({ setChangeWidth }) {
+export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
   const { userInfo } = useSelector((state) => state.auth);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
 
   const toggleDropDown = () => {
+
+    if(showSidebarMenu === true) return
     setDropDownOpen(!dropDownOpen);
   };
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
-    setChangeWidth((state) => !state);
+    // setChangeWidth((state) => !state);
   };
   const closeSidebar = () => {
-    setChangeWidth((state) => !state);
+    // setChangeWidth((state) => !state);
     setShowSidebar(false);
     setDropDownOpen(false);
   };
@@ -44,6 +47,7 @@ export default function Sidebar({ setChangeWidth }) {
       await LogOutApi().unwrap();
       dispatch(logOut());
       toast.success("You are logged out");
+      setShowSidebarMenu(false)
       navigate("/login");
     } catch (err) {
       console.log(err.data.mesage);
@@ -55,72 +59,114 @@ export default function Sidebar({ setChangeWidth }) {
       onMouseEnter={toggleSidebar}
       onMouseLeave={closeSidebar}
       style={{ zIndex: 10000 }}
-      className={`${showSidebar ? "hidden" : "flex"} xl:flex lg:flex md:hidden 
-      hidden flex-col justify-between p-4 bg-gray-100  text-black w-[5%]
-      hover:w-[10%] h-[100vh] fixed `}
+      className={`${showSidebarMenu ? "block" : "hidden"}
+      fixed top-0  w-full sm:w-[50%] border-r border-gray-200 lg:top-0 left-0  overflow-auto
+      lg:flex  lg:transition-all lg:duration-500 
+      lg:flex-col lg:overflow-hidden justify-between p-4 pt-2 bg-white lg:bg-gray-100  text-black lg:w-[70px] 
+      lg:hover:w-[150px] lg:h-[100vh]  group `}
       id="navigation-container"
     >
-      <div className="flex flex-col  justify-center space-y-2">
+      {showSidebarMenu && (
+        <FaTimes
+          style={{ zIndex: 10000 }}
+          onClick={() => setShowSidebarMenu(false)}
+          className="absolute top-5 right-5 cursor-pointer p-2 rounded-full w-8 h-8
+        shadow-md hover:bg-gray-300 hover:text-white
+        "
+        />
+      )}
+
+      {/* Links */}
+      <div className="flex flex-col justify-center lg:space-y-2">
         <Link
           to="/"
-          className={`flex items-center transition-transform transform 
+          onClick={() => setShowSidebarMenu(false)}
+          className={`flex items-center gap-2 transition-transform transform 
           hover:translate-x-2 hover:text-indigo-800
-          ${window.location.pathname === "/" ? "text-purple-800" : ""} `}
+          ${window.location.pathname === "/" ? "text-indigo-600" : ""} `}
         >
-          <AiOutlineHome className=" mr-2 mt-[2rem]" size={26} />
-          <span className=" hidden nav-item-name mt-[2rem] ">Home</span>
+          <div>
+            <AiOutlineHome className="  my-[1rem] " size={26} />
+          </div>
+          <span className=" lg:hidden group-hover:block my-[1rem] ">Home</span>
         </Link>
         <Link
           to="/shop"
-          className={`flex items-center transition-transform transform 
+          onClick={() => setShowSidebarMenu(false)}
+          className={`flex items-center gap-2 transition-transform transform 
           hover:translate-x-2  hover:text-indigo-800 ${
-            window.location.pathname === "/shop" ? "text-purple-800" : ""
+            window.location.pathname === "/shop" ? "text-indigo-600" : ""
           } `}
         >
-          <AiOutlineShopping className=" mr-2 mt-[2rem]" size={26} />
-          <span className=" hidden nav-item-name mt-[2rem] ">Shop</span>
+          <div>
+            <AiOutlineShopping className=" my-[1rem]" size={26} />
+          </div>
+          <span className=" lg:hidden group-hover:block  my-[1rem] ">Shop</span>
         </Link>
         <Link
           to="/cart"
-          className={`flex items-center transition-transform transform 
+          onClick={() => setShowSidebarMenu(false)}
+          className={`flex  items-center gap-2 transition-transform transform 
           hover:translate-x-2 hover:text-indigo-800 ${
-            window.location.pathname === "/cart" ? "text-purple-800" : ""
+            window.location.pathname === "/cart" ? "text-indigo-600" : ""
           } `}
         >
-          <AiOutlineShoppingCart className=" mr-2 mt-[2rem]" size={26} />
-          <span className=" hidden nav-item-name mt-[2rem] ">Cart</span>
-          <SelectedCounteSidebar selectorinStore="cart.cartItems" />
+          <div className="relative">
+            <AiOutlineShoppingCart className=" my-[1rem]" size={26} />
+            <SelectedCounteSidebar selectorinStore="cart.cartItems" />
+          </div>
+          <span className=" lg:hidden group-hover:block my-[1rem] ">Cart</span>
         </Link>
         <Link
           to="/favorite"
-          className={`flex items-center transition-transform transform 
+          onClick={() => setShowSidebarMenu(false)}
+          className={`flex  items-center  gap-2 transition-transform transform 
           hover:translate-x-2  hover:text-indigo-800 ${
-            window.location.pathname === "/favorite" ? "text-purple-800" : ""
+            window.location.pathname === "/favorite" ? "text-indigo-600" : ""
           } `}
         >
-          <CiHeart className=" mr-2 mt-[2rem]" size={26} />
-          <span className=" hidden nav-item-name mt-[2rem] ">Favorite</span>
-          <SelectedCounteSidebar selectorinStore="favorites" />
+          <div className="relative">
+            <CiHeart className=" my-[1rem]" size={26} />
+            <SelectedCounteSidebar selectorinStore="favorites" />
+          </div>
+          <span className=" lg:hidden group-hover:block my-[1rem] ">
+            Favorite
+          </span>
         </Link>
         <Link
           to="/orderslist"
-          className={`flex items-center transition-transform transform 
+          onClick={() => setShowSidebarMenu(false)}
+          className={`flex items-center  gap-2 transition-transform transform 
           hover:translate-x-2  hover:text-indigo-800 ${
-            window.location.pathname === "/orderslist" ? "text-purple-800" : ""
+            window.location.pathname === "/orderslist" ? "text-indigo-600" : ""
           } `}
         >
-          <CiDeliveryTruck className=" mr-2 mt-[2rem]" size={26} />
-          <span className=" hidden nav-item-name mt-[2rem] ">Orders</span>
+          <div>
+            <CiDeliveryTruck className="my-[1rem]" size={26} />
+          </div>
+          <span className=" lg:hidden group-hover:block my-[1rem] ">
+            Orders
+          </span>
         </Link>
       </div>
 
-      <div className="realtive">
+      {/* user name */}
+      <div className="realtive ">
         <button
-          onMouseEnter={() => setDropDownOpen(true)}
+          onMouseEnter={() =>
+            setDropDownOpen(showSidebarMenu === true ? false : true)
+          }
           onClick={toggleDropDown}
-          className="flex cursor-pointer items-center flex-wrap justify-center text-gray-800 focus:outline-none"
+          className="flex cursor-pointer items-center flex-wrap justify-center 
+          text-gray-800 focus:outline-none"
         >
-          {userInfo ? <span className="font-semibold hover:text-purple-800">{userInfo.username}</span> : <></>}
+          {userInfo ? (
+            <span className="font-semibold hover:text-indigo-600">
+              {userInfo.username}
+            </span>
+          ) : (
+            <></>
+          )}
           {userInfo &&
             (dropDownOpen ? (
               <RiArrowDropUpLine size={26} />
@@ -128,98 +174,107 @@ export default function Sidebar({ setChangeWidth }) {
               <RiArrowDropDownLine size={26} />
             ))}
         </button>
-        {dropDownOpen && userInfo && (
-          <ul
-            className={`absolute left-0 mt-2 space-y-1  w-48  rounded 
-            text-gray-600 bottom-20 bg-gray-100  border border-gray-200`}
-          >
-            {userInfo.isAdmin && (
-              <>
-                <li>
-                  <Link
-                    to="/admin/dashboard"
-                    className={`block px-4 py-2  hover:bg-gray-200 hover:text-indigo-800 ${
-                      window.location.pathname === "/admin/dashboard"
-                        ? "text-purple-800"
-                        : ""
-                    } `}
-                  >
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/productlist"
-                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
-                      window.location.pathname === "/admin/productlist"
-                        ? "text-purple-800"
-                        : ""
-                    } `}
-                  >
-                    Products
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/categorylist"
-                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
-                      window.location.pathname === "/admin/categorylist"
-                        ? "text-purple-800"
-                        : ""
-                    } `}
-                  >
-                    Category
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/orderlist"
-                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
-                      window.location.pathname === "/admin/orderlist"
-                        ? "text-purple-800"
-                        : ""
-                    } `}
-                  >
-                    Orders
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/admin/userlist"
-                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
-                      window.location.pathname === "/admin/userlist"
-                        ? "text-purple-800"
-                        : ""
-                    } `}
-                  >
-                    Users
-                  </Link>
-                </li>
-              </>
-            )}
-            <li>
-              <Link
-                to="/profile"
-                className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
-                  window.location.pathname === "/profile"
-                    ? "text-purple-800"
-                    : ""
-                } `}
-              >
-                Profile
-              </Link>
-            </li>
-            <li>
-              <div
-                onClick={logoutHandler}
-                className={`w-full block px-4 py-2 hover:bg-gray-200 cursor-pointer
+
+        {(((dropDownOpen && userInfo) || (showSidebarMenu && userInfo))
+          && (
+            <ul
+              className={`relative lg:absolute lg:left-0 mt-22 lg:mt-2 lg:space-y-1  lg:w-48
+                lg:rounded overflow-auto
+            text-gray-600 bottom-20 bg-white lg:bg-gray-100  lg:border lg:border-gray-200`}
+            >
+              {userInfo.isAdmin && (
+                <>
+                  <li>
+                    <Link
+                      to="/admin/dashboard"
+                      onClick={() => setShowSidebarMenu(false)}
+                      className={`block px-2 lg:px-4 py-2 rounded my-1  hover:bg-gray-200 hover:text-indigo-800 ${
+                        window.location.pathname === "/admin/dashboard"
+                          ? "text-indigo-600"
+                          : ""
+                      } `}
+                    >
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/productlist"
+                      onClick={() => setShowSidebarMenu(false)}
+                      className={`block px-2 lg:px-4 py-2 rounded my-1 hover:bg-gray-200 hover:text-indigo-800 ${
+                        window.location.pathname === "/admin/productlist"
+                          ? "text-indigo-600"
+                          : ""
+                      } `}
+                    >
+                      Products
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/categorylist"
+                      onClick={() => setShowSidebarMenu(false)}
+                      className={`block px-2 lg:px-4 py-2 rounded my-1 hover:bg-gray-200 hover:text-indigo-800 ${
+                        window.location.pathname === "/admin/categorylist"
+                          ? "text-indigo-600"
+                          : ""
+                      } `}
+                    >
+                      Category
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/orderlist"
+                      onClick={() => setShowSidebarMenu(false)}
+                      className={`block px-2 lg:px-4 py-2 rounded my-1 hover:bg-gray-200 hover:text-indigo-800 ${
+                        window.location.pathname === "/admin/orderlist"
+                          ? "text-indigo-600"
+                          : ""
+                      } `}
+                    >
+                      Orders
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/admin/userlist"
+                      onClick={() => setShowSidebarMenu(false)}
+                      className={`block px-2 lg:px-4 py-2 rounded my-1 hover:bg-gray-200 hover:text-indigo-800 ${
+                        window.location.pathname === "/admin/userlist"
+                          ? "text-indigo-600"
+                          : ""
+                      } `}
+                    >
+                      Users
+                    </Link>
+                  </li>
+                </>
+              )}
+              <li>
+                <Link
+                  to="/profile"
+                  onClick={() => setShowSidebarMenu(false)}
+                  className={`block px-2 lg:px-4 py-2 rounded my-1 hover:bg-gray-200 hover:text-indigo-800 ${
+                    window.location.pathname === "/profile"
+                      ? "text-indigo-600"
+                      : ""
+                  } `}
+                >
+                  Profile
+                </Link>
+              </li>
+              <li>
+                <div
+                  onClick={logoutHandler}
+                  className={`w-full block px-2 lg:px-4 py-2 rounded my-1 hover:bg-gray-200 cursor-pointer
                   hover:text-indigo-800`}
-              >
-                Logout
-              </div>
-            </li>
-          </ul>
-        )}
+                >
+                  Logout
+                </div>
+              </li>
+            </ul>
+          ))}
       </div>
 
       {!userInfo && (
@@ -227,21 +282,27 @@ export default function Sidebar({ setChangeWidth }) {
           <li>
             <Link
               to="/login"
+              onClick={() => setShowSidebarMenu(false)}
               className="flex items-center transition-transform transform 
                 hover:translate-x-2 hover:text-indigo-800"
             >
               <AiOutlineLogin className=" mr-2 mt-[2rem]" size={26} />
-              <span className=" hidden nav-item-name mt-[2rem] ">Login</span>
+              <span className=" hidden group-hover:block mt-[2rem] ">
+                Login
+              </span>
             </Link>
           </li>
           <li>
             <Link
               to="/register"
+              onClick={() => setShowSidebarMenu(false)}
               className="flex items-center transition-transform transform 
                   hover:translate-x-2 hover:text-indigo-800"
             >
               <AiOutlineUserAdd className=" mr-2 mt-[2rem]" size={26} />
-              <span className=" hidden nav-item-name mt-[2rem] ">Register</span>
+              <span className=" hidden group-hover:block mt-[2rem] ">
+                Register
+              </span>
             </Link>
           </li>
         </ul>

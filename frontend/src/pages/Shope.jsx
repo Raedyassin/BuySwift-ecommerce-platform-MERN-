@@ -142,7 +142,7 @@ export default function Shope() {
     <div className="w-full  px-4 py-8 min-h-screen relative">
       <div
         className="fixed p-2 z-50 rounded-full shadow-lg bg-gray-50 border 
-        border-gray-100 flex items-center justify-center top-5 right-4 md:hidden 
+        border-gray-100 flex items-center justify-center top-25 right-4 md:hidden 
         cursor-pointer hover:bg-gray-100 transition-all duration-300 group"
         onClick={() => {
           if (!showFilter) {

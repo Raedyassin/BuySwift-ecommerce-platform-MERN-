@@ -8,12 +8,14 @@ export default function SelectedCounteSidebar({ selectorinStore }) {
 
   const ImtesCount = selecteItmes.length;
   return (
-    <div className="absolute left-2 top-8">
+    <div className="absolute left-2 top-4">
       {ImtesCount > 0 && (
-        <div className="absolute text-[12px] top-[-4px] right-[-4px] bg-indigo-500 
+        <div className={`absolute text-[12px] top-[-4px] right-[-4px] bg-indigo-500 
         rounded-full w-5 h-5 flex justify-center  px-1 items-center text-white
-        font-bold">
-          {ImtesCount > 9 ? "9+" : ImtesCount}
+        font-bold
+        `}>
+        {/* ${+ImtesCount > 9 ? "text-[10px]" : ""}`}> */}
+          {+ImtesCount > 9 ? "9+" : ImtesCount}
         </div>
       )}
     </div>

@@ -1,22 +1,22 @@
-#navigation-container {
+/* #navigation-container {
   width: 5%;
   transition: width 0.3s ease-in-out;
   overflow: hidden;
-}
+} */
 
-#navigation-container:hover {
+/* #navigation-container:hover {
   width: 10%;
-}
+} */
 
-.sidebar {
+/* .sidebar {
   transition: width 0.3s ease-in-out;
-}
+}*/
 
-.main-content {
+/* .main-content {
   transition: margin-left 0.3s ease-in-out;
-}
-
-.nav-item-name {
+} 
+ */
+/* .nav-item-name {
   display: none;
   transition: opacity 0.9s ease-in-out;
 }
@@ -24,4 +24,4 @@
 #navigation-container:hover .nav-item-name {
   display: block; 
   opacity: 1;
-}
+} */
