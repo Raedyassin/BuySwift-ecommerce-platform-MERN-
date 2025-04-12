@@ -83,6 +83,10 @@ export default function OrdersList() {
     if (selectedOrder === userId) return setSelectedOrder(null);
     setSelectedOrder(userId);
   };
+      useEffect(() => {
+        window.document.title = "Orders Table";
+      }, []);
+
 
   useEffect(() => {
     if (error && error?.status < 500) {
@@ -360,7 +364,7 @@ export default function OrdersList() {
                         className="cursor-pointer w-4 h-4"
                       />
                       <span
-                        className=" cursor-pointer hover:text-pink-500 hover:underline "
+                        className=" cursor-pointer hover:text-indigo-500 hover:underline "
                         onClick={() => navigate(`/order/${order._id}`)}
                       >
                         {order._id}

@@ -33,6 +33,7 @@ export default function UserList() {
   const [page, setPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [ selectUserForAdmin,setSelectUserForAdmin] = useState(null);
   const [makeAsAdmin, { isLoading: isLoadingMakeAsAdmin }] =
     useMakeAsAdminMutation();
   const {
@@ -114,6 +115,7 @@ export default function UserList() {
     }
   };
   const makeAdminHandler = async (id) => {
+    setSelectUserForAdmin(id)
     try {
       await makeAsAdmin(id).unwrap();
       toast.success("user with " + id + " is Admin now");
@@ -143,6 +145,10 @@ export default function UserList() {
     else if (searchBy === "name") setFinalFilterBy({ name: searchValue });
     else if (searchBy === "email") setFinalFilterBy({ email: searchValue });
   };
+      useEffect(() => {
+        window.document.title = "User Table";
+      }, []);
+
 
   useEffect(() => {
     if (filterBy === "all") {
@@ -368,7 +374,8 @@ export default function UserList() {
                               type="text"
                               value={editableName}
                               onChange={(e) => setEditableName(e.target.value)}
-                              className="w-full p-2 border border-gray-300 rounded-lg"
+                              className="w-full p-2 border border-gray-300 
+                              rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 "
                             />
                           </div>
                         ) : (
@@ -398,7 +405,8 @@ export default function UserList() {
                               type="text"
                               value={editableEmail}
                               onChange={(e) => setEditableEmail(e.target.value)}
-                              className="w-full p-2 border border-gray-300 rounded-lg"
+                              className="w-full p-2 border border-gray-300 rounded-lg
+                              focus:outline-none focus:ring-1 focus:ring-indigo-500 "
                             />
                           </div>
                         ) : (
@@ -440,10 +448,10 @@ export default function UserList() {
                               <span className="ml-2  font-semibold">No</span>
                             </span>
                             <div
-                              className="cursor-pointer border-2  border-green-500 text-green-500 rounded-full p-1 px-3 hover:bg-green-500 hover:text-white"
+                              className="cursor-pointer border-2  border-indigo-500 text-indigo-500 rounded-full p-1 px-3 hover:bg-indigo-500 hover:text-white"
                               onClick={() => makeAdminHandler(user._id)}
                             >
-                              {isLoadingMakeAsAdmin ? (
+                              {isLoadingMakeAsAdmin && selectUserForAdmin === user._id ? (
                                 <Loader />
                               ) : (
                                 "Make as Admin"

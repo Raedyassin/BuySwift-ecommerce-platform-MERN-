@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useCreateProductMutation,
@@ -24,6 +24,11 @@ export default function CreateProduct() {
   const [uploadProductImage] = useUploadProductImageMutation();
   const [createProduct] = useCreateProductMutation();
   const { data: categories } = useGetAllCategoryQuery();
+
+    useEffect(() => {
+      window.document.title = "Create Product";
+    }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

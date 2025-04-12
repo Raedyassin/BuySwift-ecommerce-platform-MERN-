@@ -90,7 +90,7 @@ export default function Login() {
                 className="w-full cursor-pointer  p-2 sm:p-3 bg-gradient-to-r
               from-[#0094D4] to-[#00C4B4] text-white font-bold rounded-md
               hover:from-[#0083d4] hover:to-[#00b3a3] focus:outline-none 
-              focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
+              focus:ring-2 focus:ring-blue-400 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md text-sm md:text-base"
               >
                 {isLoading ? <Loader loaderText="Signing In" /> : "Sign In"}
               </button>
@@ -100,7 +100,7 @@ export default function Login() {
             <p className="text-sm md:text-base text-gray-600 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-1">
               <span className="font-semibold italic">New Customer?</span>
               <Link
-                className="text-pink-500 font-bold hover:underline"
+                className="text-purple-500 font-bold hover:underline"
                 to={redirect ? `/register?redirect=${redirect}` : "/register"}
               >
                 Register

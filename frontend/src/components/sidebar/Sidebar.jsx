@@ -12,14 +12,13 @@ import { CiDeliveryTruck } from "react-icons/ci";
 import { CiHeart } from "react-icons/ci";
 import { RiArrowDropDownLine, RiArrowDropUpLine } from "react-icons/ri";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../../redux/apis/userApiSlice";
 import { logOut } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
 
-export default function zSidebar({ setChangeWidth }) {
+export default function Sidebar({ setChangeWidth }) {
   const { userInfo } = useSelector((state) => state.auth);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -64,24 +63,29 @@ export default function zSidebar({ setChangeWidth }) {
       <div className="flex flex-col  justify-center space-y-2">
         <Link
           to="/"
-          className="flex items-center transition-transform transform 
-          hover:translate-x-2 "
+          className={`flex items-center transition-transform transform 
+          hover:translate-x-2 hover:text-indigo-800
+          ${window.location.pathname === "/" ? "text-purple-800" : ""} `}
         >
           <AiOutlineHome className=" mr-2 mt-[2rem]" size={26} />
           <span className=" hidden nav-item-name mt-[2rem] ">Home</span>
         </Link>
         <Link
           to="/shop"
-          className="flex items-center transition-transform transform 
-          hover:translate-x-2 "
+          className={`flex items-center transition-transform transform 
+          hover:translate-x-2  hover:text-indigo-800 ${
+            window.location.pathname === "/shop" ? "text-purple-800" : ""
+          } `}
         >
           <AiOutlineShopping className=" mr-2 mt-[2rem]" size={26} />
           <span className=" hidden nav-item-name mt-[2rem] ">Shop</span>
         </Link>
         <Link
           to="/cart"
-          className="flex items-center transition-transform transform 
-          hover:translate-x-2 "
+          className={`flex items-center transition-transform transform 
+          hover:translate-x-2 hover:text-indigo-800 ${
+            window.location.pathname === "/cart" ? "text-purple-800" : ""
+          } `}
         >
           <AiOutlineShoppingCart className=" mr-2 mt-[2rem]" size={26} />
           <span className=" hidden nav-item-name mt-[2rem] ">Cart</span>
@@ -89,8 +93,10 @@ export default function zSidebar({ setChangeWidth }) {
         </Link>
         <Link
           to="/favorite"
-          className="flex items-center transition-transform transform 
-          hover:translate-x-2 "
+          className={`flex items-center transition-transform transform 
+          hover:translate-x-2  hover:text-indigo-800 ${
+            window.location.pathname === "/favorite" ? "text-purple-800" : ""
+          } `}
         >
           <CiHeart className=" mr-2 mt-[2rem]" size={26} />
           <span className=" hidden nav-item-name mt-[2rem] ">Favorite</span>
@@ -98,8 +104,10 @@ export default function zSidebar({ setChangeWidth }) {
         </Link>
         <Link
           to="/orderslist"
-          className="flex items-center transition-transform transform 
-          hover:translate-x-2 "
+          className={`flex items-center transition-transform transform 
+          hover:translate-x-2  hover:text-indigo-800 ${
+            window.location.pathname === "/orderslist" ? "text-purple-800" : ""
+          } `}
         >
           <CiDeliveryTruck className=" mr-2 mt-[2rem]" size={26} />
           <span className=" hidden nav-item-name mt-[2rem] ">Orders</span>
@@ -112,7 +120,7 @@ export default function zSidebar({ setChangeWidth }) {
           onClick={toggleDropDown}
           className="flex cursor-pointer items-center flex-wrap justify-center text-gray-800 focus:outline-none"
         >
-          {userInfo ? <span>{userInfo.username}</span> : <></>}
+          {userInfo ? <span className="font-semibold hover:text-purple-800">{userInfo.username}</span> : <></>}
           {userInfo &&
             (dropDownOpen ? (
               <RiArrowDropUpLine size={26} />
@@ -130,7 +138,11 @@ export default function zSidebar({ setChangeWidth }) {
                 <li>
                   <Link
                     to="/admin/dashboard"
-                    className="block px-4 py-2  hover:bg-gray-200"
+                    className={`block px-4 py-2  hover:bg-gray-200 hover:text-indigo-800 ${
+                      window.location.pathname === "/admin/dashboard"
+                        ? "text-purple-800"
+                        : ""
+                    } `}
                   >
                     Dashboard
                   </Link>
@@ -138,7 +150,11 @@ export default function zSidebar({ setChangeWidth }) {
                 <li>
                   <Link
                     to="/admin/productlist"
-                    className="block px-4 py-2 hover:bg-gray-200"
+                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
+                      window.location.pathname === "/admin/productlist"
+                        ? "text-purple-800"
+                        : ""
+                    } `}
                   >
                     Products
                   </Link>
@@ -146,7 +162,11 @@ export default function zSidebar({ setChangeWidth }) {
                 <li>
                   <Link
                     to="/admin/categorylist"
-                    className="block px-4 py-2 hover:bg-gray-200"
+                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
+                      window.location.pathname === "/admin/categorylist"
+                        ? "text-purple-800"
+                        : ""
+                    } `}
                   >
                     Category
                   </Link>
@@ -154,7 +174,11 @@ export default function zSidebar({ setChangeWidth }) {
                 <li>
                   <Link
                     to="/admin/orderlist"
-                    className="block px-4 py-2 hover:bg-gray-200"
+                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
+                      window.location.pathname === "/admin/orderlist"
+                        ? "text-purple-800"
+                        : ""
+                    } `}
                   >
                     Orders
                   </Link>
@@ -162,7 +186,11 @@ export default function zSidebar({ setChangeWidth }) {
                 <li>
                   <Link
                     to="/admin/userlist"
-                    className="block px-4 py-2 hover:bg-gray-200"
+                    className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
+                      window.location.pathname === "/admin/userlist"
+                        ? "text-purple-800"
+                        : ""
+                    } `}
                   >
                     Users
                   </Link>
@@ -170,14 +198,22 @@ export default function zSidebar({ setChangeWidth }) {
               </>
             )}
             <li>
-              <Link to="/profile" className="block px-4 py-2 hover:bg-gray-200">
+              <Link
+                to="/profile"
+                className={`block px-4 py-2 hover:bg-gray-200 hover:text-indigo-800 ${
+                  window.location.pathname === "/profile"
+                    ? "text-purple-800"
+                    : ""
+                } `}
+              >
                 Profile
               </Link>
             </li>
             <li>
               <div
                 onClick={logoutHandler}
-                className="w-full block px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                className={`w-full block px-4 py-2 hover:bg-gray-200 cursor-pointer
+                  hover:text-indigo-800`}
               >
                 Logout
               </div>
@@ -192,7 +228,7 @@ export default function zSidebar({ setChangeWidth }) {
             <Link
               to="/login"
               className="flex items-center transition-transform transform 
-            hover:translate-x-2 "
+                hover:translate-x-2 hover:text-indigo-800"
             >
               <AiOutlineLogin className=" mr-2 mt-[2rem]" size={26} />
               <span className=" hidden nav-item-name mt-[2rem] ">Login</span>
@@ -202,7 +238,7 @@ export default function zSidebar({ setChangeWidth }) {
             <Link
               to="/register"
               className="flex items-center transition-transform transform 
-                  hover:translate-x-2 "
+                  hover:translate-x-2 hover:text-indigo-800"
             >
               <AiOutlineUserAdd className=" mr-2 mt-[2rem]" size={26} />
               <span className=" hidden nav-item-name mt-[2rem] ">Register</span>

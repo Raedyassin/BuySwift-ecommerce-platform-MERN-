@@ -16,9 +16,12 @@ export default function AllProduct() {
     isError,
     isFetching,
     error,
-  } = useGetAllProductsPageQuery({ limit: 1, page });
+  } = useGetAllProductsPageQuery({ limit: 50, page });
   const navigate = useNavigate();
   const loaderRef = useRef(null);
+  useEffect(() => {
+    window.document.title = "All Product";
+  },[])
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -80,14 +83,14 @@ export default function AllProduct() {
                         className="w-24 h-24 object-cover rounded-lg 
                         transition-transform duration-300 hover:scale-105"
                       />
+                    </div>
+                    <div className="relative flex-1 flex flex-col h-full justify-between">
                       <span
-                        className="absolute top-1 right-1 bg-gray-900/80 
+                        className="absolute top-0 right-1 bg-gray-900/80 
                       text-white text-xs px-1.5 py-0.5 rounded-full"
                       >
-                        {moment(product.createdAt).format("MMM YYYY")}
+                        {moment(product.createdAt).format("MMM YYYY DD")}
                       </span>
-                    </div>
-                    <div className="flex-1 flex flex-col justify-between">
                       <div>
                         <h5 className="text-base font-bold text-gray-900 mb-1 line-clamp-1">
                           {product.name}
@@ -101,7 +104,7 @@ export default function AllProduct() {
                           onClick={() =>
                             navigate(`/admin/product/update/${product._id}`)
                           }
-                          className="group inline-flex items-center px-2 py-1 bg-gradient-to-r from-pink-600 to-purple-600 text-white rounded-lg hover:from-pink-700 hover:to-purple-700 transition-all duration-300 text-xs"
+                          className="group inline-flex items-center px-2 py-1  text-white rounded-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-colors duration-300 text-xs"
                         >
                           Update
                           <svg
@@ -128,24 +131,22 @@ export default function AllProduct() {
                   </div>
                 </Link>
               ))}
-                    </div>
-              {isFetching && (
-                <>
-                  <div>
-                    <div
-                      className="
-                        bg-white rounded-xl p-4 mt-5 shadow-lg 
-                        hover:shadow-xl transition-all duration-300 border 
-                        border-gray-100 h-30 flex items-center justify-center 
-                        hover:bg-gray-100 cursor-pointer"
-                    >
-                      <Loader />
-                    </div>
+            </div>
+            {isFetching && (
+              <>
+                <div>
+                  <div
+                    className="
+                        bg-white rounded-xl p-4 mt-5 
+                        h-30 flex items-center justify-center"
+                  >
+                    <Loader />
                   </div>
-                </>
-              )}
-              {/* load more Orders */}
-              <div ref={loaderRef} className="h-10"></div>
+                </div>
+              </>
+            )}
+            {/* load more Orders */}
+            <div ref={loaderRef} className="h-10"></div>
           </div>
         </div>
         <AdminMenu />

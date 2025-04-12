@@ -302,7 +302,7 @@ export default function UpdateProduct() {
                 Save Changes
               </button>
               <button
-                className="w-full sm:w-auto cursor-pointer bg-gradient-to-r from-red-600 to-pink-600 text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base hover:from-red-700 hover:to-pink-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
+                className="w-full sm:w-auto cursor-pointer  text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
                 onClick={handleDelete}
               >
                 Delete

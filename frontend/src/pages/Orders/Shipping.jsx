@@ -36,6 +36,11 @@
       }
     }, [shippingAddress, navigate]);
 
+        useEffect(() => {
+          window.document.title = "Shipping";
+        }, []);
+
+
     const shippingSubmitHandler = (e) => {
       e.preventDefault();
       if (
@@ -69,7 +74,10 @@
           <ProgressSteps step1 step2 step3={false} />
           <div className="mt-6">
             <form className="bg-white shadow-lg rounded-xl p-4 sm:p-6 w-full">
-              <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              <h1
+                className="text-xl  sm:text-2xl font-bold mb-4 sm:mb-6 
+              bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent"
+              >
                 Shipping Details
               </h1>
 
@@ -132,7 +140,7 @@
                       value={field.value}
                       onChange={(e) => field.setter(e.target.value)}
                       placeholder={field.placeholder}
-                      className="w-full p-2 sm:p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200 bg-gray-50 hover:bg-white text-sm sm:text-base"
+                      className="w-full p-2 sm:p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 bg-gray-50 hover:bg-white text-sm sm:text-base"
                     />
                   </div>
                 ))}
@@ -156,8 +164,8 @@
                       checked={paymentMethod === "PayPal"}
                       name="PayPal"
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="w-4 h-4 text-pink-500 focus:ring-pink-500
-                      border-gray-300 cursor-pointer accent-pink-500 "
+                      className="w-4 h-4 text-indigo-500 focus:ring-indigo-500
+                      border-gray-300 cursor-pointer accent-indigo-500 "
                     />
                     <svg
                       className="w-16 sm:w-20 h-4 sm:h-5"
@@ -218,8 +226,8 @@
                       checked={paymentMethod === "Vodafone"}
                       name="Vodafone"
                       onChange={() => setPaymentMethod("PayPal")}
-                      className="w-4 h-4 text-pink-500 focus:ring-pink-500 
-                      border-gray-300 cursor-pointer accent-pink-500"
+                      className="w-4 h-4 text-indigo-500 focus:ring-indigo-500 
+                      border-gray-300 cursor-pointer accent-indigo-500"
                     />
                     <SiVodafone className="w-5 h-5 text-[#cc2131]" />
                     <span className="text-sm font-medium text-[#cc2131] italic">
@@ -245,7 +253,7 @@
                       checked={paymentMethod === "Visa"}
                       name="Visa"
                       onChange={() => setPaymentMethod("PayPal")}
-                      className="w-4 h-4 text-pink-500 focus:ring-pink-500 border-gray-300 cursor-pointer"
+                      className="w-4 h-4 text-indigo-500 focus:ring-indigo-500 border-gray-300 cursor-pointer"
                     />
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -290,10 +298,12 @@
               <button
                 type="submit"
                 onClick={(e) => shippingSubmitHandler(e)}
-                className="mt-6 w-full cursor-pointer bg-gradient-to-r 
-              from-pink-600 to-pink-700 text-white py-3 px-4 rounded-lg 
-              font-semibold hover:from-pink-700 hover:to-pink-800 
-                transition-all duration-300 text-sm sm:text-base"
+                className="mt-6 w-full cursor-pointer 
+                text-white py-3 px-4 rounded-lg font-semibold  text-sm sm:text-base
+                bg-gradient-to-r from-indigo-600 to-purple-600 
+                hover:from-indigo-700 hover:to-purple-700 transition-colors 
+                duration-300
+                "
               >
                 Continue to Payment
               </button>

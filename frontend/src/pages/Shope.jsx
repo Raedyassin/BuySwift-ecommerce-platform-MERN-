@@ -35,6 +35,11 @@ export default function Shope() {
     page,
     limit: 50,
   });
+
+      useEffect(() => {
+        window.document.title = "🛒 Shop";
+      }, []);
+
   
   console.log("filterData", filterData);
 

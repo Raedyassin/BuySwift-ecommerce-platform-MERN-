@@ -224,10 +224,11 @@ export default function ProductDetails() {
     <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {/* Product Details */}
       <motion.div
-        initial={{ opacity: 0,  }}
-        animate={{ opacity: 1,   }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl p-6">
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl p-6"
+      >
         {/* Image Section */}
         <div className="relative">
           <img
@@ -279,7 +280,7 @@ export default function ProductDetails() {
               <p className="flex items-center text-gray-700 text-sm sm:text-base">
                 <FaStar className="mr-2 w-5 h-5 text-indigo-500" />{" "}
                 <span className="font-medium mr-1">Rating:</span>{" "}
-                {product?.data?.product?.rating.toFixed(2)} 
+                {product?.data?.product?.rating.toFixed(2)}
               </p>
               <p className="flex items-center text-gray-700 text-sm sm:text-base">
                 <FaShoppingCart className="mr-2 w-5 h-5 text-indigo-500" />{" "}
@@ -335,7 +336,8 @@ export default function ProductDetails() {
           initial={{ opacity: 0, x: 100 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1 }}
-          className="mt-12 shadow-lg p-4 rounded-2xl">
+          className="mt-12 shadow-lg p-4 rounded-2xl"
+        >
           <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
             Related Products
           </h1>
@@ -355,7 +357,8 @@ export default function ProductDetails() {
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
-        className="mt-12 bg-white shadow-lg rounded-xl p-6">
+        className="mt-12 bg-white shadow-lg rounded-xl p-6"
+      >
         <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
           Product Reviews ({product?.data?.product?.numReview})
         </h1>
@@ -509,7 +512,7 @@ export default function ProductDetails() {
                   Clear
                 </button>
                 <button
-                  className="py-2 px-6 bg-gradient-to-r cursor-pointer from-indigo-600 to-purple-600 text-white rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-colors duration-300 flex items-center gap-2 shadow-sm"
+                  className="py-2 px-6  cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-colors duration-300 text-white rounded-lg font-medium text-sm sm:text-base  flex items-center gap-2 shadow-sm"
                   onClick={createReviewtHandler}
                 >
                   Submit

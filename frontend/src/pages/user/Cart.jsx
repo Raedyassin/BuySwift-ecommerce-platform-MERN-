@@ -7,12 +7,20 @@ import {
 } from "../../redux/features/cart/cartSlice";
 import { FaTrash } from "react-icons/fa";
 import { motion } from "motion/react";
+import EmptyCart from "../../components/EmptyCart";
+import { useEffect } from "react";
 
 export default function Cart() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const userInfo = useSelector((state) => state.auth.userInfo);
+
+
+      useEffect(() => {
+        window.document.title = "Shopping Cart";
+      }, []);
+
 
   const checkoutHandler = () => {
     if (userInfo) return navigate("/shipping");
@@ -34,23 +42,9 @@ export default function Cart() {
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen text-gray-800">
+      {/* duplicate wiht checkout */}
       {cart.cartItems.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center"
-        >
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-indigo-300 to-indigo-500 bg-clip-text text-transparent">
-            Your Cart is Empty
-          </h2>
-          <Link
-            to="/shop"
-            className="mt-4 inline-block text-sm sm:text-base md:text-lg text-pink-500 hover:text-pink-700 underline transition-colors duration-300"
-          >
-            Explore the Shop
-          </Link>
-        </motion.div>
+        <EmptyCart />
       ) : (
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* Cart Items */}
@@ -63,20 +57,16 @@ export default function Cart() {
             <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
               <h1
                 className="text-xl sm:text-2xl md:text-3xl font-bold 
-              text-pink-500
-              bg-clip-text "
+              bg-gradient-to-r  from-indigo-500 to-purple-300 bg-clip-text text-transparent "
               >
-                Shopping Cart{" "}
-                <span className="text-pink-500">
-                  ({cart?.cartItems?.length})
-                </span>
+                Shopping Cart ({cart?.cartItems?.length})
               </h1>
               <button
                 onClick={clearCartItemsHandler}
                 className="mt-4 sm:mt-0 text-white font-bold    py-2 px-4 sm:px-6 
-                rounded-xl  bg-red-600 hover:bg-red-700 transition-all duration-300 cursor-pointer
+                rounded-xl  bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md cursor-pointer
                 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 
-                text-sm sm:text-base shadow-md"
+                text-sm sm:text-base "
               >
                 Clear Cart
               </button>
@@ -110,7 +100,7 @@ export default function Cart() {
                     <Link
                       to={`/product/${item._id}`}
                       className="text-base sm:text-lg md:text-xl font-semibold 
-                      text-indigo-500 hover:text-pink-600 transition-colors 
+                      text-black hover:underline hover:text-purple-600 transition-colors 
                       duration-300"
                     >
                       {item.name}
@@ -121,7 +111,7 @@ export default function Cart() {
                     </p>
                     <p
                       className="text-sm sm:text-base md:text-lg font-bold 
-                    text-gray-800"
+                    text-indigo-600"
                     >
                       ${item.price}
                     </p>
@@ -151,7 +141,7 @@ export default function Cart() {
                     </div>
                     <FaTrash
                       onClick={() => removeFromCartHandler(item._id)}
-                      className="text-red-600 hover:text-red-700 cursor-pointer 
+                      className="text-red-500 hover:text-red-600 cursor-pointer 
                       w-4 h-4 sm:w-5 sm:h-5 transition-colors duration-300"
                     />
                   </div>
@@ -170,7 +160,7 @@ export default function Cart() {
             <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-md">
               <h2
                 className="text-lg font-bold sm:text-xl md:text-2xl 
-                text-pink-500 mb-4"
+                bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent mb-4"
               >
                 Order Summary
               </h2>
@@ -188,7 +178,8 @@ export default function Cart() {
                   <span>${cart.taxPrice}</span>
                 </div>
                 <hr className="border-gray-300" />
-                <div className="flex justify-between text-base sm:text-lg md:text-xl font-bold text-gray-800">
+                  <div className="flex justify-between text-base sm:text-lg md:text-xl 
+                font-bold text-indigo-900">
                   <span>Total Price:</span>
                   <span>${cart.totalPrice}</span>
                 </div>
@@ -196,10 +187,10 @@ export default function Cart() {
               <button
                 onClick={checkoutHandler}
                 disabled={cart.cartItems?.length === 0}
-                className="w-full mt-6 cursor-pointer bg-gradient-to-r 
-              from-pink-600 to-pink-700 text-white py-3 px-4 rounded-lg 
-              font-semibold hover:from-pink-700 hover:to-pink-800 
-              transition-all duration-300 
+                className="w-full mt-6 cursor-pointer text-white bg-gradient-to-r 
+                from-indigo-600 to-purple-600 hover:from-indigo-700 
+                hover:to-purple-700 
+                transition-all duration-300  py-3 px-4 rounded-lg 
                 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
               >
                 Proceed to Checkout

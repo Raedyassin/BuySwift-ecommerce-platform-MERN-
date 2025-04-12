@@ -85,6 +85,10 @@ export default function UserList() {
     else if (searchBy === "stock") setFinalFilterBy({ stock: searchValue });
     // setSearchValue("");
   };
+      useEffect(() => {
+        window.document.title = "Product Table";
+      }, []);
+
 
   useEffect(() => {
     if (filterBy === "all") {
@@ -409,7 +413,7 @@ export default function UserList() {
                         />
                         <Link
                           to={`/product/${product._id}`}
-                          className="py-2 cursor-pointer  hover:text-pink-600 hover:underline"
+                          className="py-2 cursor-pointer  hover:text-indigo-600 hover:underline"
                         >
                           {product._id}
                         </Link>

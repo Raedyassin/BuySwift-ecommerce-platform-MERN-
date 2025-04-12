@@ -12,7 +12,7 @@ import {
   addProductReview,
   fetchTopProducts,
   fetchnewProducts,
-  filterProduct,
+  searchProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,
   editProductReview,
@@ -34,7 +34,7 @@ route.route("/top")
 route.route("/new")
   .get(fetchnewProducts)
 route.route("/search")
-  .get(filterProduct)
+  .get(searchProduct)
 
 
 route.route("/related/:id")

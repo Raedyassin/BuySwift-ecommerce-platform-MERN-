@@ -471,9 +471,9 @@ const fetchnewProducts = asyncHandler(
   }
 )
 
-// the differ between fetchAllProducts is i don't wanna change filterProduct logic
+// the differ between fetchAllProducts is i don't wanna change searchProduct logic
 // because i make it befor and i don't want to change it
-const filterProduct = asyncHandler(
+const searchProduct = asyncHandler(
   async (req, res, next) => {
     const page = req.query.page ? +req.query.page : 1;
     const pageSize = req.query.limit ? (+req.query.limit > 50 ? 50 : +req.query.limit) : 10;
@@ -601,7 +601,7 @@ export {
   addProductReview,
   fetchTopProducts,
   fetchnewProducts,
-  filterProduct,
+  searchProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,
   editProductReview,

@@ -8,6 +8,7 @@ import Loader from "../../components/Loader";
 import { useCreateOrderMutation } from "../../redux/apis/orderApiSlice";
 import { clearCartItems } from "../../redux/features/cart/cartSlice";
 import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import EmptyCart from "../../components/EmptyCart";
 
 const PlaceOrder = () => {
   const [, dispatchPaypalLoader] = usePayPalScriptReducer();
@@ -26,6 +27,10 @@ const PlaceOrder = () => {
   }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
 
   const dispatch = useDispatch();
+      useEffect(() => {
+        window.document.title = "Place Order";
+      }, []);
+
 
   const placeOrderHandler = async () => {
     try {
@@ -51,22 +56,9 @@ const PlaceOrder = () => {
 
   if (cart.cartItems.length === 0) {
     return (
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center"
-        >
-          <h2 className="text-2xl sm:text-3xl pt-8 md:text-4xl font-bold bg-gradient-to-r from-indigo-300 to-indigo-500 bg-clip-text text-transparent">
-            Your Cart is Empty
-          </h2>
-          <Link
-            to="/shop"
-            className="mt-4 inline-block text-sm sm:text-base md:text-lg text-pink-500 hover:text-pink-700 underline transition-colors duration-300"
-          >
-            Explore the Shop
-          </Link>
-        </motion.div>
+      <div className="py-8">
+        <EmptyCart />
+      </div>
     );
   }
 
@@ -75,11 +67,10 @@ const PlaceOrder = () => {
       <div className="mb-8">
         <ProgressSteps step1 step2 step3 />
       </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Cart Items Table */}
         <div className="lg:col-span-2 bg-white shadow-lg rounded-xl p-6">
-          <h2 className="text-xl font-bold mb-4 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-xl font-bold mb-4 bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent">
             Order Items
           </h2>
           <div className="overflow-x-auto">
@@ -118,7 +109,7 @@ const PlaceOrder = () => {
                     </td>
                     <td className="p-4">
                       <Link
-                        className="text-pink-500 font-medium hover:text-pink-600 transition-colors duration-200"
+                        className="text-black font-medium hover:underline hover:text-purple-600 transition-colors duration-200"
                         to={`/product/${item._id}`}
                       >
                         {item.name}
@@ -128,7 +119,7 @@ const PlaceOrder = () => {
                     <td className="p-4 text-gray-600">
                       ${item.price.toFixed(2)}
                     </td>
-                    <td className="p-4 text-gray-600">
+                    <td className="p-4 text-indigo-600 font-bold">
                       ${(item.quantity * item.price).toFixed(2)}
                     </td>
                   </tr>
@@ -142,7 +133,7 @@ const PlaceOrder = () => {
         <div>
           <div className="bg-white shadow-lg rounded-xl p-6">
             <h2
-              className="text-xl font-bold mb-4  text-pink-600
+              className="text-xl font-bold mb-4  bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent
             "
             >
               Order Summary
@@ -153,7 +144,7 @@ const PlaceOrder = () => {
                 <span>${cart.itemsPrice}</span>
               </div>
               <div className="flex justify-between text-gray-700">
-                <span className="font-medium">Shipping:</span>
+                <span className="font-medium ">Shipping:</span>
                 <span>${cart.shippingPrice}</span>
               </div>
               <div className="flex justify-between text-gray-700">
@@ -161,13 +152,13 @@ const PlaceOrder = () => {
                 <span>${cart.taxPrice}</span>
               </div>
               <div className="flex justify-between text-lg font-semibold text-gray-800 border-t pt-2">
-                <span>Total:</span>
+                <span className="italic text-indigo-800">Total:</span>
                 <span>${cart.totalPrice}</span>
               </div>
             </div>
 
             <div className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              <h3 className="text-lg italic font-semibold text-indigo-800 mb-2">
                 Shipping
               </h3>
               <p className="text-gray-600">
@@ -178,7 +169,7 @@ const PlaceOrder = () => {
             </div>
 
             <div className="mt-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+              <h3 className="text-lg font-semibold text-indigo-800 italic mb-2">
                 Payment Method
               </h3>
               <p className="text-gray-600">{cart.paymentMethod}</p>
@@ -186,11 +177,11 @@ const PlaceOrder = () => {
 
             <button
               type="submit"
-              className="mt-6 w-full bg-gradient-to-r  cursor-pointer
-              from-pink-600 to-pink-700 text-white py-3 px-4 rounded-lg 
-              font-semibold hover:from-pink-700 hover:to-pink-800 
-              transition-all duration-300 flex items-center justify-center 
-              disabled:opacity-50"
+              className="mt-6 w-full   cursor-pointer
+                text-white py-3 px-4 rounded-lg font-semibold 
+                transition-all duration-300 flex items-center justify-center 
+                bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 
+                hover:to-purple-700 disabled:opacity-50"
               disabled={cart.cartItems === 0}
               onClick={placeOrderHandler}
             >

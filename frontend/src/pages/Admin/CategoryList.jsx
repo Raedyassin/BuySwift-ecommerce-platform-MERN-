@@ -4,7 +4,7 @@ import {
   useGetAllCategoryQuery,
   useDeleteCategoryMutation,
 } from "../../redux/apis/categoryApiSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import CategoryForm from "../../components/CategoryForm";
 import Modale from "../../components/Modale";
@@ -31,6 +31,11 @@ export default function CategoryManagement() {
   const [createCategory] = useCreateCategoryMutation();
   const [updateCategory] = useUpdateCategoryMutation();
   const [deleteCategory] = useDeleteCategoryMutation();
+
+    useEffect(() => {
+      window.document.title = "Category Table";
+    }, []);
+
 
   const deleteCategoryHandler = async (e) => {
     e.preventDefault();
@@ -158,14 +163,14 @@ export default function CategoryManagement() {
                         setSelectedCategory(category);
                         setUpdatingName(category.name);
                       }}
-                      className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-lg 
-                        hover:bg-teal-100 hover:border-teal-300 transition-all duration-200 focus:outline-none focus:ring-2 
-                        focus:ring-teal-400 focus:ring-opacity-50 cursor-pointer"
+                      className="flex items-center justify-between p-3 bg-indigo-50 border border-indigo-200 text-indigo-500 rounded-lg 
+                        hover:bg-indigo-100 hover:border-indigo-300 transition-all duration-200 focus:outline-none focus:ring-2 
+                        focus:ring-indigo-400 focus:ring-opacity-50 cursor-pointer"
                     >
                       <span className="font-medium truncate">
                         {category.name}
                       </span>
-                      <span className="text-sm text-teal-700">Edit</span>
+                      <span className="text-sm text-indigo-400">Edit</span>
                     </button>
                   ))}
                 </div>

@@ -32,7 +32,7 @@ export default function AdminMenu() {
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/dashboard"
                 style={({ isActive }) => ({
-                  color: isActive ? "#0094D4" : "#000",
+                  color: isActive ? "#615FFF" : "#000",
                   fontWeight: isActive ? "bold" : "normal",
                 })}
               >
@@ -45,7 +45,7 @@ export default function AdminMenu() {
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/categorylist"
                 style={({ isActive }) => ({
-                  color: isActive ? "#0094D4" : "#000",
+                  color: isActive ? "#615FFF" : "#000",
                   fontWeight: isActive ? "bold" : "normal",
                 })}
               >
@@ -58,7 +58,7 @@ export default function AdminMenu() {
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/createproduct"
                 style={({ isActive }) => ({
-                  color: isActive ? "#0094D4" : "#000",
+                  color: isActive ? "#615FFF" : "#000",
                   fontWeight: isActive ? "bold" : "normal",
                 })}
               >
@@ -71,7 +71,7 @@ export default function AdminMenu() {
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/allproductslist"
                 style={({ isActive }) => ({
-                  color: isActive ? "#0094D4" : "#000",
+                  color: isActive ? "#615FFF" : "#000",
                   fontWeight: isActive ? "bold" : "normal",
                 })}
               >
@@ -84,7 +84,7 @@ export default function AdminMenu() {
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/userlist"
                 style={({ isActive }) => ({
-                  color: isActive ? "#0094D4" : "#000",
+                  color: isActive ? "#615FFF" : "#000",
                   fontWeight: isActive ? "bold" : "normal",
                 })}
               >
@@ -97,7 +97,7 @@ export default function AdminMenu() {
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/orderlist"
                 style={({ isActive }) => ({
-                  color: isActive ? "#0094D4" : "#000",
+                  color: isActive ? "#615FFF" : "#000",
                   fontWeight: isActive ? "bold" : "normal",
                 })}
               >

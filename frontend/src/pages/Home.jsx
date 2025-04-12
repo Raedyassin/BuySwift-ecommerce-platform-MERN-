@@ -5,10 +5,15 @@ import Header from "../components/Header";
 import Message from "../components/Message";
 // import Product from "./products/Product";
 import ProductCard from "./products/ProductCard";
+import { useEffect } from "react";
 
 export default function Home() {
   const { keyword } = useParams();
-  const {data, isLoading, isError } = useGetProductsQuery({keyword})
+  const { data, isLoading, isError } = useGetProductsQuery({ keyword })
+      useEffect(() => {
+        window.document.title = "Cloud Dream store";
+      }, []);
+
   return (
     <>
       {!keyword ? <Header /> : null}

@@ -27,6 +27,11 @@ export default function Profile() {
     setEmail(userInfo.email);
   }, [userInfo.username, userInfo.email]);
 
+      useEffect(() => {
+        window.document.title = "Profile: " + userInfo.username;
+      }, []);
+
+
   console.log(userInfo);
 
   const handleUpates = async (e) => {
@@ -86,18 +91,24 @@ export default function Profile() {
         bg-white"
       >
         {/* Profile Image */}
-        <div className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-37 md:h-37 mb-4 
-        cursor-pointer">
+        <div
+          className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-37 md:h-37 mb-4 
+        cursor-pointer"
+        >
           {isLoadingImage ? (
-            <div className="w-full h-full rounded-full bg-gray-100 flex 
-            justify-center items-center">
+            <div
+              className="w-full h-full rounded-full bg-gray-100 flex 
+            justify-center items-center"
+            >
               <Loader />
             </div>
           ) : (
-              <div className="w-full h-full border-5 border-gray-300 rounded-full 
-              relative">
+            <div
+              className="w-full h-full border-5 border-[#00C4B4] rounded-full 
+              relative"
+            >
               <img
-                src={ userInfo?.img || "../../../public/userImge.png" }
+                src={userInfo?.img || "../../../public/userImge.png"}
                 alt={userInfo?.username}
                 className="w-full h-full object-cover rounded-full"
                 onError={(e) => {
@@ -205,7 +216,7 @@ export default function Profile() {
               type="submit"
               className="w-full  p-2 sm:p-3 bg-gradient-to-r from-[#0094D4] to-[#00C4B4] 
               text-white font-bold rounded-md hover:from-[#0083d4] hover:to-[#00b3a3] 
-              focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm sm:text-base"
+              focus:outline-none focus:ring-2 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md cursor-pointer focus:ring-blue-400 text-sm sm:text-base"
             >
               {isLoading ? <Loader loaderText="Saving" /> : "Save"}
             </button>

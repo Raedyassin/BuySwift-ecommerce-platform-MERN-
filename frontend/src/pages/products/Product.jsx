@@ -1,46 +1,46 @@
 import { Link } from "react-router-dom";
 import HeartIcon from "./HeartIcon";
 export default function Product({ product }) {
-  console.log("product", product);
+  console.log("product", product.name);
   
   return (
     <div
-      className={`w-full sm:w-[45%]  lg:w-[32%] xl:w-[23%] h-[20rem]  border-10 border-sky-50
-      relative rounded-2xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  `}
+      className={`w-full  h-[20rem]  
+        hover:shadow-2xl transition-all duration-300
+      relative rounded-2xl shadow-lg  `}
     >
       <div className="relative p-4 pb-2 ">
         <img
           src={product.img}
           alt={product.name}
-          className="w-[100%] h-[10rem] object-fill cursor-pointer rounded-xl"
+          className="w-[100%] h-[10rem] hover:scale-105 transition-all duration-300  object-fill cursor-pointer rounded-xl"
         />
         <HeartIcon product={product} />
       </div>
-      <div className="px-4 mb-2 flex justify-between items-center">
+      <div className="px-4 mb-2 relative flex justify-between items-center">
         <Link to={`/product/${product._id}`}>
           <div
-            className="text-lg text-gray-700 hover:text-pink-600 hover:underline font-simibold italic
+            className="text-lg text-black hover:text-purple-600 hover:underline font-simibold italic
             "
           >
-            {product.name}
+            {product.name.length > 20
+              ? product.name.substring(0, 20) + "..."
+              : product.name}
           </div>
         </Link>
         <span
-          className="bg-pink-100 text-pink-800 text-sm font-medium
-              px-2.5 py-0.5 rounded-full dark:bg-pink-900 dark:text-pink-300 "
+          className="bg-indigo-800 text-sm font-medium
+              px-2.5 py-0.5 rounded-full  text-white absolute top-1 right-4"
         >
           {"$ " + product.price}
         </span>
       </div>
       <p className="px-4 mb-4  font-normal text-gray-700">
-        {product.discription.substring(0, 65)}
-        <Link
-          to={`/product/${product._id}`}
-          className="text-pink-600 italic font-bold"
-        >
+        {product?.discription?.substring(0, 60)}
+        <span className=" italic font-bold">
           {" "}
-          read more...
-        </Link>
+          {product?.discription?.length > 65 ? "..." : ""}
+        </span>
       </p>
     </div>
   );

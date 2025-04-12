@@ -35,6 +35,11 @@ export default function Orders() {
     // }
   );
 
+      useEffect(() => {
+        window.document.title = "Orders";
+      }, []);
+
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -87,7 +92,7 @@ export default function Orders() {
         >
           <div className="shadow-[5px_0px_8px_rgba(0,0,0,0.1)]  rounded flex  justify-center h-20 items-center ">
             <h1 className=" text-lg   font-bold italic">
-              (<span className="text-pink-600">{data?.ordersLength}</span>){" "}
+              (<span className="text-indigo-600">{data?.ordersLength}</span>){" "}
               Order{" "}
             </h1>
           </div>
@@ -111,7 +116,8 @@ export default function Orders() {
             );
             return (
               <div
-                className="px-5  shadow-[5px_2px_10px_rgba(0,0,0,0.08)] h-20 mt-5 hover:bg-gray-100 cursor-pointer   py-2"
+                className="px-5  shadow-[5px_2px_10px_rgba(0,0,0,0.08)] h-20 mt-2
+                hover:bg-gray-100 cursor-pointer   py-2"
                 key={order._id}
                 onClick={() => {
                   setSelectedItem(index);
@@ -128,7 +134,7 @@ export default function Orders() {
                     <h3 className="text-gray-500">At {fomattedTime}</h3>
                   </div>
                   <h3 className="italic font-semibold">
-                    <span className=" text-pink-500">
+                    <span className=" text-indigo-500">
                       {order.orderItems.length}
                     </span>{" "}
                     item{order.orderItems.length > 1 && "s"}
@@ -182,7 +188,10 @@ export default function Orders() {
                 </div>
                 <GoListOrdered
                   onClick={() => setOpenOrders(!openOrders)}
-                  className="lg:hidden h-8 w-8 p-1 cursor-pointer hover:bg-gray-200 font-semibold rounded-full"
+                  className="lg:hidden h-9 w-9  cursor-pointer
+                    p-2 shadow-md hover:shadow-lg transition-all duration-300 
+                    bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold 
+                    rounded-full"
                 />
               </div>
               <div className="flex justify-start gap-0.5 items-center mt-5">
@@ -205,6 +214,7 @@ export default function Orders() {
                 </h3>
               </div>
             </motion.div>
+
             <div className="flex flex-col  lg:flex-row mt-10">
               <motion.div
                 // key={selectedItem}

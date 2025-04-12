@@ -33,7 +33,13 @@ export default function HeartIcon({ product, colorText, xPosition, yPosition }) 
           img: product.img,
         })
       );
-      addFavoriteToLocalStorage(product);
+      addFavoriteToLocalStorage({
+        price: product.price,
+        discription: product.discription,
+        name: product.name,
+        _id: product._id,
+        img: product.img,
+      });
     }
   };
   return (
