@@ -13,9 +13,10 @@ export default function AdminMenu() {
     <>
       <button
         className={`fixed z-50 p-2 rounded-full  cursor-pointer shadow-md hover:shadow-lg 
-          transition-all duration-300 bg-gray-50 hover:bg-gray-100 text-gray-700 ${
-            isMenuOpen ? "top-25 lg:top-20 right-2" : "top-25 lg:top-20 right-2"
-          }`}
+          transition-all duration-300 bg-gray-50 hover:bg-gray-100 text-gray-700 
+            top-25 lg:top-20 right-2`}
+            // isMenuOpen ? "top-25 lg:top-20 right-2" : "top-25 lg:top-20 right-2"
+          // }`}
         onClick={toggleMenu}
       >
         {isMenuOpen ? <FaTimes size={20} /> : <TiThMenu size={20} />}

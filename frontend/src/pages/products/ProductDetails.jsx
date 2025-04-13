@@ -532,14 +532,20 @@ export default function ProductDetails() {
             <div>
               {reviews?.data?.reviews?.length > 0 ? (
                 <div className="space-y-6">
-                  {reviews?.data?.reviews?.map((review) => (
-                    <Review
-                      productId={id}
-                      key={review._id}
-                      userInfo={userInfo}
-                      review={review}
-                    />
-                  ))}
+                  {reviews?.data?.reviews
+                    // now i have problem that the rating user is return too so
+                    // i will skip them from frontend utill fix it in backend
+                    // so i add filter function to filter them
+                    // return ( //this is correct code
+                    ?.filter((review) => review?.comment?.trim()?.length > 0)
+                    ?.map((review) => (
+                      <Review
+                        productId={id}
+                        key={review._id}
+                        userInfo={userInfo}
+                        review={review}
+                      />
+                    ))}
                   {isFetchingReviews && (
                     <div className="flex items-center justify-center h-16">
                       <Loader />

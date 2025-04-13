@@ -6,7 +6,12 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SearchForm from "./SearchForm";
 
-export default function Searchbar({ setShowSidebarMenu }) {
+export default function Searchbar({
+  setShowSidebarMenu,
+  setSearchName,
+  searchName,
+  setShowResults,
+}) {
   const userInfo = useSelector((state) => state.auth.userInfo);
   const navigate = useNavigate();
   const goToHome = () => {
@@ -34,7 +39,11 @@ export default function Searchbar({ setShowSidebarMenu }) {
         className="flex order-3 md:order-2 w-full  
       md:w-[50%] lg:w-[40%] items-center gap-2"
       >
-        <SearchForm />
+        <SearchForm
+          setSearchName={setSearchName}
+          searchName={searchName}
+          setShowResults={setShowResults}
+          />
       </div>
 
       {/* Right side (Notifications, User, Menu) */}
@@ -72,7 +81,7 @@ export default function Searchbar({ setShowSidebarMenu }) {
           </div>
         )}
         <TiThMenu
-          onClick={() => setShowSidebarMenu(prev => !prev)}
+          onClick={() => setShowSidebarMenu((prev) => !prev)}
           className="text-xl text-gray-600 sm:text-2xl lg:hidden cursor-pointer 
           hover:text-indigo-600"
         />

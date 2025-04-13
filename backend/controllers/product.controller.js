@@ -487,7 +487,16 @@ const searchProduct = asyncHandler(
       searchName = "";
     }
     if (searchName !== "") {
-      args.name = { $regex: searchName, $options: "i" }
+      // clear extra spaces that insed the searchValue
+      searchName = searchName.split(" ");      
+      searchName = searchName.reduce((acc,word ) => {
+        if(word === "") {
+          return acc;
+        } else {
+          return `${acc} ${word}`
+        }
+      }, "");
+      args.name = { $regex: searchName.trim(), $options: "i" }
     }
     if (req.query.cateogries !== "" && req.query.cateogries !== "undefined" && categoriesID.length > 0) {
       const validCategoryIds = categoriesID.filter(id =>mongoose.Types.ObjectId.isValid(id));
@@ -515,7 +524,6 @@ const searchProduct = asyncHandler(
     if (hasNextPage) {
       products.pop();
     }
-
     res.json({
       status: SUCCESS,
       data: {

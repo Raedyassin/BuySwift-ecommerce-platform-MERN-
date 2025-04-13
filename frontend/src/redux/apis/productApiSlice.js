@@ -196,44 +196,44 @@ const productApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5
     }),
 
-      getSearchedProducts: buil.query({
-        query: ({ selectedCategory, price, page, searchName, limit }) => ({
-          url: `${PRODUCT_URL}/search?page=${page}&limit=${limit}&searchName=${searchName}&cateogries=${selectedCategory}&price=${price}`,
-        }),
-        transformResponse: (response, meta, arg) => ({
-          ...response,
-          searchName: arg.searchName,
-          selectedCategory: arg.selectedCategory,
-          price: arg.price
-        }),
-        serializeQueryArgs: ({ endpointName }) => endpointName,
-        forceRefetch({ currentArg, previousArg }) {
-          return (
-            currentArg.page !== previousArg?.page ||
-            currentArg.selectedCategory !== previousArg?.selectedCategory ||
-            currentArg.price !== previousArg?.price ||
-            currentArg.searchName !== previousArg?.searchName
-          );
-        },
-        merge: (currentCache = {}, newData) => {
-          if (currentCache.searchName !== newData.searchName ||
-            currentCache.selectedCategory !== newData.selectedCategory ||
-            currentCache.price !== newData.price) {
-            return newData
-          }
-          return {
-            ...currentCache,
-            data: { products: [...currentCache.data.products , ...newData.data.products] },
-            currentPage: newData.currentPage,
-            pageSize: newData.pageSize,
-            hasNextPage: newData.hasNextPage,
-            hasPrevPage: newData.hasPrevPage,
-            searchName: newData.searchName,
-            selectedCategory: newData.selectedCategory,
-            price: newData.price
-          }
-        },
+    getSearchedProducts: buil.query({
+      query: ({ selectedCategory, price, page, searchName, limit }) => ({
+        url: `${PRODUCT_URL}/search?page=${page}&limit=${limit}&searchName=${searchName}&cateogries=${selectedCategory}&price=${price}`,
       }),
+      transformResponse: (response, meta, arg) => ({
+        ...response,
+        searchName: arg.searchName,
+        selectedCategory: arg.selectedCategory,
+        price: arg.price
+      }),
+      serializeQueryArgs: ({ endpointName }) => endpointName,
+      forceRefetch({ currentArg, previousArg }) {
+        return (
+          currentArg.page !== previousArg?.page ||
+          currentArg.selectedCategory !== previousArg?.selectedCategory ||
+          currentArg.price !== previousArg?.price ||
+          currentArg.searchName !== previousArg?.searchName
+        );
+      },
+      merge: (currentCache = {}, newData) => {
+        if (currentCache.searchName !== newData.searchName ||
+          currentCache.selectedCategory !== newData.selectedCategory ||
+          currentCache.price !== newData.price) {
+          return newData
+        }
+        return {
+          ...currentCache,
+          data: { products: [...currentCache.data.products , ...newData.data.products] },
+          currentPage: newData.currentPage,
+          pageSize: newData.pageSize,
+          hasNextPage: newData.hasNextPage,
+          hasPrevPage: newData.hasPrevPage,
+          searchName: newData.searchName,
+          selectedCategory: newData.selectedCategory,
+          price: newData.price
+        }
+      },
+    }),
 
     RelatedProducts: buil.query({
       query: ({ id }) => ({

@@ -7,8 +7,13 @@ import PageLoader from "../components/PageLoader";
 import Loader from "../components/Loader";
 import { FiFilter } from "react-icons/fi";
 import { motion } from "motion/react";
+import { useLocation ,useNavigate} from "react-router-dom";
+import PageHeader from "../components/PageHeader";
 
 export default function Shope() {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const [searchName,setSearchName] = useState(searchParams.get("search") || "")
   const [showFilter, setShowFilter] = useState(false);
   const LoaderRef = useRef(null);
   const [page, setPage] = useState(1);
@@ -31,17 +36,24 @@ export default function Shope() {
     isError,
   } = useGetSearchedProductsQuery({
     selectedCategory: selectedCategory.toString(),
+    searchName,
     price,
     page,
     limit: 50,
   });
+  console.log("searchName", searchName);
+  const navigate = useNavigate();
+  const clearSearchResult = () => {
+    setSearchName("");
+    navigate("/shop");
+  }
+  useEffect(() => {
+    setSearchName(searchParams.get("search") || "");
+  }, [searchParams]);
 
-      useEffect(() => {
-        window.document.title = "🛒 Shop";
-      }, []);
-
-  
-  console.log("filterData", filterData);
+  useEffect(() => {
+    window.document.title = "🛒 Shop";
+  }, []);
 
   // Infinite scroll logic with IntersectionObserver
   useEffect(() => {
@@ -103,7 +115,7 @@ export default function Shope() {
   };
 
   const selectedBrandHandler = (index) => {
-    setNewInputRadio(index +1);
+    setNewInputRadio(index + 1);
   };
 
   const priceFilterHandler = (e) => {
@@ -139,7 +151,7 @@ export default function Shope() {
     return <PageLoader height="h-screen" />;
 
   return (
-    <div className="w-full  px-4 py-8 min-h-screen relative">
+    <div className="w-full  px-4 py-4 min-h-screen relative">
       <div
         className="fixed p-2 z-50 rounded-full shadow-lg bg-gray-50 border 
         border-gray-100 flex items-center justify-center top-25 right-4 md:hidden 
@@ -213,8 +225,10 @@ export default function Shope() {
             )}{" "}
             {uniqueBrands.length !== 0 && (
               <>
-                <h2 className="text-lg font-semibold text-center text-gray-100 
-                  py-2 bg-gray-800 rounded-full mt-6 mb-4">
+                <h2
+                  className="text-lg font-semibold text-center text-gray-100 
+                  py-2 bg-gray-800 rounded-full mt-6 mb-4"
+                >
                   Filter by Brands
                 </h2>
                 <div className="space-y-3 px-4">
@@ -257,8 +271,10 @@ export default function Shope() {
                 )}
               </>
             )}
-            <h2 className="text-lg font-semibold text-center text-gray-100 py-2 
-            bg-gray-800 rounded-full mt-6 mb-4">
+            <h2
+              className="text-lg font-semibold text-center text-gray-100 py-2 
+            bg-gray-800 rounded-full mt-6 mb-4"
+            >
               Filter by Price
             </h2>
             <div className="space-y-4 px-4">
@@ -307,6 +323,8 @@ export default function Shope() {
           </div>
         </motion.div>
 
+        {/* header of the page */}
+
         {/* Product Cards */}
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -314,6 +332,37 @@ export default function Shope() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex-1 p-3"
         >
+          <div className="flex justify-between pt-2 mb-3 items-center">
+            {searchName.trim() === "" ? (
+              <PageHeader>Shop</PageHeader>
+            ) : (
+              <>
+                <PageHeader>
+                  Search on <span className="text-indigo-500">{searchName}</span>
+                </PageHeader>
+                <button
+                  onClick={clearSearchResult}
+                  className="p-2 px-4 text-white font-semibold rounded-2xl 
+                bg-indigo-500 cursor-pointer hover:bg-indigo-700"
+                >
+                  Clear
+                </button>
+              </>
+            )}
+          </div>
+          {filterData?.data?.products?.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="ml-[2rem] flex justify-center "
+            >
+              <h1 className="text-2xl font-semibold text-gray-500 w-full italic">
+                No products found
+              </h1>
+            </motion.div>
+          )}
           <div
             className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 
             lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-3"
