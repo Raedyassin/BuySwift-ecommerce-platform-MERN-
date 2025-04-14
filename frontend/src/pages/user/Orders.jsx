@@ -179,10 +179,10 @@ export default function Orders() {
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 1 }}
             >
-              <div className="flex justify-between  items-center ">
-                <div className="flex justify-start gap-0.5 items-center ">
+              <div className="flex justify-between   items-center ">
+                <div className="flex justify-start  gap-0.5 items-center ">
                   <FaOrcid size={26} />{" "}
-                  <h1 className="text-2xl font-bold">
+                  <h1 className="text-base font-bold  sm:text-2xl">
                     {data?.data?.orders[selectedItem]?._id}
                   </h1>
                 </div>
@@ -196,7 +196,7 @@ export default function Orders() {
               </div>
               <div className="flex justify-start gap-0.5 items-center mt-5">
                 <IoTime size={20} color="green" />
-                <h3 className="font-medium  text-[#b6bec1]">
+                <h3 className="font-medium text-base sm:text-md  text-green-200">
                   Created At:{" "}
                   <span className="font-semibold text-gray-500">
                     {new Date(

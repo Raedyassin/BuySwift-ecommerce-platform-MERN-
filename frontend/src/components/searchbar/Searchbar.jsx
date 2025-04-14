@@ -1,8 +1,8 @@
 import { PiRainbowCloudFill } from "react-icons/pi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { TiThMenu } from "react-icons/ti";
-// import { FiMenu } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import {motion} from 'motion/react'
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchForm from "./SearchForm";
 import { toast } from "react-toastify";
@@ -81,7 +81,10 @@ export default function Searchbar({
           </div>
         </div>
         {userInfo ? (
-          <div>
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            className="relative cursor-pointer"
+          >
             <img
               onClick={() => setShowUserInfo(!showUserInfo)}
               onMouseEnter={() => setShowUserInfo(true)}
@@ -93,19 +96,21 @@ export default function Searchbar({
             {showUserInfo && (
               <div
                 className={`absolute   shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-xl pb-4 
-                w-[10rem] bg-white  top-12 right-8`}
+                w-[8rem] md:w-[10rem] bg-white top-8  sm:top-10 right-0`}
               >
                 <ul
                   onMouseLeave={() => setShowUserInfo(false)}
                   onMouseEnter={() => setShowUserInfo(true)}
                 >
-                  <li className={`px-4 py-2 pt-4  rounded  `}>
+                  <li
+                    className={`px-4 py-2 pt-4 font-semibold rounded text-[12px] sm:text-sm `}
+                  >
                     {userInfo.username.length > 13
                       ? userInfo.username.subString(0, 13) + " ..."
                       : userInfo.username}
                   </li>
                   <li
-                    className={`flex items-center gap-1 px-4 py-2  rounded  
+                    className={`flex items-center gap-1 px-4 py-2 text-[12px] sm:text-sm rounded  
                         transition-transform transform hover:translate-x-2
                         hover:text-indigo-800 cursor-pointer`}
                     onClick={profileHandler}
@@ -116,19 +121,19 @@ export default function Searchbar({
                   <li>
                     <div
                       onClick={logoutHandler}
-                      className={`w-full flex items-center gap-1 px-4  py-2 rounded 
+                      className={`w-full flex items-center  gap-1 px-4  py-2 rounded 
                         transition-transform transform hover:translate-x-2
-                        cursor-pointer
+                        cursor-pointer text-[12px] sm:text-sm 
                         hover:text-indigo-800`}
                     >
-                      <RiLogoutCircleLine />
+                      <RiLogoutCircleLine  />
                       <span>Logout</span>
                     </div>
                   </li>
                 </ul>
               </div>
             )}
-          </div>
+          </motion.div>
         ) : (
           <div className="flex items-center gap-1 sm:gap-2">
             <button

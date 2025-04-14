@@ -11,6 +11,7 @@ import { AnimatePresence } from "framer-motion";
 
 export default function Layout() {
   const [showSidebarMenu, setShowSidebarMenu] = useState(false);
+  const [showAdminMenu, setShowAdminMenu] = useState(true);
   const [showResults, setShowResults] = useState(false);
 
 
@@ -31,6 +32,10 @@ export default function Layout() {
       timeout = setTimeout(() => {
         if (window.innerWidth > 1024) {
           setShowSidebarMenu(false);
+          setShowAdminMenu(true);
+        }
+        if (window.innerWidth < 1024) {
+          setShowAdminMenu(false);
         }
       }, 100);
     };
@@ -47,6 +52,8 @@ export default function Layout() {
       <Sidebar
         showSidebarMenu={showSidebarMenu}
         setShowSidebarMenu={setShowSidebarMenu}
+        showAdminMenu={showAdminMenu}
+        setShowAdminMenu={setShowAdminMenu}
       />
 
       {/* Searchbar */}
@@ -63,8 +70,8 @@ export default function Layout() {
         <AnimatePresence>
           {showResults && (
             <SearchResults
-            setShowResults={setShowResults}
-            searchName={searchName}
+              setShowResults={setShowResults}
+              searchName={searchName}
             />
           )}
         </AnimatePresence>

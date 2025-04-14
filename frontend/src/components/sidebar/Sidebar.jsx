@@ -1,9 +1,8 @@
 import "./sidebar.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
-
 import {
   AiOutlineHome,
   AiOutlineShopping,
@@ -13,18 +12,18 @@ import {
 import { RiLoginCircleLine, RiProductHuntLine } from "react-icons/ri";
 import { CiDeliveryTruck, CiHeart } from "react-icons/ci";
 import { MdAdminPanelSettings, MdOutlineCategory } from "react-icons/md";
-import { FaTimes, FaKeyboard } from "react-icons/fa";
+import { FaTimes, FaKeyboard, FaRegPlusSquare } from "react-icons/fa";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { FaUsersLine } from "react-icons/fa6";
+import { LiaWalletSolid } from "react-icons/lia";
 
-export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
+export default function Sidebar({ showSidebarMenu,setShowAdminMenu, showAdminMenu, setShowSidebarMenu }) {
   const { userInfo } = useSelector((state) => state.auth);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
 
   const toggleDropDown = () => {
-
-    if(showSidebarMenu === true) return
+    if (showSidebarMenu === true) return;
     setDropDownOpen(!dropDownOpen);
   };
   const toggleSidebar = () => {
@@ -34,6 +33,11 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
     setShowSidebar(false);
     setDropDownOpen(false);
   };
+  useEffect(() => {
+    if (window.innerWidth < 1024) {
+      setShowAdminMenu(false);
+    }
+  }, [setShowAdminMenu]);
 
   return (
     <div
@@ -45,7 +49,7 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
       lg:flex  lg:transition-all lg:duration-500 
       lg:flex-col lg:overflow-hidden justify-between p-4 pb-8 pt-2 bg-white 
       text-black lg:w-[70px] 
-      lg:hover:w-[150px] lg:h-[100vh]  group `}
+      lg:hover:w-[160px] min-h-screen lg:h-[100vh]  group `}
       id="navigation-container"
     >
       {showSidebarMenu && (
@@ -136,18 +140,18 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
 
       {/* user name */}
       <div className="realtive ">
-        <button
-          onMouseEnter={() =>
-            setDropDownOpen(showSidebarMenu === true ? false : true)
-          }
-          onClick={toggleDropDown}
-          className={`flex cursor-pointer items-center flex-col justify-center 
+        {userInfo?.isAdmin && showAdminMenu && (
+          <button
+            onMouseEnter={() =>
+              setDropDownOpen(showSidebarMenu === true ? false : true)
+            }
+            onClick={toggleDropDown}
+            className={`flex cursor-pointer items-center flex-col justify-center 
           text-gray-800 focus:outline-none hover:text-indigo-400 gap-1 ${
             dropDownOpen ? "text-indigo-400" : ""
           }`}
-          id="admin-cion"
-        >
-          {userInfo?.isAdmin && (
+            id="admin-cion"
+          >
             <>
               <div
                 className={`font-semibold text-sm italic `}
@@ -160,24 +164,34 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
                 {/* <MdOutlineAdminPanelSettings size={26} /> */}
               </div>
             </>
-          )}
-
-        </button>
+          </button>
+        )}
 
         {((dropDownOpen && userInfo) || (showSidebarMenu && userInfo)) && (
           <ul
             className={`relative lg:absolute lg:left-0 lg:top-0 mt-22 lg:mt-0 lg:space-y-0  lg:w-48
-                lg:rounded 
+                lg:rounded overflow-hidden overflow-y-scroll
               text-gray-600 bottom-20 bg-white `}
             // lg:mt-2 lg:bg-gray-100  lg:border  lg:border-gray-200`}
           >
             {userInfo.isAdmin && (
               <>
+                <li
+                  className={`px-1 lg:px-4 my-1 mt-4 ${
+                    ["/admin/dashboard", "/admin/allproductslist"].includes(
+                      window.location.pathname
+                    )
+                      ? "text-indigo-800"
+                      : ""
+                  } `}
+                >
+                  SHOW
+                </li>
                 <li>
                   <Link
                     to="/admin/dashboard"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 lg:py-4 
+                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 
                       rounded my-1 
                       hover:text-indigo-800
                       transition-transform transform hover:translate-x-2
@@ -193,9 +207,58 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
                 </li>
                 <li>
                   <Link
+                    to="/admin/allproductslist"
+                    onClick={() => setShowSidebarMenu(false)}
+                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 
+                      rounded my-1 
+                      hover:text-indigo-800
+                      transition-transform transform hover:translate-x-2
+                      ${
+                        window.location.pathname === "/admin/allproductslist"
+                          ? "text-indigo-600"
+                          : ""
+                      } `}
+                  >
+                    <LiaWalletSolid />
+                    <span>All Products</span>
+                  </Link>
+                </li>
+                <li
+                  className={`px-1 lg:px-4 my-1 mt-4 ${
+                    [
+                      "/admin/createproduct",
+                      "/admin/productlist",
+                      "/admin/categorylist",
+                      "/admin/userlist",
+                      "/admin/orderlist",
+                    ].includes(window.location.pathname)
+                      ? "text-indigo-800"
+                      : ""
+                  } `}
+                >
+                  MANGEMENT
+                </li>
+                <li>
+                  <Link
+                    to="/admin/createproduct"
+                    onClick={() => setShowSidebarMenu(false)}
+                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4  rounded my-1 
+                      transition-transform transform hover:translate-x-2
+                      hover:text-indigo-800 ${
+                        window.location.pathname === "/admin/createproduct"
+                          ? "text-indigo-600"
+                          : ""
+                      } `}
+                  >
+                    <FaRegPlusSquare />
+                    <span>Create Product</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     to="/admin/productlist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 lg:py-4  rounded my-1 
+                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4  rounded my-1 
                       transition-transform transform hover:translate-x-2
                       hover:text-indigo-800 ${
                         window.location.pathname === "/admin/productlist"
@@ -211,7 +274,7 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
                   <Link
                     to="/admin/categorylist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 lg:py-4  rounded my-1 
+                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4  rounded my-1 
                       transition-transform transform hover:translate-x-2
                       hover:text-indigo-800 ${
                         window.location.pathname === "/admin/categorylist"
@@ -227,7 +290,7 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
                   <Link
                     to="/admin/orderlist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 lg:py-4 rounded my-1 
+                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 rounded my-1 
                       transition-transform transform hover:translate-x-2
                       hover:text-indigo-800 ${
                         window.location.pathname === "/admin/orderlist"
@@ -243,7 +306,7 @@ export default function Sidebar({ showSidebarMenu, setShowSidebarMenu }) {
                   <Link
                     to="/admin/userlist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 lg:py-4 rounded my-1 
+                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 rounded my-1 
                       transition-transform transform hover:translate-x-2
                       hover:text-indigo-800 ${
                         window.location.pathname === "/admin/userlist"

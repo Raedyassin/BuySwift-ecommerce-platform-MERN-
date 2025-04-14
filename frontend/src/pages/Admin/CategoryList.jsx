@@ -94,7 +94,7 @@ export default function CategoryManagement() {
   }
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 bg-gray-50 min-h-screen">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8  min-h-screen">
       <AdminMenu />
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Main Content */}
@@ -120,7 +120,8 @@ export default function CategoryManagement() {
             animate={{ opacity: 1, x: 0 }}
             initial={{ opacity: 0, x: -50 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mt-8 bg-white rounded-xl shadow-md p-6 max-w-lg mx-auto border border-teal-100"
+            className="mt-8 bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6 max-w-lg mx-auto 
+            "
           >
             <h2 className="text-lg font-semibold text-teal-900 mb-4">
               Create New Category
@@ -140,7 +141,7 @@ export default function CategoryManagement() {
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mt-8 bg-white rounded-xl shadow-md overflow-hidden border border-teal-100"
+            className="mt-8 bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] overflow-hidden "
           >
             {/* <div className="bg-gradient-to-r from-fuchsia-500 to-slate-200 text-white px-6 py-4"> */}
             <div className="  px-6 py-4">
