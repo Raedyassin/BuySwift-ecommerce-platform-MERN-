@@ -44,7 +44,7 @@ export default function UserList() {
     isLoading,
   } = useGetAllUsersByAdminQuery({
     page,
-    limit: 5,
+    limit: 50,
     ...filterSet,
     ...finalFilterBy,
   });
@@ -63,7 +63,7 @@ export default function UserList() {
       users.usersLength !== undefined &&
       users.pageSize !== undefined
     ) {
-      setPagesCount(Math.ceil(users.usersLength / users.pageSize));
+      setPagesCount(Math.ceil(users?.usersLength / users?.pageSize));
     }
   }, [users]);
   const deleteHandler = async (id) => {
@@ -185,7 +185,7 @@ export default function UserList() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <PageHeader>Users List ({users.usersLength})</PageHeader>
+        <PageHeader>Users List ({users?.usersLength})</PageHeader>
       </motion.div>
       {/* filter */}
       <motion.div

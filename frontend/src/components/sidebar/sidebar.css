@@ -1,3 +1,12 @@
+#navigation-container:hover #admin-cion{
+  flex-direction: row;
+}
+#navigation-container:hover #text-admin-order{
+  order: 1;
+}
+
+/* all the brow class i don't need them */
+
 /* #navigation-container {
   width: 5%;
   transition: width 0.3s ease-in-out;

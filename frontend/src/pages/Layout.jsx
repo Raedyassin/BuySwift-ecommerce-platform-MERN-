@@ -52,7 +52,7 @@ export default function Layout() {
       {/* Searchbar */}
       <div
         style={{ zIndex: 9999 }}
-        className="fixed bg-white w-full pl-[0px] lg:pl-[70px] shadow-sm"
+        className="fixed bg-white w-full pl-[0px] lg:pl-[70px] "
       >
         <Searchbar
           searchName={searchName}

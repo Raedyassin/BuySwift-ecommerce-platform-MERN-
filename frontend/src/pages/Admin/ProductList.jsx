@@ -49,7 +49,7 @@ export default function UserList() {
     isLoading,
   } = useGetAllProductsTableQuery({
     page,
-    limit: 5,
+    limit: 50,
     ...filterSet,
     ...finalFilterBy,
   });

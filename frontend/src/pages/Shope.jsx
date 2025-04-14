@@ -332,7 +332,7 @@ export default function Shope() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex-1 p-3"
         >
-          <div className="flex justify-between pt-2 mb-3 items-center">
+          <div className="flex justify-between pt-7 md:pt-2 mb-3 items-center">
             {searchName.trim() === "" ? (
               <PageHeader>Shop</PageHeader>
             ) : (
@@ -356,9 +356,9 @@ export default function Shope() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="ml-[2rem] flex justify-center "
+              className="ml-[2rem]  "
             >
-              <h1 className="text-2xl font-semibold text-gray-500 w-full italic">
+              <h1 className="text-2xl text-center font-semibold text-gray-500 w-full italic">
                 No products found
               </h1>
             </motion.div>

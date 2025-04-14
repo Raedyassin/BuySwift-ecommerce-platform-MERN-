@@ -37,7 +37,7 @@ export default function OrdersList() {
     isFetching,
     isError,
     error,
-  } = useGetAllOrdersByAdminQuery({ page, limit: 10, ...filterSet });
+  } = useGetAllOrdersByAdminQuery({ page, limit: 50, ...filterSet });
   
   useEffect(() => {
     if (

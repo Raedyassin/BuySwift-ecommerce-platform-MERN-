@@ -3,10 +3,8 @@ import { useNavigate } from "react-router-dom";
 export default function SearchForm({ searchName, setSearchName, setShowResults }) {
   const searchHandler = (e) => {
     e.preventDefault();
-    if (e.target.value === " ") { 
-      return setSearchName("");
-    }
-    const alreadySpaceExist =
+    setShowResults(true);
+        const alreadySpaceExist =
       e.target.value[e.target.value.length - 1] === " " ? " " : "";
     let searchValue = e.target.value.trim().split(" ");
     searchValue = searchValue.reduce((acc, word) => {
@@ -34,6 +32,7 @@ export default function SearchForm({ searchName, setSearchName, setShowResults }
         placeholder="Search..."
         onChange={searchHandler}
         onFocus={() => setShowResults(true)}
+        onKeyDown={(e) => e.key === "Enter" && goToResult()}
         value={searchName}
         className="px-2 py-1 w-full text-sm sm:text-base rounded-md 
           focus:outline-none"

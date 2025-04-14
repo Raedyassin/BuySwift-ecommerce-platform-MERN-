@@ -25,12 +25,12 @@ export default function SearchResults({ searchName, setShowResults }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
       className="fixed to-0 left-0 lg:left-[70px] w-full h-[85vh] md:h-[91vh]  
     bg-gray-200/50 flex flex-col  items-center"
     >
-      <div className="px-4 py-2 bg-white h-full overflow-auto lg:w-[70%] ">
-        <div className="flex justify-end mb-2">
+      <div className="px-4 py-2 bg-white h-full w-full overflow-auto lg:w-[70%] ">
+        <div className="flex  justify-end mb-2">
           <FaTimes
             onClick={() => setShowResults(false)}
             className="p-2 rounded-full text-3xl cursor-pointer shadow-md hover:shadow-lg 
@@ -39,7 +39,7 @@ export default function SearchResults({ searchName, setShowResults }) {
           />
         </div>
         {products?.data?.products.length === 0 && (
-          <h1 className="text-xl italic text-center my-10 text-gray-500 font-semibold">
+          <h1 className="text-xl italic w-full text-center my-10 text-gray-500 font-semibold">
             No products found
           </h1>
         )}
