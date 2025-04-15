@@ -2,6 +2,7 @@ import "./sidebar.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { FiSearch } from "react-icons/fi";
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
 import {
   AiOutlineHome,
@@ -17,7 +18,13 @@ import { LuLayoutDashboard } from "react-icons/lu";
 import { FaUsersLine } from "react-icons/fa6";
 import { LiaWalletSolid } from "react-icons/lia";
 
-export default function Sidebar({ showSidebarMenu,setShowAdminMenu, showAdminMenu, setShowSidebarMenu }) {
+export default function Sidebar({
+  showSidebarMenu,
+  setShowResults,
+  setShowAdminMenu,
+  showAdminMenu,
+  setShowSidebarMenu,
+}) {
   const { userInfo } = useSelector((state) => state.auth);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
@@ -136,6 +143,21 @@ export default function Sidebar({ showSidebarMenu,setShowAdminMenu, showAdminMen
             Orders
           </span>
         </Link>
+        {/* search */}
+        {/* <div
+          onClick={() => setShowResults((prev) => !prev)}
+          className={`flex items-center  cursor-pointer gap-2 transition-transform transform 
+          hover:translate-x-2  hover:text-indigo-800 ${
+            window.location.pathname === "/orderslist" ? "text-indigo-600" : ""
+          } `}
+        >
+          <div>
+            <FiSearch className="my-[1rem]" size={20} />
+          </div>
+          <span className=" lg:hidden group-hover:block my-[1rem] ">
+            Search
+          </span>
+        </div> */}
       </div>
 
       {/* user name */}

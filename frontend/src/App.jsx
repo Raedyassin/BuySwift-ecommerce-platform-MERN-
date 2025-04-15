@@ -26,7 +26,7 @@ import Orders from "./pages/user/Orders";
 import Dashboard from "./pages/Admin/Dashboard";
 import PayPalWraper from "./components/PayPalWraper";
 import OrdersList from "./pages/Admin/OrdersList";
-// import ProductList from "./pages/Admin/ProductList";
+
 export default function App() {
   return (
     <Provider store={store}>

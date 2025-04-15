@@ -1,9 +1,9 @@
 import ProductCarousel from "../pages/products/ProductCarousel"
 import SamallProduct from "../pages/products/SamallProduct"
-// import ProductCard from "../pages/products/ProductCard"
+import ProductCard from "../pages/products/ProductCard"
 import { useGetTopProductsQuery } from "../redux/apis/productApiSlice"
 import Loader from "./Loader"
-export default function Header() {
+export default function HeaderHomePage() {
   const { data, isLoading, error } = useGetTopProductsQuery()
   if (isLoading) {
     return <Loader/>
@@ -23,7 +23,7 @@ export default function Header() {
             {data.data.products.slice(0, 4).map((product) => (
               <div key={product._id}>
                 <SamallProduct product={product} />
-                {/* <ProductCard product={product} /> */}
+                <ProductCard product={product} />
               </div>
             ))}
           </div>

@@ -75,41 +75,10 @@ const deleteProduct = asyncHandler(
   }
 )
 
-const fechProducts = asyncHandler(
-  async (req, res, next) => {
-
-    const page = req.query.page ? +req.query.page : 1;
-    const pageSize = 10;
-
-    const keyword = req.query.keyword ?
-      {
-        name: {
-          $regex: req.query.keyword,
-          $options: "i"
-        }
-      } : {};
-
-    const count = await Product.countDocuments({ ...keyword });
-
-    const products = await Product.find({ ...keyword })
-      .select("-__v")
-      .limit(pageSize + 10)
-      .skip((page - 1) * pageSize);
-    res.json({
-      status: SUCCESS, data: {
-        products,
-        currentPage: page,
-        pages: Math.ceil(count / pageSize),
-      }
-    })
-  }
-)
-
 const fetchProductById = asyncHandler(
   async (req, res, next) => {
     const { id } = req.params;
-    let product = await Product.findById(id)
-    // .select("-updatedAt -createdAt -creatorId -__v -reviews")
+    let product = await Product.findById(id).select("-reviews -__v");
     if (!product) {
       return res.status(404).json({ status: FAIL, message: "Product not found" })
     }
@@ -117,10 +86,57 @@ const fetchProductById = asyncHandler(
   }
 )
 
-/**********************
- * Product Reviews ****
- * ********************
- */
+const getRelatedProductsByCategory = asyncHandler(
+  async (req, res, next) => {
+    // get the product id from frontend and send realted products by category
+    const page = 1;
+    const pageSize = 15;
+    const skip = (page - 1) * pageSize;
+
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(404).json({ status: FAIL, message: "Product not found" })
+    }
+
+    let relatedProducts = await Product.find({
+      category: product.category,
+      _id: { $ne: product._id } // Exclude the current product
+    }).sort({ rating: -1 })
+      .limit(pageSize + 1)
+      .skip(skip)
+      .select("-__v -updatedAt -createdAt -creatorId -reviews -countInStock -numReview  -discription -quantity");
+
+    // this is should delete after testing phase i put it to test only 
+    // start{
+    if (relatedProducts.length < 6) {
+      const plusProducts = await Product.find().sort({ rating: -1 }).
+        limit(10).
+        select("-__v -updatedAt -createdAt -creatorId -reviews -countInStock -numReview  -discription -quantity")
+      relatedProducts = [...relatedProducts, ...plusProducts]
+    }
+    // end}
+
+    const hasNextPage = relatedProducts.length > pageSize;
+    if (hasNextPage) {
+      relatedProducts.pop();
+    }
+
+    res.status(200).json({
+      status: SUCCESS,
+      data: { products: relatedProducts },
+      currentPage: page,
+      productsLength: relatedProducts.length,
+      pageSize,
+      hasNextPage,
+      hasPrevPage: page > 1
+    })
+  }
+)
+
+/**************************
+ * *** Product Reviews ****
+ * ************************
+**/
 const fetchProductReviews = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const page = req.query.page ? +req.query.page : 1;
@@ -256,7 +272,8 @@ const addProductReview = asyncHandler(
       }
     })
   }
-)
+);
+
 const addOrUpdateProductRating = asyncHandler(
   async (req, res, next) => {
     const { rating } = req.body;
@@ -318,20 +335,18 @@ const addOrUpdateProductRating = asyncHandler(
 
     res.status(201).json({ status: SUCCESS, data: { review: sendingReview } })
   }
-)
-
+);
 
 /**********************
  * Product filter ****
  * ********************
- */
+**/
 
 // query params
 // { page, limit, createdAt, id, name, brand, category, price, quantity, stock }
 const fetchAllProducts = asyncHandler(
   async (req, res, next) => {
-    console.log("hello")
-    const pageSize = req.query.limit >= 50 ? 50 : +req.query.limit || 10;
+    const pageSize = req.query.limit >= 50 ? 50 : +req.query.limit || 50;
     const page = (req.query.page ? +req.query.page : 1) || 1;
 
     // { page, limit, createdAt, id, name, brand, category, price, rating, stock }
@@ -435,7 +450,6 @@ const fetchAllProducts = asyncHandler(
   }
 )
 
-
 const fetchTopProducts = asyncHandler(
   async (req, res, next) => {
     const page = req.query.page ? +req.query.page : 1;
@@ -537,73 +551,11 @@ const searchProduct = asyncHandler(
   }
 )
 
-const getRelatedProductsByCategory = asyncHandler(
-  async (req, res, next) => {
-    // get the product id from frontend and send realted products by category
-    const page = 1;
-    const pageSize = 15;
-    const skip = (page - 1) * pageSize;
-
-    const product = await Product.findById(req.params.id);
-    if (!product) {
-      return res.status(404).json({ status: FAIL, message: "Product not found" })
-    }
-
-    let relatedProducts = await Product.find({
-      category: product.category,
-      _id: { $ne: product._id } // Exclude the current product
-    }).sort({ rating: -1 })
-      .limit(pageSize + 1)
-      .skip(skip)
-      .select("-__v -updatedAt -createdAt -creatorId -reviews -countInStock -numReview  -discription -quantity");
-
-
-    // this is should delete after testing phase i put it to test only 
-    // start{
-    if (relatedProducts.length < 6) {
-      const plusProducts = await Product.find().sort({ rating: -1 }).
-        limit(10).
-        select("-__v -updatedAt -createdAt -creatorId -reviews -countInStock -numReview  -discription -quantity")
-      relatedProducts = [...relatedProducts, ...plusProducts]
-    }
-    // end}
-
-    const hasNextPage = relatedProducts.length > pageSize;
-    if (hasNextPage) {
-      relatedProducts.pop();
-    }
-
-
-
-    res.status(200).json({
-      status: SUCCESS,
-      data: { products: relatedProducts },
-      currentPage: page,
-      productsLength: relatedProducts.length,
-      pageSize,
-      hasNextPage,
-      hasPrevPage: page > 1
-    })
-  }
-)
-
-// should delate after testing phase
-const clearReviews = asyncHandler(async (req, res, next) => {
-  const products = await Product.find();
-  products.map(product => {
-    product.reviews = [];
-    product.numReview = 0;
-    product.rating = 0;
-  });
-  await products.save();
-  res.json({ status: "SUCCESS", data: null });
-})
 
 export {
   addProduct,
   updateProduct,
   deleteProduct,
-  fechProducts,
   fetchProductById,
   fetchAllProducts,
   addProductReview,
@@ -614,5 +566,4 @@ export {
   fetchProductReviews,
   editProductReview,
   addOrUpdateProductRating,
-  clearReviews
 }

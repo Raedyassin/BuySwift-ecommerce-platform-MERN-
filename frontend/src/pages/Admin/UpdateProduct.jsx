@@ -8,7 +8,6 @@ import {
 import { useEffect, useState } from "react";
 import { useGetAllCategoryQuery } from "../../redux/apis/categoryApiSlice";
 import { toast } from "react-toastify";
-import Loader from "../../components/Loader";
 import AdminMenu from "./AdminMenu";
 import { motion } from "motion/react";
 import PageLoader from "../../components/PageLoader";

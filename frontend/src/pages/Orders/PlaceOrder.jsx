@@ -9,6 +9,7 @@ import { useCreateOrderMutation } from "../../redux/apis/orderApiSlice";
 import { clearCartItems } from "../../redux/features/cart/cartSlice";
 import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import EmptyCart from "../../components/EmptyCart";
+import ProductShowTable from "../../components/ProductShowTable";
 
 const PlaceOrder = () => {
   const [, dispatchPaypalLoader] = usePayPalScriptReducer();
@@ -69,69 +70,13 @@ const PlaceOrder = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Cart Items Table */}
-        <div className="lg:col-span-2 bg-white shadow-lg rounded-xl p-6">
-          <h2 className="text-xl font-bold mb-4 bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent">
-            Order Items
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Image
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Product
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Quantity
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Price
-                  </th>
-                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                    Total
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {cart.cartItems.map((item, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200"
-                  >
-                    <td className="p-4">
-                      <img
-                        src={`/uploads/${item.img.split("/").pop()}`}
-                        alt={item.name}
-                        className="w-16 h-16 rounded-lg object-cover"
-                      />
-                    </td>
-                    <td className="p-4">
-                      <Link
-                        className="text-black font-medium hover:underline hover:text-purple-600 transition-colors duration-200"
-                        to={`/product/${item._id}`}
-                      >
-                        {item.name}
-                      </Link>
-                    </td>
-                    <td className="p-4 text-gray-600">{item.quantity}</td>
-                    <td className="p-4 text-gray-600">
-                      ${item.price.toFixed(2)}
-                    </td>
-                    <td className="p-4 text-indigo-600 font-bold">
-                      ${(item.quantity * item.price).toFixed(2)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+        <div className="lg:col-span-2 p-6 bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-xl">
+          <ProductShowTable showColor={true} orderItems={cart?.cartItems} px="" />
         </div>
 
         {/* Order Summary */}
         <div>
-          <div className="bg-white shadow-lg rounded-xl p-6">
+          <div className="bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-xl p-6">
             <h2
               className="text-xl font-bold mb-4  bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent
             "

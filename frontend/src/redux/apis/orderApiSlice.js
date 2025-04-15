@@ -9,7 +9,7 @@ const orderApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body
       }),
-      invalidatesTags:[orderTage]
+      invalidatesTags: [orderTage]
     }),
 
     // test
@@ -37,54 +37,8 @@ const orderApiSlice = apiSlice.injectEndpoints({
       // },
     }),
 
-    // admin action get all orders
-    // getAllOrders: buil.query({
-    //   query: ({page,limit}) => ({
-    //     url: `${ORDER_URL}/?page=${page}&limit=${limit}`,
-    //     method: "GET"
-    //   }),
-    //   providesTags: [orderTage],
-    //   serializeQueryArgs: ({ endpointName }) => endpointName, 
-    //   merge: (currentCache, newData) => {        
-    //     return {
-    //       ...currentCache,
-    //       data: { orders: [...(currentCache.data.orders || []), ...newData.data.orders] },
-    //       currentPage: newData.currentPage,
-    //       pageSize: newData.pageSize,
-    //       hasNextPage: newData.hasNextPage,
-    //       hasPrevPage: newData.hasPrevPage
-    //     }
-    //   },
-    //   forceRefetch({ currentArg, previousArg }) {
-    //     return currentArg.page !== previousArg?.page;
-    //   },
-    // }),
-
-    //
-    getOrderDetails: buil.query({
-      query: (id) => ({
-        url:`${ORDER_URL}/${id}`
-      }),
-      keepUnusedDataFor: 5
-    }),
-    markOrderAsPaid: buil.mutation({
-      query: ({id,body}) => ({
-        url: `${ORDER_URL}/${id}/pay`,
-        method: "PATCH",
-        body
-      }),
-      invalidatesTags:[orderTage]
-    }),
-    markorderDeliver: buil.mutation ({
-      query: ({ id, body }) => ({
-        url: `${ORDER_URL}/${id}/deliver`,
-        method: "PATCH",
-        body
-      }),
-      invalidatesTags: [orderTage]
-    }),
     getUserOrders: buil.query({
-      query: ({ page, limit}) => ({
+      query: ({ page, limit }) => ({
         url: `${ORDER_URL}/myorders?page=${page}&limit=${limit}`,
       }),
       providesTags: [orderTage],
@@ -93,7 +47,7 @@ const orderApiSlice = apiSlice.injectEndpoints({
       merge: (currentCache, newData) => {
         return {
           ...currentCache,
-          data: { orders: [ ...currentCache.data.orders, ...newData.data.orders ] },
+          data: { orders: [...currentCache.data.orders, ...newData.data.orders] },
           currentPage: newData.currentPage,
           pageSize: newData.pageSize,
           hasNextPage: newData.hasNextPage,
@@ -101,18 +55,77 @@ const orderApiSlice = apiSlice.injectEndpoints({
         };
       },
       forceRefetch({ currentArg, previousArg }) {
-        return currentArg.page !== previousArg?.page; 
+        return currentArg.page !== previousArg?.page;
       },
+    }),
+
+    getOrderDetails: buil.query({
+      query: (id) => ({
+        url: `${ORDER_URL}/${id}`
+      }),
+      keepUnusedDataFor: 5
+    }),
+
+
+
+    // Orders Admin Actions
+    markOrderAsPaid: buil.mutation({
+      query: ({ id, ...body }) => ({
+        url: `${ORDER_URL}/${id}/pay`,
+        method: "PATCH",
+        body
+      }),
+      invalidatesTags: [orderTage]
+    }),
+
+    markOrderPacked: buil.mutation({
+      query: ({ id, ...body }) => ({
+        url: `${ORDER_URL}/${id}/packed`,
+        method: "PATCH",
+        body
+      }),
+      invalidatesTags: [orderTage]
+    }),
+
+    markOrderTransited: buil.mutation({
+      query: ({ id, ...body }) => ({
+        url: `${ORDER_URL}/${id}/transited`,
+        method: "PATCH",
+        body
+      }),
+      invalidatesTags: [orderTage]
+    }),
+
+    markOrderCancel: buil.mutation({
+      query: ({ id, ...body }) => ({
+        url: `${ORDER_URL}/${id}/cancel`,
+        method: "PATCH",
+        body
+      }),
+      invalidatesTags: [orderTage]
+    }),
+
+    markOrderDeliver: buil.mutation({
+      query: ({ id, ...body }) => ({
+        url: `${ORDER_URL}/${id}/delivered`,
+        method: "PATCH",
+        body
+      }),
+      invalidatesTags: [orderTage]
     }),
   })
 })
 
 export const {
   useCreateOrderMutation,
-  useMarkOrderAsPaidMutation,
-  useMarkorderDeliverMutation,
-    // useGetAllOrdersQuery,
-  useGetOrderDetailsQuery,
   useGetUserOrdersQuery,
-  useGetAllOrdersByAdminQuery
+  useGetAllOrdersByAdminQuery,
+  useGetOrderDetailsQuery,
+
+  // Orders Admin Actions
+  useMarkOrderAsPaidMutation,
+  useMarkOrderPackedMutation,
+  useMarkOrderTransitedMutation,
+  useMarkOrderDeliverMutation,
+  useMarkOrderCancelMutation
 } = orderApiSlice;

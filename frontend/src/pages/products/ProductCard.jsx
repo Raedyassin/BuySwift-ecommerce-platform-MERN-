@@ -9,17 +9,20 @@ export default function ProductCard({ product }) {
   const dispatch = useDispatch();
 
   return (
-    <div className="w-full max-w-sm h-full rounded-lg shadow-md bg-white border
-    border-gray-100 hover:shadow-lg transition-all duration-300 relative flex
-    flex-col ">
+    <div
+      className="w-full max-w-sm  h-full rounded-lg shadow-md bg-white border
+    border-gray-100 hover:scale-103 hover:shadow-lg transition-all duration-300 
+      relative flex flex-col "
+    >
       <section className="relative">
         <Link to={`/product/${product._id}`}>
-          <span className="absolute bottom-3 right-3 bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full">
+          <span className="absolute z-10 bottom-3 right-3 bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full">
             {product.brand}
           </span>
           <img
             src={"/uploads/" + product.img.split("/").pop()}
-            className="w-full h-40 sm:h-48 md:h-52 object-cover rounded-2xl cursor-pointer p-2"
+            className="w-full h-40 sm:h-48 md:h-52 object-cover rounded-2xl 
+            cursor-pointer p-2 "
             alt={product.name}
           />
         </Link>
@@ -55,7 +58,7 @@ export default function ProductCard({ product }) {
             onClick={() => dispatch(addToCart({ ...product, quantity: 1 }))}
             className="text-indigo-600 cursor-pointer hover:text-indigo-900 
             transition-colors duration-200 w-6 h-6  lg:w-7 lg:h-7 
-            xl:w-8 xl:h-8 2xl:w-9 2xl:h-9"
+            "
           />
         </div>
       </div>

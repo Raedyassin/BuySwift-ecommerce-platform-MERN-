@@ -54,6 +54,7 @@ export default function Layout() {
         setShowSidebarMenu={setShowSidebarMenu}
         showAdminMenu={showAdminMenu}
         setShowAdminMenu={setShowAdminMenu}
+        setShowResults={setShowResults}
       />
 
       {/* Searchbar */}

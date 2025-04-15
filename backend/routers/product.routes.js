@@ -6,7 +6,6 @@ import {
   addProduct,
   updateProduct,
   deleteProduct,
-  fechProducts,
   fetchProductById,
   fetchAllProducts,
   addProductReview,
@@ -17,15 +16,12 @@ import {
   fetchProductReviews,
   editProductReview,
   addOrUpdateProductRating,
-  // editProductRating,
-  clearReviews
 } from "../controllers/product.controller.js";
 
 const route = Router();
 
 route.route("/")
   .post(authenticate, authorizeAdmin, formidable(), addProduct)
-  .get(fechProducts)
 
 route.route("/products-list")
   .get(fetchAllProducts)
@@ -55,8 +51,4 @@ route.route("/:id/rating")
 route.route("/reviewsedit/:id/:reviewId")
   .patch(authenticate, checkID, editProductReview)
 
-// route.route("/ratingsedit/:id/:reviewId")
-//   .patch(authenticate, checkID, editProductRating)
-
-route.route("/clear").get(clearReviews);
 export default route;

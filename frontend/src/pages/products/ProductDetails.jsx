@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import {motion} from 'motion/react'
 import {
-  useGetProductDetailsQuery,
+  useGetProductByIdQuery,
   useCreateReviewMutation,
   useRelatedProductsQuery,
   useGetReviewsProductByIdQuery,
@@ -44,7 +44,7 @@ export default function ProductDetails() {
     isLoading,
     isFetching,
     error,
-  } = useGetProductDetailsQuery(id, {
+  } = useGetProductByIdQuery(id, {
     refetchOnMountOrArgChange: true,
   });
 
@@ -555,7 +555,7 @@ export default function ProductDetails() {
                 </div>
               ) : (
                 <DontHave className="text-sm sm:text-base text-gray-600 py-6">
-                  Be the First to Review
+                  Be The First Reviewer
                 </DontHave>
               )}
             </div>

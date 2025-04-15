@@ -39,6 +39,8 @@ const orderSchema = new mongoose.Schema({
 
   paymentMethod: {
     type: String,
+    enum: ['VodafoneCash', 'PayPal', 'OnDelivery'],
+    default: 'OnDelivery',
     required: true,
   },
   orderProgress: {

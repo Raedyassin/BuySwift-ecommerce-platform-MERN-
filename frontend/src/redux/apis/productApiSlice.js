@@ -2,30 +2,13 @@ import apiSlice from '../services/apiSlice'
 import { PRODUCT_URL, UPLOAD_URL, productTage, productReviewTage } from '../constance'
 const productApiSlice = apiSlice.injectEndpoints({
   endpoints: (buil) => ({
-    // ??????????????????????????
-    getProducts: buil.query({
-      query: ({ keyword }) => ({
-        url: PRODUCT_URL,
-        params: { keyword }
-      }),
-      keepUnusedDataFor: 5,
-      providesTags: [productTage]
-    }),
-
-    // ??????????????????????????
-    getProductDetails: buil.query({
-      query: (id) => ({
-        url: `${PRODUCT_URL}/${id}`,
-      }),
-      keepUnusedDataFor: 5
-    }),
 
     // ??????????????????????????
     getProductById: buil.query({
       query: (id) => ({
         url: `${PRODUCT_URL}/${id}`,
       }),
-      providesTags: (res, err, id) => [{ type: productTage, id }],
+      providesTags: [productTage],
     }),
 
 
@@ -265,8 +248,6 @@ export const {
   useDeleteProductMutation,
   useGetNewProductsQuery,
   useGetProductByIdQuery,
-  useGetProductDetailsQuery,
-  useGetProductsQuery,
   useGetTopProductsQuery,
   useUploadProductImageMutation,
   // why i use query wiht post method because i query make auto-fetch and post don't make caching 
@@ -275,7 +256,6 @@ export const {
   useRelatedProductsQuery,
   useGetReviewsProductByIdQuery,
   useEditeProductReviewMutation,
-  // useEditeProductRatingMutation,
   useCreateRatingMutation
 } = productApiSlice
 

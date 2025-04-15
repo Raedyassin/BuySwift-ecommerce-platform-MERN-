@@ -3,8 +3,8 @@ import Product from "../models/product.model.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import { FAIL, SUCCESS } from "../utils/httpStatucText.js";
 import { calcTotalPrice } from '../utils/clacTotalPrice.js'
-import { generateAccessToken } from '../utils/PayPalAccessToken.js'
-import axios from 'axios'//npm install axios
+// import { generateAccessToken } from '../utils/PayPalAccessToken.js'
+// import axios from 'axios'//npm install axios
 
 const createOrder = asyncHandler(async (req, res, next) => {
   const { orderItems, shippingAddress, paymentMethod } = req.body;
@@ -182,7 +182,10 @@ const getUserOrders = asyncHandler(async (req, res, next) => {
 
 const getOrderDetails = asyncHandler(async (req, res, next) => {
   const { id } = req.params
-  const order = await Order.findById(id).populate("user", "username email");
+  const order = await Order.findById(id)
+    .populate("user", "username email")
+    .select("-__v")
+
   if (!order) {
     res.status(404).json({ status: FAIL, message:"Order not found"})
   }
@@ -194,16 +197,17 @@ const getOrderDetails = asyncHandler(async (req, res, next) => {
 const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
   if (!order) {
-    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
-  }
-  if (order.isPaid) {
-    return res.status(409).json({ status: FAIL, data: { title: "Order already Paid" } })
+    return res.status(404).json({ status: FAIL, message: "Order not found" });
   }
   if (order.status === "cancelled") {
-    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
+    return res.status(409).json({ status: FAIL, message: "Order cancelled" } )
+  }
+  if (order.isPaid) {
+    return res.status(409).json({ status: FAIL, message: "Order already Paid"  })
   }
   order.isPaid = true;
   order.paidAt = Date.now();
+  order.paymentMethod = "OnDelivery";
   order.paymentResult = {
     id: req.body.id,
     status: req.body.status,
@@ -217,16 +221,16 @@ const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
 const markorderDeliver = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
   if (!order) {
-    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
-  }
-  if (order.deliveredAt) {
-    return res.status(409).json({ status: FAIL, data: { title: "Order already Delivered" } })
-  }
-  if (order.status !== "ontheroute"){
-    return res.status(409).json({ status: FAIL, data: { title: "Order not on the route yet" } })
+    return res.status(404).json({ status: FAIL, message: "Order not found"  });
   }
   if (order.status === "cancelled") {
-    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
+    return res.status(409).json({ status: FAIL, message: "Order cancelled" })
+  }
+  if (order.deliveredAt) {
+    return res.status(409).json({ status: FAIL, message: "Order already Delivered" })
+  }
+  if (order.status !== "ontheroute"){
+    return res.status(409).json({ status: FAIL, message: "Order not on the route yet" })
   }
 
   order.orderProgress.deliveredAt = Date.now();
@@ -238,16 +242,16 @@ const markorderDeliver = asyncHandler(async (req, res, next) => {
 const markorderPacked = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
   if (!order) {
-    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
-  }
-  if (order.orderProgress.packedAt) {
-    return res.status(409).json({ status: FAIL, data: { title: "Order already Pakced" } })
-  }
-  if (order.status !== "pending"){
-    return res.status(409).json({ status: FAIL, data: { title: "Order not on created yet" } })
+    return res.status(404).json({ status: FAIL, message: "Order not found" } );
   }
   if (order.status === "cancelled") {
-    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
+    return res.status(409).json({ status: FAIL, message: "Order cancelled" })
+  }
+  if (order.orderProgress.packedAt) {
+    return res.status(409).json({ status: FAIL, message: "Order already Pakced" } )
+  }
+  if (order.status !== "pending"){
+    return res.status(409).json({ status: FAIL, message: "Order not on created yet" } )
   }
   order.orderProgress.packedAt = Date.now();
   order.status = "packed";
@@ -258,16 +262,16 @@ const markorderPacked = asyncHandler(async (req, res, next) => {
 const markorderTransit = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
   if (!order) {
-    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
-  }
-  if (order.orderProgress.transitAt) {
-    return res.status(409).json({ status: FAIL, data: { title: "Order already Transited" } })
-  }
-  if (order.status !== "packed"){
-    return res.status(409).json({ status: FAIL, data: { title: "Order not on packed yet" } })
+    return res.status(404).json({ status: FAIL, message: "Order not found" } );
   }
   if (order.status === "cancelled") {
-    return res.status(409).json({ status: FAIL, data: { title: "Order cancelled" } })
+    return res.status(409).json({ status: FAIL, message: "Order cancelled" })
+  }
+  if (order.orderProgress.transitAt) {
+    return res.status(409).json({ status: FAIL, message: "Order already Transited" } )
+  }
+  if (order.status !== "packed"){
+    return res.status(409).json({ status: FAIL, message: "Order not on packed yet" } )
   }
   order.orderProgress.transitAt = Date.now();
   order.status = "ontheroute";
@@ -277,8 +281,14 @@ const markorderTransit = asyncHandler(async (req, res, next) => {
 // until now i will make the adimin cancle the order only
 const cancleOrderByAdmin = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
+  if(order.status === "delivered"){
+    return res.status(409).json({ status: FAIL, message: "Order already Delivered" })
+  }
+  if(order.status === "cancelled"){
+    return res.status(409).json({ status: FAIL, message: "Order already Cancelled" })
+  }
   if (!order) {
-    return res.status(404).json({ status: FAIL, data: { title: "Order not found" } });
+    return res.status(404).json({ status: FAIL, message: "Order not found" });
   }
   order.orderProgress.cancelledAt = Date.now();
   order.status = "cancelled";
