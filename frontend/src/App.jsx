@@ -26,6 +26,7 @@ import Orders from "./pages/user/Orders";
 import Dashboard from "./pages/Admin/Dashboard";
 import PayPalWraper from "./components/PayPalWraper";
 import OrdersList from "./pages/Admin/OrdersList";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
@@ -61,7 +62,7 @@ export default function App() {
                 <Route path="orderlist" element={<OrdersList />} />
               </Route>
             </Route>
-            <Route path="*" element={<h1>Not Found</h1>} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </PayPalWraper>

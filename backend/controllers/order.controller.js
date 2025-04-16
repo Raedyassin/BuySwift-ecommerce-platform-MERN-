@@ -205,6 +205,9 @@ const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
   if (order.isPaid) {
     return res.status(409).json({ status: FAIL, message: "Order already Paid"  })
   }
+  if(order.status !== "delivered"){
+    return res.status(409).json({ status: FAIL, message: "Order not on delivered yet or Order delivered then payed" })
+  }
   order.isPaid = true;
   order.paidAt = Date.now();
   order.paymentMethod = "OnDelivery";

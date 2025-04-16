@@ -7,8 +7,8 @@ import { GiCancel } from "react-icons/gi";
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
 import { useState } from "react";
 
-export default function OrderProgress({ progress, createAt }) {
-    const [showDetails, setShowDetails] = useState(true);
+export default function OrderProgress({ progress, createAt, isPaid }) {
+  const [showDetails, setShowDetails] = useState(true);
   return (
     <div>
       <div className="flex items-center justify-between  px-5 py-2   gap-2">
@@ -57,19 +57,31 @@ export default function OrderProgress({ progress, createAt }) {
           ></div>
 
           {progress?.cancelledAt ? (
-            <div className="p-3 pt-1 pb-1 mb-3 flex flex-row items-center gap-3">
-              <div
-                className={`bg-red-300 p-1 rounded-full  w-15 h-15 flex items-center justify-center`}
-              >
-                <GiCancel className={`text-red-700 block `} size={30} />
+            <>
+              <div className="p-3 pt-1 pb-1 mb-3 flex flex-row items-center gap-3">
+                <div
+                  className={`bg-red-300 p-1 rounded-full  w-15 h-15 flex items-center justify-center`}
+                >
+                  <GiCancel className={`text-red-700 block `} size={30} />
+                </div>
+                <div>
+                  <h3 className="font-s">Cancled</h3>
+                  <h4 className={`text-sm text-gray-400 font-semibold`}>
+                    {progress?.cancelledAt?.substring(0, 10)}
+                  </h4>
+                </div>
               </div>
-              <div>
-                <h3 className="font-s">Cancled</h3>
-                <h4 className={`text-sm text-gray-400 font-semibold`}>
-                  {progress?.cancelledAt?.substring(0, 10)}
-                </h4>
-              </div>
-            </div>
+              {isPaid && (
+                <div className="text-base text-gray-700">
+                  Them Money will be Back after{" "}
+                  <sapn className="font-semibold text-red-700">15 Days</sapn> of
+                  cancled of{" "}
+                  <span className="font-semibold text-red-700">
+                    {progress?.cancelledAt?.substring(0, 10)}
+                  </span>
+                </div>
+              )}
+            </>
           ) : (
             <div>
               <div className="p-3 py-1  flex flex-row items-center gap-3">

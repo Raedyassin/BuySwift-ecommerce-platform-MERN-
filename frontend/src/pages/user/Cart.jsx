@@ -41,7 +41,7 @@ export default function Cart() {
   };
 
   return (
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8  min-h-screen text-gray-800">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8  min-h-[90vh] text-gray-800">
       {/* duplicate wiht checkout */}
       {cart.cartItems.length === 0 ? (
         <EmptyCart />

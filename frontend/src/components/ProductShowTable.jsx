@@ -40,7 +40,7 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
       {showDetails && (
         <div
           className={`overflow-x-auto ${className} rounded-2xl
-            ${showDetails ? "mb-10" : "mb-0"}`}
+            ${showDetails ? "my-5" : "mb-0"}`}
         >
           <table className="w-full border-collapse">
             <thead className="bg-gray-50">

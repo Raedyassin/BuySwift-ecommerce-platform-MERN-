@@ -8,7 +8,7 @@ import {
   useMarkOrderPackedMutation,
   useMarkOrderTransitedMutation,
   useMarkOrderDeliverMutation,
-  useMarkOrderCancelMutation
+  useMarkOrderCancelMutation,
 } from "../redux/apis/orderApiSlice";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -16,7 +16,7 @@ import apiSlice from "../redux/services/apiSlice";
 
 export default function OrderActions({ order }) {
   const [showDetails, setShowDetails] = useState(true);
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [markOrderAsPaid, { isLoading: loadingPaid }] =
     useMarkOrderAsPaidMutation();
@@ -39,21 +39,17 @@ export default function OrderActions({ order }) {
       toast.success("Order " + processText + " Successfully");
       updateOrderHandler(respose.data);
     } catch (error) {
-      toast.error(error?.data?.message||"Something went wrong");
+      toast.error(error?.data?.message || "Something went wrong");
     }
   };
 
-    const updateOrderHandler = (updatedOrder) => {
-      dispatch(
-        apiSlice.util.updateQueryData(
-          "getOrderDetails",
-          order?._id,
-          (draft) => {
-            draft.data = updatedOrder;
-          }
-        )
-      );
-    };
+  const updateOrderHandler = (updatedOrder) => {
+    dispatch(
+      apiSlice.util.updateQueryData("getOrderDetails", order?._id, (draft) => {
+        draft.data = updatedOrder;
+      })
+    );
+  };
 
   return (
     <div>
@@ -77,91 +73,62 @@ export default function OrderActions({ order }) {
       </div>
 
       {showDetails && (
-        <div className={`px-13 space-y-5 ${showDetails ? "mb-10" : "mb-0"}`}>
-          {/* Packed */}
-          <button
-            className="rounded-md w-full bg-[#2DCCFF] hover:bg-indigo-600
-            text-white font-bold cursor-pointer py-3"
-            onClick={() => actionHandler(markOrderAsPacked, "Packed")}
-          >
-            {loadingPacked ? (
-              <Loader
-                loaderText="Packing"
-                loaderColor="border-white"
-                textColor="text-white"
-              />
-            ) : (
-              "Make Order Packed"
-            )}
-          </button>
-
-          {/* Transited */}
-          <button
-            className="rounded-md w-full bg-[#5b9bbb] hover:bg-indigo-600
-            text-white font-bold cursor-pointer py-3"
-            onClick={() => actionHandler(markOrderAsTransited, "Transited")}
-          >
-            {loadingTransited ? (
-              <Loader
-                loaderText="Transiting"
-                loaderColor="border-white"
-                textColor="text-white"
-              />
-            ) : (
-              "Make Order Transited"
-            )}
-          </button>
-
-          {/* Delivered */}
-          <button
-            className="rounded-md w-full bg-[#10B981] hover:bg-indigo-600
-            text-white font-bold cursor-pointer py-3"
-            onClick={() => actionHandler(markorderDeliver, "Deliver")}
-          >
-            {loadingDeliver ? (
-              <Loader
-                loaderText="Delivering"
-                loaderColor="border-white"
-                textColor="text-white"
-              />
-            ) : (
-              "Make Order Deliver"
-            )}
-          </button>
-
-          {/* Canceled */}
-          <button
-            className="rounded-md w-full bg-[#EF4444] hover:bg-indigo-600
-            text-white font-bold cursor-pointer py-3"
-            onClick={() => actionHandler(markOrderAsCancel, "Canceled")}
-          >
-            {loadingCancel ? (
-              <Loader
-                loaderText="Canceling"
-                loaderColor="border-white"
-                textColor="text-white"
-              />
-            ) : (
-              "Make Order Canceled"
-            )}
-          </button>
-
-
-          <button
-            className="rounded-md w-full bg-[#2DCCFF] hover:bg-indigo-600
-            text-white font-bold cursor-pointer py-3"
-            onClick={() => actionHandler(markOrderAsPaid, "Paid")}
-          >
-            {loadingPaid ? (
-              <Loader
-                loaderText="paying"
-                loaderColor="border-white"
-                textColor="text-white"
-              />
-            ) : (
-              "Make Order Paid"
-            )}
-          </button>
+        <div className={`px-13 space-y-4 ${showDetails ? "my-5" : "mb-0"}`}>
+          {[
+            {
+              label: "Packed",
+              action: markOrderAsPacked,
+              loading: loadingPacked,
+              loaderText: "Packing",
+              gradient: "from-cyan-400 to-blue-500",
+            },
+            {
+              label: "Transited",
+              action: markOrderAsTransited,
+              loading: loadingTransited,
+              loaderText: "Transiting",
+              gradient: "from-blue-400 to-indigo-500",
+            },
+            {
+              label: "Deliver",
+              action: markorderDeliver,
+              loading: loadingDeliver,
+              loaderText: "Delivering",
+              gradient: "from-green-400 to-emerald-500",
+            },
+            {
+              label: "Canceled",
+              action: markOrderAsCancel,
+              loading: loadingCancel,
+              loaderText: "Canceling",
+              gradient: "from-red-400 to-rose-500",
+            },
+            {
+              label: "Paid Manually",
+              action: markOrderAsPaid,
+              loading: loadingPaid,
+              loaderText: "Paying",
+              gradient: "from-purple-400 to-pink-500",
+            },
+          ].map(({ label, action, loading, loaderText, gradient }, idx) => (
+            <button
+              key={idx}
+              className={`w-full bg-gradient-to-r ${gradient} text-white py-3 
+              px-6 rounded-xl font-semibold shadow-md hover:scale-[1.02]
+              active:scale-[0.98] transition-all duration-200 cursor-pointer`}
+              onClick={() => actionHandler(action, label)}
+            >
+              {loading ? (
+                <Loader
+                  loaderText={loaderText}
+                  loaderColor="border-white"
+                  textColor="text-white"
+                />
+              ) : (
+                label
+              )}
+            </button>
+          ))}
         </div>
       )}
     </div>

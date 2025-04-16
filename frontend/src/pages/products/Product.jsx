@@ -5,7 +5,7 @@ export default function Product({ product }) {
   
   return (
     <div
-      className={`w-full  h-[20rem]  
+      className={`w-full  h-[20rem]  hover:scale-105 
         hover:shadow-2xl transition-all duration-300
       relative rounded-2xl shadow-lg  `}
     >
@@ -13,7 +13,7 @@ export default function Product({ product }) {
         <img
           src={product.img}
           alt={product.name}
-          className="w-[100%] h-[10rem] hover:scale-105 transition-all duration-300  object-fill cursor-pointer rounded-xl"
+          className="w-[100%] h-[10rem]   object-cover cursor-pointer rounded-xl"
         />
         <HeartIcon product={product} />
       </div>

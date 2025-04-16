@@ -7,28 +7,26 @@ import ProductShowTable from "../../components/ProductShowTable";
 import OrderActions from "../../components/OrderActions";
 import { useGetOrderDetailsQuery } from "../../redux/apis/orderApiSlice";
 import Message from "../../components/Message";
-import { motion } from 'motion/react'
+import { motion } from "motion/react";
 import { IoTime } from "react-icons/io5";
-import { GoListOrdered } from "react-icons/go";
 import { FaOrcid } from "react-icons/fa6";
 import { useEffect } from "react";
 
 export default function Order() {
   const { id } = useParams();
   const { data: order, isLoading, error } = useGetOrderDetailsQuery(id);
-
   useEffect(() => {
-    window.document.title = "Order #"+order?.data?.order?._id || "Order";
+    window.document.title = "Order #" + order?.data?.order?._id || "Order";
   }, [order]);
 
   if (error) {
     return (
-      <div className="pt-[1rem] pr-[1rem]">
-        <Message variant="dangers">
+      <div className="pt-4 px-4 max-w-7xl mx-auto">
+        <Message variant="danger">
           {error?.data?.message || error?.data || "Something went wrong"}{" "}
           <Link
             to={"/shop"}
-            className="cursor-pointer text-pink-500 hover:text-pink-600 hover:underline font-bold italic"
+            className="cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-1 rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 font-semibold"
           >
             Go To Shopping
           </Link>
@@ -39,70 +37,91 @@ export default function Order() {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="p-8 space-y-4 flex flex-col ml-[1rem] ">
-      {/* header  */}
+    <div
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 
+    min-h-screen"
+    >
+      {/* Header */}
       <motion.div
-        initial={{ y: -100, opacity: 0 }}
+        initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="bg-white p-6 rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] "
       >
-        <div className="flex justify-between   items-center ">
-          <div className="flex justify-start  gap-0.5 items-center ">
-            <FaOrcid size={26} />{" "}
-            <h1 className="text-base font-bold  sm:text-2xl">
-              {order?.data?.order?._id}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
+          <div className="flex items-center gap-3">
+            <FaOrcid className="text-indigo-600" size={30} />
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+              Order #{order?.data?.order?._id}
             </h1>
           </div>
         </div>
-        <div className="flex justify-start gap-0.5 items-center mt-5">
-          <IoTime size={20} color="green" />
-          <h3 className="font-medium text-base sm:text-md  text-green-200">
+        <div className="flex items-center gap-3 mt-4">
+          <IoTime className="text-emerald-500" size={24} />
+          <h3 className="text-sm sm:text-base font-medium text-gray-600">
             Created At:{" "}
-            <span className="font-semibold text-gray-500">
-              {new Date(
-                order?.data?.order?.createdAt
-              ).toLocaleString("en-US", {
-                month: "long", // "March"
-                day: "numeric", // "15"
-                year: "numeric", // "2025"
-                hour: "2-digit", // "06"
-                minute: "2-digit", // "26"
-                second: "2-digit", // "55"
-                hour12: false, // 24-hour format; remove for 12-hour (AM/PM)
+            <span className="font-semibold text-gray-800">
+              {new Date(order?.data?.order?.createdAt).toLocaleString("en-US", {
+                month: "long",
+                day: "numeric",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
               })}
             </span>
           </h3>
         </div>
       </motion.div>
 
-      <div
-        className={`bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-2xl`}
-      >
-        <OrderActions order={order?.data?.order} />
-      </div>
+      {/* Main Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left Column */}
+        <motion.div
+          initial={{ x: -100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="lg:col-span-2 space-y-6"
+        >
+          <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6 transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)] ">
+            <OrderActions order={order?.data?.order} />
+          </div>
 
-      <div
-        className={`bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-2xl`}
-      >
-        <ProductShowTable
-          px={"px-5 "}
-          className={"mx-13"}
-          orderItems={order?.data?.order?.orderItems}
-        />
-      </div>
+          <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6 transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)] ">
+            <OrderDetails order={order?.data?.order} />
+          </div>
 
-      <div className="shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  rounded-2xl">
-        <OrderDetails order={order?.data?.order} />
-      </div>
+          <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6 transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)] ">
+            <ProductShowTable
+              px="px-5"
+              className="px-13"
+              orderItems={order?.data?.order?.orderItems}
+            />
+          </div>
+        </motion.div>
 
-      <div className=" shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-2xl">
-        <OrderProgress
-          progress={order?.data?.order?.orderProgress}
-          createAt={order?.data?.order?.createdAt}
-        />
-      </div>
-      <div className=" shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  rounded-2xl ">
-        <ShippingAdress shippingAddress={order?.data?.order?.shippingAddress} />
+        {/* Right Column */}
+        <motion.div
+          initial={{ x: 100, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="space-y-6"
+        >
+          <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6 transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)] ">
+            <OrderProgress
+              isPaid={order?.data?.order?.isPaid}
+              progress={order?.data?.order?.orderProgress}
+              createAt={order?.data?.order?.createdAt}
+            />
+          </div>
+
+          <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6 transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)] ">
+            <ShippingAdress
+              shippingAddress={order?.data?.order?.shippingAddress}
+            />
+          </div>
+        </motion.div>
       </div>
     </div>
   );

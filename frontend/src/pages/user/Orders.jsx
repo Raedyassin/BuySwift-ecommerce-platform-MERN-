@@ -15,6 +15,7 @@ import { motion } from "motion/react";
 import Loader from "../../components/Loader";
 import PageLoader from "../../components/PageLoader";
 import OrderDetails from "../../components/OrderDetails";
+
 export default function Orders() {
   const [page, setPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(0);
@@ -27,16 +28,11 @@ export default function Orders() {
       page,
       limit: 10,
     }
-    // {
-    //   // Keep data from previous pages in cache
-    //   refetchOnMountOrArgChange: true,
-    // }
   );
 
-      useEffect(() => {
-        window.document.title = "Orders";
-      }, []);
-
+  useEffect(() => {
+    window.document.title = "Orders";
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -63,6 +59,7 @@ export default function Orders() {
       }
     };
   }, [isError, isFetching, data?.hasNextPage, page]);
+
   if (isLoading) {
     return <PageLoader height="h-screen" />;
   }
@@ -73,254 +70,272 @@ export default function Orders() {
       </Message>
     );
   }
+
   return (
-    <div className="container lg:flex lg:flex-row   ">
-      {/* the left side */}
-      {/* h-screen overflow-y-scroll [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded */}
-      {/* {data?.ordersLength > 0 && ( */}
-      {data?.ordersLength > 0 && (
-        <motion.div
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 1 }}
-          className={`fixed z-1000  left-0 lg:left-[70px] top-22 sm:top-24 md:top-14  
-            lg:top-15 w-[50%]  bg-white 
-            h-screen overflow-auto lg:h-[90%]  lg:ml-2   lg:w-[15rem] lg:block  
-            mt-2  pb-20 lg:pb-0 ${openOrders ? "block" : "hidden"}  `}
-        >
-          <div className="shadow-[5px_0px_8px_rgba(0,0,0,0.1)]  rounded flex  justify-center h-20 items-center ">
-            <h1 className=" text-lg   font-bold italic">
-              (<span className="text-indigo-600">{data?.ordersLength}</span>){" "}
-              Order{" "}
-            </h1>
-          </div>
-          {data?.data?.orders?.map((order, index) => {
-            const formattedDate = new Date(order.createdAt).toLocaleString(
-              "en-US",
-              {
-                month: "long", // "March"
-                day: "numeric", // "15"
-                year: "numeric", // "2025"
-              }
-            );
-            const fomattedTime = new Date(order.createdAt).toLocaleString(
-              "en-US",
-              {
-                hour: "2-digit", // "06"
-                minute: "2-digit", // "26"
-                second: "2-digit", // "55"
-                hour12: false, // 24-hour format; remove for 12-hour (AM/PM)
-              }
-            );
-            return (
-              <div
-                className="px-5  shadow-[5px_2px_10px_rgba(0,0,0,0.08)] h-20 mt-2
-                hover:bg-gray-100 cursor-pointer   py-2"
-                key={order._id}
-                onClick={() => {
-                  setSelectedItem(index);
-                  setOpenOrders(false);
-                }}
-              >
-                <div className="flex justify-start gap-0.5 mt-2 items-center ">
-                  <MdOutlineDateRange />
-                  <h1 className="font-medium">{formattedDate}</h1>
-                </div>
-                <div className="flex mt-2 justify-between">
-                  <div className="flex gap-0.5 font-medium items-center text-sm ">
-                    <IoMdTime />
-                    <h3 className="text-gray-500">At {fomattedTime}</h3>
-                  </div>
-                  <h3 className="italic font-semibold">
-                    <span className=" text-indigo-500">
-                      {order.orderItems.length}
-                    </span>{" "}
-                    item{order.orderItems.length > 1 && "s"}
-                  </h3>
-                </div>
-              </div>
-            );
-          })}
-          {isFetching && (
-            <div>
-              <div className="px-5 flex items-center justify-center shadow-[5px_2px_10px_rgba(0,0,0,0.08)] h-20 mt-5 hover:bg-gray-100 cursor-pointer   py-2">
-                <Loader />
-              </div>
-              <div className="px-5 flex items-center justify-center shadow-[5px_2px_10px_rgba(0,0,0,0.08)] h-20 mt-5 hover:bg-gray-100 cursor-pointer   py-2">
-                <Loader />
-              </div>
-            </div>
-          )}
-          {/* load more Orders */}
-          <div ref={showMoreOrdersObserver} className="h-10"></div>
-        </motion.div>
-      )}
-
-      {/* the right side */}
-      <div className="flex flex-col lg:flex-grow lg:ml-[15rem]">
-        {data?.data?.orders.length === 0 ? (
-          <motion.h1
-            key={selectedItem}
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="font-semibold text-xl "
-          >
-            <Message>You have no orders</Message>
-          </motion.h1>
-        ) : (
-          <div className="w-full p-10">
-            {/* header of the right side */}
+    <div className="min-h-screen ">
+      <div className=" mx-auto px-4 sm:px-6 lg:pl-8 py-8">
+        <div className="lg:flex lg:flex-row">
+          {/* Left Sidebar  */}
+          {data?.ordersLength > 0 && (
             <motion.div
-              key={selectedItem}
-              initial={{ y: -100, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
+              initial={{ x: -100, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 1 }}
+              className={`fixed z-1000 left-0 lg:left-[70px] top-22 sm:top-24 
+                md:top-14 lg:top-15 w-[50%] bg-white  overflow-auto shadow-[0px_10px_10px_rgba(0,0,0,0.1)]
+                h-[86%] lg:h-[90%] lg:ml-2 lg:w-[15rem] lg:block mt-2 pb-20 lg:pb-0 ${
+                  openOrders ? "block" : "hidden"
+                }`}
             >
-              <div className="flex justify-between   items-center ">
-                <div className="flex justify-start  gap-0.5 items-center ">
-                  <FaOrcid size={26} />{" "}
-                  <h1 className="text-base font-bold  sm:text-2xl">
-                    {data?.data?.orders[selectedItem]?._id}
-                  </h1>
-                </div>
-                <GoListOrdered
-                  onClick={() => setOpenOrders(!openOrders)}
-                  className="lg:hidden h-9 w-9  cursor-pointer
-                    p-2 shadow-md hover:shadow-lg transition-all duration-300 
-                    bg-gray-50 hover:bg-gray-100 text-gray-700 font-semibold 
-                    rounded-full"
-                />
+              <div className="shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded flex justify-center h-20 items-center">
+                <h1 className="text-lg font-bold italic">
+                  (<span className="text-indigo-600">{data?.ordersLength}</span>
+                  ) Order
+                </h1>
               </div>
-              <div className="flex justify-start gap-0.5 items-center mt-5">
-                <IoTime size={20} color="green" />
-                <h3 className="font-medium text-base sm:text-md  text-green-200">
-                  Created At:{" "}
-                  <span className="font-semibold text-gray-500">
-                    {new Date(
-                      data?.data?.orders[selectedItem]?.createdAt
-                    ).toLocaleString("en-US", {
-                      month: "long", // "March"
-                      day: "numeric", // "15"
-                      year: "numeric", // "2025"
-                      hour: "2-digit", // "06"
-                      minute: "2-digit", // "26"
-                      second: "2-digit", // "55"
-                      hour12: false, // 24-hour format; remove for 12-hour (AM/PM)
-                    })}
-                  </span>
-                </h3>
-              </div>
-            </motion.div>
-
-            <div className="flex flex-col  lg:flex-row mt-10">
-              <motion.div
-                // key={selectedItem}
-                initial={{ y: 100, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1 }}
-                className="lg:w-[60%]   w-full flex flex-col "
-              >
-                {/* oreder details */}
-                <div className="shadow-[0px_-2px_10px_rgba(0,0,0,0.1)] mb-5  rounded">
-                  <OrderDetails order={data?.data?.orders[selectedItem]} />
-                </div>
-
-                <div className=" shadow-[0px_-2px_10px_rgba(0,0,0,0.1)]  mb-5 rounded">
-                  <div className="flex items-center justify-between  px-5 py-2   gap-2">
-                    <div className="flex items-center gap-2">
-                      <FaSitemap size={24} />
-                      <h1 className="font-bold text-xl  italic">Order Items</h1>
+              {data?.data?.orders?.map((order, index) => {
+                const formattedDate = new Date(order.createdAt).toLocaleString(
+                  "en-US",
+                  {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  }
+                );
+                const fomattedTime = new Date(order.createdAt).toLocaleString(
+                  "en-US",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false,
+                  }
+                );
+                return (
+                  <div
+                    className="px-5 shadow-[0px_0px_5px_rgba(0,0,0,0.1)] h-20 mt-2 hover:bg-gray-100 cursor-pointer py-2"
+                    key={order._id}
+                    onClick={() => {
+                      setSelectedItem(index);
+                      setOpenOrders(false);
+                    }}
+                  >
+                    <div className="flex justify-start gap-0.5 mt-2 items-center">
+                      <MdOutlineDateRange />
+                      <h1 className="font-medium">{formattedDate}</h1>
                     </div>
-                    {showOrderItems ? (
-                      <MdKeyboardArrowDown
-                        className="cursor-pointer hover:bg-gray-200 rounded-full w-7 h-7"
-                        onClick={() => setShowOrderItems(false)}
-                      />
-                    ) : (
-                      <MdKeyboardArrowUp
-                        className="cursor-pointer hover:bg-gray-200 rounded-full w-7 h-7"
-                        onClick={() => setShowOrderItems(true)}
-                      />
-                    )}
+                    <div className="flex mt-2 justify-between">
+                      <div className="flex gap-0.5 font-medium items-center text-sm">
+                        <IoMdTime />
+                        <h3 className="text-gray-500">At {fomattedTime}</h3>
+                      </div>
+                      <h3 className="italic font-semibold">
+                        <span className="text-indigo-500">
+                          {order.orderItems.length}
+                        </span>{" "}
+                        item{order.orderItems.length > 1 && "s"}
+                      </h3>
+                    </div>
                   </div>
-                  {showOrderItems && (
-                    <div className=" px-10 ">
-                      {data?.data?.orders[selectedItem]?.orderItems.map(
-                        (item) => (
-                          <div
-                            key={item._id}
-                            className="flex flex-col sm:flex-row justify-between  mt-5 p-4 py-2 border-b-1 border-gray-200 "
-                          >
-                            <div className="flex flex-col sm:flex-row gap-3">
-                              <img
-                                className="sm:w-30 sm:h-20 w-full h-50 object-cover rounded"
-                                src={`/uploads/${item.image.split("/").pop()}`}
-                                onError={(e) =>
-                                  (e.target.src =
-                                    "../../../public/userImge.png")
-                                }
-                                alt={item.name}
-                              />
-                              <div className="flex flex-col justify-start  text-gray-500 ">
-                                <h1
-                                  onClick={() =>
-                                    navigate(`/product/${item._id}`)
-                                  }
-                                  className="underline font-bold italic hover:text-indigo-700 hover:underline cursor-pointer"
-                                >
-                                  {item.name}
-                                </h1>
-                                <h1>
-                                  <span className="font-semibold">Brand:</span>{" "}
-                                  {item.brand}
-                                </h1>
-                                <h1>
-                                  <span className="font-semibold">
-                                    Quantity:
-                                  </span>{" "}
-                                  {item.quantity}
-                                </h1>
-                              </div>
-                            </div>
-                            <div className="flex items-center  mb-5 sm:mb-0">
-                              <h1 className="font-bold text-indigo-700">
-                                ${item.price.toFixed(2)}
-                              </h1>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  )}
+                );
+              })}
+              {isFetching && (
+                <div>
+                  <div className="px-5 flex items-center justify-center shadow-[0px_0px_10px_rgba(0,0,0,0.1)] h-20 mt-5 hover:bg-gray-100 cursor-pointer py-2">
+                    <Loader />
+                  </div>
+                  <div className="px-5 flex items-center justify-center shadow-[0px_0px_10px_rgba(0,0,0,0.1)] h-20 mt-5 hover:bg-gray-100 cursor-pointer py-2">
+                    <Loader />
+                  </div>
                 </div>
-              </motion.div>
+              )}
+              <div ref={showMoreOrdersObserver} className="h-10"></div>
+            </motion.div>
+          )}
+
+          {/* Right Content */}
+          <div className="flex-1 lg:ml-8 mt-8 lg:mt-0">
+            {data?.data?.orders.length === 0 ? (
               <motion.div
                 key={selectedItem}
-                initial={{ x: 100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1 }}
-                className="flex flex-col p-0 lg:p-5 lg:pt-0  pt-0  lg:w-[30rem] w-full"
+                initial={{ y: -50, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6 }}
+                className="text-center py-12"
               >
-                {/* <div className=" border-2  shadow-md mb-5 rounded border-gray-100"> */}
-                <div className=" shadow-[0px_-2px_10px_rgba(0,0,0,0.1)] mb-5 rounded">
-                  <OrderProgress
-                    progress={data?.data?.orders[selectedItem]?.orderProgress}
-                    createAt={data?.data?.orders[selectedItem]?.createdAt}
-                  />
-                </div>
-                <div className=" shadow-[0px_-2px_10px_rgba(0,0,0,0.1)]    mb-20 rounded ">
-                  <ShippingAdress
-                    shippingAddress={
-                      data?.data?.orders[selectedItem]?.shippingAddress
-                    }
-                  />
-                </div>
+                <Message
+                  variant="info"
+                  className="text-lg font-semibold text-gray-700"
+                >
+                  You have no orders
+                </Message>
               </motion.div>
-            </div>
+            ) : (
+              <div className="space-y-6 ">
+                {/* Header */}
+                <motion.div
+                  key={selectedItem}
+                  initial={{ y: -50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  className="bg-white p-6 rounded-xl lg:ml-[13rem] 
+                  shadow-[0px_0px_10px_rgba(0,0,0,0.1)] "
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3">
+                      <FaOrcid className="text-indigo-600" size={28} />
+                      <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
+                        Order #{data?.data?.orders[selectedItem]?._id}
+                      </h1>
+                    </div>
+                    <GoListOrdered
+                      onClick={() => setOpenOrders(!openOrders)}
+                      className="lg:hidden h-10 w-10 p-2 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 cursor-pointer transition-colors duration-200"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3 mt-4">
+                    <IoTime className="text-emerald-500" size={22} />
+                    <h3 className="text-sm sm:text-base font-medium text-gray-600">
+                      Created At:{" "}
+                      <span className="font-semibold text-gray-800">
+                        {new Date(
+                          data?.data?.orders[selectedItem]?.createdAt
+                        ).toLocaleString("en-US", {
+                          month: "long",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                          hour12: false,
+                        })}
+                      </span>
+                    </h3>
+                  </div>
+                </motion.div>
+
+                {/* the right side */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:ml-[13rem]">
+                  <motion.div
+                    initial={{ y: 50, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="lg:col-span-2 space-y-6"
+                  >
+                    {/* Order Details */}
+                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                      <OrderDetails order={data?.data?.orders[selectedItem]} />
+                    </div>
+
+                    {/* Order Items */}
+                    <div className="bg-white rounded-xl px-4 shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                      <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                        <div className="flex items-center gap-3">
+                          <FaSitemap size={24} />
+                          <h1 className="text-xl font-bold italic text-gray-900">
+                            Order Items
+                          </h1>
+                        </div>
+                        {showOrderItems ? (
+                          <MdKeyboardArrowDown
+                            size={24}
+                            className="cursor-pointer  font-bold  rounded-full w-8 h-8 p-1 transition-colors duration-200"
+                            onClick={() => setShowOrderItems(false)}
+                          />
+                        ) : (
+                          <MdKeyboardArrowUp
+                            className="cursor-pointer text-gray-500 font-bold  rounded-full w-8 h-8 p-1 transition-colors duration-200"
+                            onClick={() => setShowOrderItems(true)}
+                          />
+                        )}
+                      </div>
+                      {showOrderItems && (
+                        <div className="p-6 px-10 space-y-4">
+                          {data?.data?.orders[selectedItem]?.orderItems.map(
+                            (item) => (
+                              <div
+                                key={item._id}
+                                className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors duration-200"
+                              >
+                                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+                                  <img
+                                    className="w-full sm:w-24 sm:h-24 object-cover rounded-lg"
+                                    src={`/uploads/${item.image
+                                      .split("/")
+                                      .pop()}`}
+                                    onError={(e) =>
+                                      (e.target.src =
+                                        "../../../public/userImge.png")
+                                    }
+                                    alt={item.name}
+                                  />
+                                  <div className="flex flex-col text-gray-600 space-y-1">
+                                    <h1
+                                      onClick={() =>
+                                        navigate(`/product/${item._id}`)
+                                      }
+                                      className="font-semibold text-indigo-700 hover:text-indigo-800 hover:underline cursor-pointer transition-colors duration-200"
+                                    >
+                                      {item.name}
+                                    </h1>
+                                    <p>
+                                      <span className="font-medium">
+                                        Brand:
+                                      </span>{" "}
+                                      {item.brand}
+                                    </p>
+                                    <p>
+                                      <span className="font-medium">
+                                        Quantity:
+                                      </span>{" "}
+                                      {item.quantity}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center mt-4 sm:mt-0">
+                                  <h1 className="font-bold text-indigo-700">
+                                    ${item.price.toFixed(2)}
+                                  </h1>
+                                </div>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    key={selectedItem}
+                    initial={{ x: 50, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                    className="space-y-6"
+                  >
+                    {/* Order Progress */}
+                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                      <OrderProgress
+                        progress={
+                          data?.data?.orders[selectedItem]?.orderProgress
+                        }
+                        createAt={data?.data?.orders[selectedItem]?.createdAt}
+                      />
+                    </div>
+
+                    {/* Shipping Address */}
+                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                      <ShippingAdress
+                        shippingAddress={
+                          data?.data?.orders[selectedItem]?.shippingAddress
+                        }
+                      />
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
