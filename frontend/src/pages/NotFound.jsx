@@ -63,7 +63,10 @@ export default function NotFound() {
         animate="visible"
         className="text-center space-y-6 max-w-lg lg:min-w-200 "
       >
-        <div
+        <motion.div
+          initial={{y: -100,  opacity: 0 }}
+          animate={{y: 0, opacity: 1 }}
+          transition={{ duration: 2, ease: "easeOut" }}
           className="flex  justify-center items-center text-4xl 
           lg:text-6xl font-bold text-gray-900"
         >
@@ -82,7 +85,7 @@ export default function NotFound() {
             </svg>
           </div>
           <div className="text-indigo-800">{logo}</div>
-        </div>
+        </motion.div>
 
         <div className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900">
           {text.map((char, index) => (
