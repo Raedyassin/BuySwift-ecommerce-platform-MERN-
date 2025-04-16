@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
 import Status from "./Status";
+import PaymentShow from "./PaymentShow";
 export default function OrderDetails({ order }) {
   const [showDetails, setShowDetails] = useState(true);
 
@@ -31,18 +32,14 @@ export default function OrderDetails({ order }) {
             <div className="font-semibold text-gray-500">Status</div>
             <Status status={order?.status} />
           </div>
-          {order?.isPaid && (
+          {/* payment method */}
             <div className="flex flex-row justify-between  px-4 py-3 ">
               <div className="font-semibold text-gray-500">Payment Method</div>
               <div>
-                {order?.paymentMethod === "OnDelivery"
-                  ? "On Delivery"
-                  : order?.paymentMethod === "PayPal"
-                  ? "PayPal"
-                  : "Vodafone Cash"}
+                <PaymentShow paymentMethod={order?.paymentMethod} />
+                {/* <PaymentShow paymentMethod={"PayPald"} /> */}
               </div>
             </div>
-          )}
           <div className="flex flex-row justify-between  px-4 py-3 ">
             <div className="font-semibold text-gray-500">Is Paid</div>
             <div>

@@ -10,6 +10,7 @@ import { clearCartItems } from "../../redux/features/cart/cartSlice";
 import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import EmptyCart from "../../components/EmptyCart";
 import ProductShowTable from "../../components/ProductShowTable";
+import PaymentShow from "../../components/PaymentShow";
 
 const PlaceOrder = () => {
   const [, dispatchPaypalLoader] = usePayPalScriptReducer();
@@ -71,7 +72,11 @@ const PlaceOrder = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Cart Items Table */}
         <div className="lg:col-span-2 p-6 bg-white shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-xl">
-          <ProductShowTable showColor={true} orderItems={cart?.cartItems} px="" />
+          <ProductShowTable
+            showColor={true}
+            orderItems={cart?.cartItems}
+            px=""
+          />
         </div>
 
         {/* Order Summary */}
@@ -117,7 +122,8 @@ const PlaceOrder = () => {
               <h3 className="text-lg font-semibold text-indigo-800 italic mb-2">
                 Payment Method
               </h3>
-              <p className="text-gray-600">{cart.paymentMethod}</p>
+              <PaymentShow paymentMethod={cart.paymentMethod} />
+              {/* <PaymentShow paymentMethod={"VodafoneCash"} /> */}
             </div>
 
             <button

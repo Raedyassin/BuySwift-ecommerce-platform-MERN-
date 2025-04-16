@@ -15,7 +15,7 @@ import { motion } from "motion/react";
 import Loader from "../../components/Loader";
 import PageLoader from "../../components/PageLoader";
 import OrderDetails from "../../components/OrderDetails";
-
+import { Link } from "react-router-dom";
 export default function Orders() {
   const [page, setPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(0);
@@ -65,9 +65,19 @@ export default function Orders() {
   }
   if (isError) {
     return (
-      <Message variant="error">
-        {error?.data?.message || error?.message || "Something went wrong"}
-      </Message>
+      <div className="pt-4 px-4 max-w-7xl flex flex-col gap-4 items-center mx-auto">
+        <div className="w-full">
+          <Message variant="error">
+            {error?.data?.message || error?.data || "Something went wrong"}{" "}
+          </Message>
+        </div>
+        <Link
+          to={"/shop"}
+          className="cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-1 rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 font-semibold"
+        >
+          Go To Shopping
+        </Link>
+      </div>
     );
   }
 
@@ -163,12 +173,17 @@ export default function Orders() {
                 transition={{ duration: 0.6 }}
                 className="text-center py-12"
               >
-                <Message
-                  variant="info"
-                  className="text-lg font-semibold text-gray-700"
-                >
-                  You have no orders
-                </Message>
+                <div className="pt-4 px-4 max-w-7xl flex flex-col gap-4 items-center mx-auto">
+                  <div className="w-full">
+                    <Message variant="info">{"You have no orders"} </Message>
+                  </div>
+                  <Link
+                    to={"/shop"}
+                    className="cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-1 rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 font-semibold"
+                  >
+                    Go To Shopping
+                  </Link>
+                </div>
               </motion.div>
             ) : (
               <div className="space-y-6 ">
@@ -228,7 +243,7 @@ export default function Orders() {
                     </div>
 
                     {/* Order Items */}
-                    <div className="bg-white rounded-xl px-4 shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                    <div className="bg-white rounded-xl py-1 px-4 shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
                       <div className="flex items-center justify-between p-6 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                           <FaSitemap size={24} />

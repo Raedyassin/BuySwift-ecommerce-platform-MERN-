@@ -90,18 +90,11 @@ export default function OrderActions({ order }) {
               gradient: "from-blue-400 to-indigo-500",
             },
             {
-              label: "Deliver",
+              label: "Delivered",
               action: markorderDeliver,
               loading: loadingDeliver,
               loaderText: "Delivering",
               gradient: "from-green-400 to-emerald-500",
-            },
-            {
-              label: "Canceled",
-              action: markOrderAsCancel,
-              loading: loadingCancel,
-              loaderText: "Canceling",
-              gradient: "from-red-400 to-rose-500",
             },
             {
               label: "Paid Manually",
@@ -110,25 +103,50 @@ export default function OrderActions({ order }) {
               loaderText: "Paying",
               gradient: "from-purple-400 to-pink-500",
             },
-          ].map(({ label, action, loading, loaderText, gradient }, idx) => (
-            <button
-              key={idx}
-              className={`w-full bg-gradient-to-r ${gradient} text-white py-3 
+            {
+              label: "Canceled",
+              action: markOrderAsCancel,
+              loading: loadingCancel,
+              loaderText: "Canceling",
+              gradient: "from-red-400 to-rose-500",
+            },
+          ]
+            .filter((label) => {
+              console.log(order?.status);
+              if(order?.status === "cancelled") return false;
+              else if (order?.status === "delivered") return false;
+              else if (label.label === "Packed" && order?.status !== "pending")return false;
+              else if (label.label === "Transited" && order?.status !== "packed") return false;
+              else if (label.label === "Paid Manually") {
+                return order?.isPaid === true ? false : true;
+              }
+              return true;
+            })
+            .map(({ label, action, loading, loaderText, gradient }, idx) => (
+              <button
+                key={idx}
+                className={`w-full bg-gradient-to-r ${gradient} text-white py-3 
               px-6 rounded-xl font-semibold shadow-md hover:scale-[1.02]
               active:scale-[0.98] transition-all duration-200 cursor-pointer`}
-              onClick={() => actionHandler(action, label)}
-            >
-              {loading ? (
-                <Loader
-                  loaderText={loaderText}
-                  loaderColor="border-white"
-                  textColor="text-white"
-                />
-              ) : (
-                label
-              )}
-            </button>
-          ))}
+                onClick={() => actionHandler(action, label)}
+              >
+                {loading ? (
+                  <Loader
+                    loaderText={loaderText}
+                    loaderColor="border-white"
+                    textColor="text-white"
+                  />
+                ) : (
+                  label
+                )}
+              </button>
+            ))}
+          <div className="text-center font-bold text-rose-500">
+            {order?.status === "cancelled" && "Order Cancelled"}
+          </div>
+          <div className="text-center font-bold text-emerald-500">
+            {order?.status === "delivered" && "Order Delivered"}
+          </div>
         </div>
       )}
     </div>

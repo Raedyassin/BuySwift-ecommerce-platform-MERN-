@@ -21,16 +21,18 @@ export default function Order() {
 
   if (error) {
     return (
-      <div className="pt-4 px-4 max-w-7xl mx-auto">
-        <Message variant="danger">
-          {error?.data?.message || error?.data || "Something went wrong"}{" "}
-          <Link
-            to={"/shop"}
-            className="cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-1 rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 font-semibold"
-          >
-            Go To Shopping
-          </Link>
-        </Message>
+      <div className="pt-4 px-4 max-w-7xl flex flex-col gap-4 items-center mx-auto">
+        <div className="w-full">
+          <Message variant="danger">
+            {error?.data?.message || error?.data || "Something went wrong"}{" "}
+          </Message>
+        </div>
+        <Link
+          to={"/shop"}
+          className="cursor-pointer bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-4 py-1 rounded-full hover:from-indigo-600 hover:to-purple-700 transition-all duration-200 font-semibold"
+        >
+          Go To Shopping
+        </Link>
       </div>
     );
   }

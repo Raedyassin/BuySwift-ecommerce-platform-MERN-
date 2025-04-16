@@ -71,8 +71,11 @@ export default function OrderProgress({ progress, createAt, isPaid }) {
                   </h4>
                 </div>
               </div>
+              <div className="text-base font-bold text-center text-red-700">
+                Sory your order is cancled
+              </div>
               {isPaid && (
-                <div className="text-base text-gray-700">
+                <div className="text-base  text-gray-700">
                   Them Money will be Back after{" "}
                   <sapn className="font-semibold text-red-700">15 Days</sapn> of
                   cancled of{" "}

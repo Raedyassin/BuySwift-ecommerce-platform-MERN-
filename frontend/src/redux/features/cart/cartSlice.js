@@ -4,9 +4,9 @@ const initialState = localStorage.getItem("cart") ?
   JSON.parse(localStorage.getItem("cart")) : {
     cartItems: [],
     shippingAddress: {},
-    paymentMethod: "PayPal",
+    paymentMethod: "OnDelivery",
   };
-
+// enum: ['VodafoneCash', 'PayPal', 'OnDelivery']
 const cartSlice = createSlice({
   name: "cart",
   initialState,

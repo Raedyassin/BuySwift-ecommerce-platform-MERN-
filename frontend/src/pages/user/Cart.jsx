@@ -76,9 +76,9 @@ export default function Cart() {
                 <div
                   key={item._id}
                   className="flex flex-row items-start sm:items-center
-                  bg-white p-4 rounded-xl border border-gray-200
+                  bg-white p-4 rounded-xl 
                     transition-all duration-300 
-                  shadow-sm hover:shadow-md"
+                  hover:shadow-[0_0px_10px_rgb(0,0,0,0.1)] shadow-md"
                 >
                   <div className="w-20 h-20 sm:w-24 sm:h-24  flex-shrink-0">
                     <img
@@ -157,7 +157,8 @@ export default function Cart() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="w-full lg:w-1/3 mt-6 lg:mt-0"
           >
-            <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-md">
+              <div className="bg-white rounded-xl p-6 
+              shadow-[0_0px_10px_rgb(0,0,0,0.1)]">
               <h2
                 className="text-lg font-bold sm:text-xl md:text-2xl 
                 bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent mb-4"
@@ -178,8 +179,10 @@ export default function Cart() {
                   <span>${cart.taxPrice}</span>
                 </div>
                 <hr className="border-gray-300" />
-                  <div className="flex justify-between text-base sm:text-lg md:text-xl 
-                font-bold text-indigo-900">
+                <div
+                  className="flex justify-between text-base sm:text-lg md:text-xl 
+                font-bold text-indigo-900"
+                >
                   <span>Total Price:</span>
                   <span>${cart.totalPrice}</span>
                 </div>

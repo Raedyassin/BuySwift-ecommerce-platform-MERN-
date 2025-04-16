@@ -50,6 +50,20 @@ const createOrder = asyncHandler(async (req, res, next) => {
     totalPrice,
   } = calcTotalPrice(dbOrderItems)
 
+  // enum: ['VodafoneCash', 'PayPal', 'OnDelivery'], VodafoneCash will add later
+  paymentMethod = paymentMethod.trim().lowerCase() === "ondelivery" ? "OnDelivery" : paymentMethod;
+  if (paymentMethod.trim().lowerCase() === "paypal") { 
+      paymentMethod = "PayPal"
+  }
+  else if (paymentMethod.trim().lowerCase() === "vodafonecash") { 
+    paymentMethod = "VodafoneCash"
+    return res.status(400).json({ status: FAIL, message: "Vodafone Cash payment method is not Work yet (We Work On It), please choose another method" })
+  }
+  else if (paymentMethod.trim().lowerCase() !== "ondelivery"){ 
+    return res.status(400).json({ status: FAIL, message: "Unsupported (Invalid) payment method we support only (PayPal, OnDelivery)" })
+  }
+  
+
 
   // finish validation of the order
 
@@ -205,12 +219,13 @@ const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
   if (order.isPaid) {
     return res.status(409).json({ status: FAIL, message: "Order already Paid"  })
   }
-  if(order.status !== "delivered"){
-    return res.status(409).json({ status: FAIL, message: "Order not on delivered yet or Order delivered then payed" })
+  if (order.status !== "ontheroute"){
+    return res.status(409).json({ status: FAIL, message: "Order is not On Tthe Route yet or Order payed then delivered" })
   }
+
   order.isPaid = true;
   order.paidAt = Date.now();
-  order.paymentMethod = "OnDelivery";
+  // order.paymentMethod = "OnDelivery";
   order.paymentResult = {
     id: req.body.id,
     status: req.body.status,
@@ -234,6 +249,9 @@ const markorderDeliver = asyncHandler(async (req, res, next) => {
   }
   if (order.status !== "ontheroute"){
     return res.status(409).json({ status: FAIL, message: "Order not on the route yet" })
+  }
+  if(order.isPaid === false){
+    return res.status(409).json({ status: FAIL, message: "Order not on paid yet" })
   }
 
   order.orderProgress.deliveredAt = Date.now();

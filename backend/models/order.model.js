@@ -39,7 +39,8 @@ const orderSchema = new mongoose.Schema({
 
   paymentMethod: {
     type: String,
-    enum: ['VodafoneCash', 'PayPal', 'OnDelivery'],
+    // enum: ['VodafoneCash', 'PayPal', 'OnDelivery'], VodafoneCash will add later
+    enum: ['PayPal', 'OnDelivery'],
     default: 'OnDelivery',
     required: true,
   },
