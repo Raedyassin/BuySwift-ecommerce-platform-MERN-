@@ -8,6 +8,7 @@ export const updateCart = (state) => {
       (acc, item) => acc + item.price * item.quantity, 0
     )
   );
+  
 
   // رسوم الشحن
   state.shippingPrice = addDecimals(state.itemsPrice > 100 ? 0 : 10);

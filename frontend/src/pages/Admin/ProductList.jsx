@@ -28,7 +28,7 @@ export default function UserList() {
     name: "",
     price: "",
     brand: "",
-    stock: "",
+    quantity: "",
   });
 
   const [filterSet, setFilterSet] = useState({
@@ -82,7 +82,7 @@ export default function UserList() {
     else if (searchBy === "name") setFinalFilterBy({ name: searchValue });
     else if (searchBy === "brand") setFinalFilterBy({ brand: searchValue });
     else if (searchBy === "price") setFinalFilterBy({ price: searchValue });
-    else if (searchBy === "stock") setFinalFilterBy({ stock: searchValue });
+    else if (searchBy === "quantity") setFinalFilterBy({ quantity: searchValue });
     // setSearchValue("");
   };
       useEffect(() => {
@@ -102,7 +102,7 @@ export default function UserList() {
         name: "",
         price: "",
         brand: "",
-        stock: "",
+        quantity: "",
       });
       return;
     }
@@ -121,7 +121,7 @@ export default function UserList() {
   };
 
   console.log("products", products);
-  // {page, limit, createdAt, id, name, brand, category, price, quantity, stock }
+  // {page, limit, createdAt, id, name, brand, category, price, quantity }
   useEffect(() => {
     if (error && error?.status < 500) {
       toast.error(error?.data?.data?.title || error?.data?.message);
@@ -279,7 +279,7 @@ export default function UserList() {
               <option value="name"> Name</option>
               <option value="price"> Price</option>
               <option value="brand"> Brand</option>
-              <option value="stock"> In Stock</option>
+              <option value="quantity"> Quantity</option>
             </select>
             <div className="h-5 w-[1px] bg-gray-300"></div>
 
@@ -370,7 +370,7 @@ export default function UserList() {
                 <th className="p-4 text-start bg-[#FAFAFC]">Rating</th>
                 <th className="p-4 text-start bg-[#FAFAFC]">Brand</th>
                 <th className="p-4 text-start bg-[#FAFAFC]">Category</th>
-                <th className="p-4 text-start bg-[#FAFAFC]">In Stock</th>
+                <th className="p-4 text-start bg-[#FAFAFC]">Quantity</th>
                 <th className="p-4 text-start bg-[#FAFAFC]">Actions</th>
               </tr>
             </thead>
@@ -395,83 +395,83 @@ export default function UserList() {
             {!isFetching && (
               <tbody className="text-gray-500">
                 {products?.data?.products?.map((product) => (
-                    <tr
-                      key={product._id}
-                      className={`${
-                        selectedProduct === product._id && "bg-sky-50"
-                      }`}
-                    >
-                      <td
+                  <tr
+                    key={product._id}
+                    className={`${
+                      selectedProduct === product._id && "bg-sky-50"
+                    }`}
+                  >
+                    <td
                       className={`flex items-center gap-2 justify-start  
                           p-4 pl-6 min-w-40 `}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedProduct === product._id}
+                        onChange={() => slectedUserHandler(product._id)}
+                        className="cursor-pointer w-4 h-4"
+                      />
+                      <Link
+                        to={`/product/${product._id}`}
+                        className="py-2 cursor-pointer  hover:text-indigo-600 hover:underline"
                       >
-                        <input
-                          type="checkbox"
-                          checked={selectedProduct === product._id}
-                          onChange={() => slectedUserHandler(product._id)}
-                          className="cursor-pointer w-4 h-4"
-                        />
-                        <Link
-                          to={`/product/${product._id}`}
-                          className="py-2 cursor-pointer  hover:text-indigo-600 hover:underline"
+                        {product._id}
+                      </Link>
+                    </td>
+                    <td className=" p-4   min-w-35 ">
+                      {product.createdAt?.substring(0, 10)}
+                    </td>
+                    <td className=" flex items-center p-4 min-w-60 ">
+                      <img
+                        src={"/uploads/" + product.img.split("/").pop()}
+                        alt={product.name}
+                        className="h-10 w-10 mr-3 block object-cover rounded-full"
+                      />
+                      <p>
+                        {product.name.length > 20
+                          ? product.name.substring(0, 20) + "..."
+                          : product.name}
+                      </p>
+                    </td>
+                    <td className=" p-4 min-w-30 ">
+                      {product.price?.toLocaleString("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                      })}
+                    </td>
+                    <td className=" p-4 min-w-30 ">
+                      {product.rating.toFixed(2)}
+                    </td>
+                    <td className=" p-2 min-w-30 ">
+                      {product.brand?.toUpperCase()}
+                    </td>
+                    <td className=" p-2 min-w-35 ">
+                      {product?.category?.name}
+                    </td>
+                    <td className=" p-2 min-w-30 ">
+                      {product?.quantity} Piece
+                    </td>
+                    <td className="flex min-w-30 justify-center p-4 items-center">
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() =>
+                            navigate(`/admin/product/update/${product._id}`)
+                          }
+                          className="ml-2 cursor-pointer hover:bg-gray-100 bg-[#FAFAFC] text-blue-500 py-2 px-4 rounded-lg"
                         >
-                          {product._id}
-                        </Link>
-                      </td>
-                      <td className=" p-4   min-w-35 ">
-                        {product.createdAt?.substring(0, 10)}
-                      </td>
-                      <td className=" flex items-center p-4 min-w-60 ">
-                        <img
-                          src={"/uploads/" + product.img.split("/").pop()}
-                          alt={product.name}
-                          className="h-10 w-10 mr-3 block object-cover rounded-full"
-                        />
-                        <p>
-                          {product.name.length > 20
-                            ? product.name.substring(0, 20) + "..."
-                            : product.name}
-                        </p>
-                      </td>
-                      <td className=" p-4 min-w-30 ">
-                        {product.price?.toLocaleString("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        })}
-                      </td>
-                      <td className=" p-4 min-w-30 ">
-                        {product.rating.toFixed(2)}
-                      </td>
-                      <td className=" p-2 min-w-30 ">
-                        {product.brand?.toUpperCase()}
-                      </td>
-                      <td className=" p-2 min-w-35 ">
-                        {product?.category?.name}
-                      </td>
-                      <td className=" p-2 min-w-30 ">
-                        {product?.countInStock} Piece
-                      </td>
-                      <td className="flex min-w-30 justify-center p-4 items-center">
-                        <div className="flex gap-2">
-                          <button
-                            onClick={() =>
-                              navigate(`/admin/product/update/${product._id}`)
-                            }
-                            className="ml-2 cursor-pointer hover:bg-gray-100 bg-[#FAFAFC] text-blue-500 py-2 px-4 rounded-lg"
-                          >
-                            <FaEdit />
-                          </button>
-                          <button
-                            onClick={(e) => handleDelete(e, product._id)}
-                            className="bg-[#FAFAFC] hover:bg-gray-100 text-red-500 font-bold
+                          <FaEdit />
+                        </button>
+                        <button
+                          onClick={(e) => handleDelete(e, product._id)}
+                          className="bg-[#FAFAFC] hover:bg-gray-100 text-red-500 font-bold
                               p-2 rounded cursor-pointer"
-                          >
-                            <FaTrash />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        >
+                          <FaTrash />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             )}
           </table>

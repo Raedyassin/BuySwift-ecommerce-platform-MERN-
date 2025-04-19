@@ -2,17 +2,17 @@ import express from "express";
 import { authenticate, authorizeAdmin } from "../middlewares/authMeddileware.js";
 import cechkID from "../middlewares/checkID.js";
 import {
-  payPalPayment,
+  intializePayPalPayment,
   paypalConfig,
   capturePayPalPayment
-} from "../controllers/payment.controller.js";
+} from "../controllers/paypalPayment.controller.js";
 
 const router = express.Router();
 
-router.route("/paypal/:id")
-.post(authenticate, cechkID, payPalPayment)
+router.route("/paypal")
+.post(authenticate, intializePayPalPayment)
 
-router.post("/paypal/:id/capture",authenticate,cechkID, capturePayPalPayment)
+router.post("/paypal/capture",authenticate, capturePayPalPayment)
 
 router.get('/paypal/config', paypalConfig)
 

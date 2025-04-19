@@ -1,47 +1,16 @@
 import Order from "../models/order.model.js";
-import Product from "../models/product.model.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 import { FAIL, SUCCESS } from "../utils/httpStatucText.js";
 import { calcTotalPrice } from '../utils/clacTotalPrice.js'
-// import { generateAccessToken } from '../utils/PayPalAccessToken.js'
-// import axios from 'axios'//npm install axios
+import productsIsFound from '../utils/productsIsFound.js'
+import { reduceQuantity } from "../utils/changeQuantity.js";
 
 const createOrder = asyncHandler(async (req, res, next) => {
-  const { orderItems, shippingAddress, paymentMethod } = req.body;
-  if (!orderItems?.length) {
-    return res.status(400).json({ status: FAIL, message: "No order items" })
-  }
+  const { orderItems, shippingAddress } = req.body;
+  let { paymentMethod } = req.body;
 
-  const itemsFromDB = await Product.find({
-    _id: { $in: orderItems.map(x => x._id) }
-  })
-  // Check if all requested products exist in DB
-  const missingProducts = orderItems.filter(
-    itemFromClient => !itemsFromDB.some(item => item._id.toString() === itemFromClient._id)
-  );
-
-  if (missingProducts.length > 0) {
-    return res.status(404).json({
-      status: FAIL,
-      data: {
-        title: "Some products were not found",
-        products: missingProducts,
-      },
-    });
-  }
-
-  const dbOrderItems = orderItems.map((itemFromClient) => {
-    const matchingItemsFromDB = itemsFromDB.find(
-      item => item._id.toString() === itemFromClient._id
-    );
-    
-    return {
-      ...itemFromClient,
-      productId: matchingItemsFromDB._id,
-      price: matchingItemsFromDB.price,
-      image: matchingItemsFromDB.img
-    }
-  });
+  const dbOrderItems = await productsIsFound(res, orderItems);
+  if (!dbOrderItems) return; 
 
   const {
     itemsPrice,
@@ -50,26 +19,32 @@ const createOrder = asyncHandler(async (req, res, next) => {
     totalPrice,
   } = calcTotalPrice(dbOrderItems)
 
+  // **************************************
+  // paypal add in payment.controller.js **
+  // **************************************
+  
   // enum: ['VodafoneCash', 'PayPal', 'OnDelivery'], VodafoneCash will add later
-  paymentMethod = paymentMethod.trim().lowerCase() === "ondelivery" ? "OnDelivery" : paymentMethod;
-  if (paymentMethod.trim().lowerCase() === "paypal") { 
-      paymentMethod = "PayPal"
+  // PayPal hase it's own Controller
+  if(paymentMethod.trim().toLowerCase() === "paypal") {
+    return res.status(400).json({ status: FAIL, message: "PayPal payment method is called by anotehr API (url/order/paypal)" })
   }
-  else if (paymentMethod.trim().lowerCase() === "vodafonecash") { 
+  paymentMethod = paymentMethod.trim().toLowerCase() === "ondelivery" ? "OnDelivery" : paymentMethod;
+    if (paymentMethod.trim().toLowerCase() === "vodafonecash") { 
     paymentMethod = "VodafoneCash"
     return res.status(400).json({ status: FAIL, message: "Vodafone Cash payment method is not Work yet (We Work On It), please choose another method" })
   }
-  else if (paymentMethod.trim().lowerCase() !== "ondelivery"){ 
+  else if (paymentMethod.trim().toLowerCase() !== "ondelivery"){ 
     return res.status(400).json({ status: FAIL, message: "Unsupported (Invalid) payment method we support only (PayPal, OnDelivery)" })
   }
-  
 
-
-  // finish validation of the order
-
+  const reducesQuantitySuccess = await reduceQuantity(res,dbOrderItems);
+  if (!reducesQuantitySuccess) return;
   
   const order = new Order({
-    orderItems: dbOrderItems,
+    orderItems: dbOrderItems.map((item) => ({
+      quantity: item.quantity,
+      product: item._id,
+    })),
     user: req.user._id,
     shippingAddress:{
       address: shippingAddress.address,
@@ -77,7 +52,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
       postalCode: shippingAddress.postalCode,
       country: shippingAddress.country,
       firstPhone: shippingAddress.firstPhone,
-      secondPhone: shippingAddress.secondPhone,
+      secondPhone: shippingAddress.secondPhone||"",
     },
     paymentMethod,
     itemsPrice,
@@ -86,13 +61,10 @@ const createOrder = asyncHandler(async (req, res, next) => {
     totalPrice,
   });
 
-  // intergrate with paypal
-
-
   await order.save();
   return res.status(201).json({
     status: SUCCESS,
-    data: { order },
+    data: { message: "Order created successfully"},
   });
 
 });
@@ -131,20 +103,6 @@ const getAllOrders = asyncHandler(async (req, res, next) => {
     filter.isPaid = payment === "paid";
   }
   
-  // const filter = {};
-  // if (status!=="" && !["pending", "delivered", 'ontheroute', "packed", "cancelled"].includes(status)) {
-  //   return res.status(400).json({ status: FAIL, data: { title: "Invalid status" } })
-  // } else if (status !== "") {
-  //   filter.status = status
-  // }
-  // if (price) {
-  //   const start = price.split('-')[0];
-  //   const middle = price.split('-')[1];
-  //   const end = price.split('-')[2];
-  //   log(start, middle, end)
-  // }
-  // if (createAt) filter.createdAt = createAt;
-  // if (payment) filter.isPaid = payment === 'paid' ? true : false;
 
   const skip = (page - 1) * pageSize;
   const ordersCount = await Order.countDocuments(filter);
@@ -175,7 +133,9 @@ const getUserOrders = asyncHandler(async (req, res, next) => {
   const pageSize = parseInt(req.query.limit) > 50 ? 50 : parseInt(req.query.limit) || 10;
   const skip = (page - 1) * pageSize;
   const ordersCount = await Order.countDocuments({ user: req.user._id });
-  const orders = await Order.find({ user: req.user._id }).populate("user", 'username email')
+  const orders = await Order.find({ user: req.user._id })
+    .populate("orderItems.product", "brand img name price") //////////////
+    .populate("user", 'username email')
     .limit(pageSize+1)
     .skip(skip)
     .sort({ createdAt: -1 });
@@ -198,6 +158,7 @@ const getOrderDetails = asyncHandler(async (req, res, next) => {
   const { id } = req.params
   const order = await Order.findById(id)
     .populate("user", "username email")
+    .populate("orderItems.product", "brand img name price") //////////////
     .select("-__v")
 
   if (!order) {
@@ -210,6 +171,7 @@ const getOrderDetails = asyncHandler(async (req, res, next) => {
 // this is will be available for the deliver on home or not online pay
 const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
+    .populate("orderItems.product", "brand img name price") //////////////
   if (!order) {
     return res.status(404).json({ status: FAIL, message: "Order not found" });
   }
@@ -238,6 +200,7 @@ const markOrderAsPaidManual = asyncHandler(async (req, res, next) => {
 
 const markorderDeliver = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
+    .populate("orderItems.product", "brand img name price") //////////////
   if (!order) {
     return res.status(404).json({ status: FAIL, message: "Order not found"  });
   }
@@ -262,6 +225,7 @@ const markorderDeliver = asyncHandler(async (req, res, next) => {
 
 const markorderPacked = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
+    .populate("orderItems.product", "brand img name price") //////////////
   if (!order) {
     return res.status(404).json({ status: FAIL, message: "Order not found" } );
   }
@@ -282,6 +246,7 @@ const markorderPacked = asyncHandler(async (req, res, next) => {
 
 const markorderTransit = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
+    .populate("orderItems.product", "brand img name price") //////////////
   if (!order) {
     return res.status(404).json({ status: FAIL, message: "Order not found" } );
   }
@@ -302,6 +267,7 @@ const markorderTransit = asyncHandler(async (req, res, next) => {
 // until now i will make the adimin cancle the order only
 const cancleOrderByAdmin = asyncHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id)
+    .populate("orderItems.product", "brand img name price") //////////////
   if(order.status === "delivered"){
     return res.status(409).json({ status: FAIL, message: "Order already Delivered" })
   }

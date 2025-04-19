@@ -15,6 +15,13 @@ import { useDispatch } from "react-redux";
 import apiSlice from "../redux/services/apiSlice";
 
 export default function OrderActions({ order }) {
+  // const [stepsOfDeliveringOrder] = useState([
+  //   "pending",
+  //   "packed",
+  //   "ontheroute",
+  //   "delivered",
+  //   "cancelled",
+  // ]);
   const [showDetails, setShowDetails] = useState(true);
   const dispatch = useDispatch();
 
@@ -111,8 +118,7 @@ export default function OrderActions({ order }) {
               gradient: "from-red-400 to-rose-500",
             },
           ]
-            .filter((label) => {
-              console.log(order?.status);
+            .filter((label,index) => {
               if(order?.status === "cancelled") return false;
               else if (order?.status === "delivered") return false;
               else if (label.label === "Packed" && order?.status !== "pending")return false;

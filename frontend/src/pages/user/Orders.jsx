@@ -168,12 +168,12 @@ export default function Orders() {
             {data?.data?.orders.length === 0 ? (
               <motion.div
                 key={selectedItem}
-                initial={{ y: -50, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{  opacity: 1 }}
                 transition={{ duration: 0.6 }}
-                className="text-center py-12"
+                className="text-center"
               >
-                <div className="pt-4 px-4 max-w-7xl flex flex-col gap-4 items-center mx-auto">
+                <div className="pt-4  max-w-7xl flex flex-col gap-4 items-center mx-auto">
                   <div className="w-full">
                     <Message variant="info">{"You have no orders"} </Message>
                   </div>
@@ -269,35 +269,35 @@ export default function Orders() {
                           {data?.data?.orders[selectedItem]?.orderItems.map(
                             (item) => (
                               <div
-                                key={item._id}
+                                key={item.product._id}
                                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors duration-200"
                               >
                                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
                                   <img
                                     className="w-full sm:w-24 sm:h-24 object-cover rounded-lg"
-                                    src={`/uploads/${item.image
+                                    src={`/uploads/${item.product.img
                                       .split("/")
                                       .pop()}`}
                                     onError={(e) =>
                                       (e.target.src =
                                         "../../../public/userImge.png")
                                     }
-                                    alt={item.name}
+                                    alt={item.product.name}
                                   />
                                   <div className="flex flex-col text-gray-600 space-y-1">
                                     <h1
                                       onClick={() =>
-                                        navigate(`/product/${item._id}`)
+                                        navigate(`/product/${item.product._id}`)
                                       }
                                       className="font-semibold text-indigo-700 hover:text-indigo-800 hover:underline cursor-pointer transition-colors duration-200"
                                     >
-                                      {item.name}
+                                      {item.product.name}
                                     </h1>
                                     <p>
                                       <span className="font-medium">
                                         Brand:
                                       </span>{" "}
-                                      {item.brand}
+                                      {item.product.brand}
                                     </p>
                                     <p>
                                       <span className="font-medium">
@@ -309,7 +309,7 @@ export default function Orders() {
                                 </div>
                                 <div className="flex items-center mt-4 sm:mt-0">
                                   <h1 className="font-bold text-indigo-700">
-                                    ${item.price.toFixed(2)}
+                                    ${item.product.price.toFixed(2)}
                                   </h1>
                                 </div>
                               </div>

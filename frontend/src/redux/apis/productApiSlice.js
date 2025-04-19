@@ -158,8 +158,8 @@ const productApiSlice = apiSlice.injectEndpoints({
       }
     }),
     getAllProductsTable: buil.query({
-      query: ({ page, limit, createdAt, id, name, brand, category, price, rating, stock }) => ({
-        url: `${PRODUCT_URL}/products-list?page=${page}&limit=${limit}&createdAt=${createdAt}&id=${id}&name=${name}&brand=${brand}&category=${category}&price=${price}&rating=${rating}&stock=${stock}`,
+      query: ({ page, limit, createdAt, id, name, brand, category, price, rating, quantity }) => ({
+        url: `${PRODUCT_URL}/products-list?page=${page}&limit=${limit}&createdAt=${createdAt}&id=${id}&name=${name}&brand=${brand}&category=${category}&price=${price}&rating=${rating}&quantity=${quantity}`,
       }),
     }),
 

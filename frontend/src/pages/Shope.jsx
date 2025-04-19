@@ -41,7 +41,6 @@ export default function Shope() {
     page,
     limit: 50,
   });
-  console.log("searchName", searchName);
   const navigate = useNavigate();
   const clearSearchResult = () => {
     setSearchName("");

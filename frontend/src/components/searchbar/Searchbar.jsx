@@ -1,7 +1,6 @@
 import { PiRainbowCloudFill } from "react-icons/pi";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { TiThMenu } from "react-icons/ti";
-import {motion} from 'motion/react'
+import { motion } from "motion/react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchForm from "./SearchForm";
@@ -28,13 +27,13 @@ export default function Searchbar({
   const profileHandler = () => {
     navigate("/profile");
     setShowUserInfo(!showUserInfo);
-  }
+  };
   const logoutHandler = async () => {
     try {
       await LogOutApi().unwrap();
       dispatch(logOut());
       toast.success("You are logged out");
-      setShowUserInfo(false)
+      setShowUserInfo(false);
       navigate("/login");
     } catch (err) {
       console.log(err.data.mesage);
@@ -71,7 +70,8 @@ export default function Searchbar({
 
       {/* Right side (Notifications, User, Menu) */}
       <div className="flex order-2 md:order-3 items-center gap-2 sm:gap-3">
-        <div className="relative">
+        {/* Notifications will add later after i learn socket io */}
+        {/* <div className="relative">
           <IoIosNotificationsOutline className="text-2xl sm:text-3xl cursor-pointer hover:text-indigo-600" />
           <div
             className="absolute text-[10px] sm:text-[12px] top-[-6px] sm:top-[-8px] left-[-3px] sm:left-[-4px] bg-indigo-500 
@@ -79,7 +79,7 @@ export default function Searchbar({
           >
             1
           </div>
-        </div>
+        </div> */}
         {userInfo ? (
           <motion.div
             whileHover={{ scale: 1.1 }}
@@ -126,7 +126,7 @@ export default function Searchbar({
                         cursor-pointer text-[12px] sm:text-sm 
                         hover:text-indigo-800`}
                     >
-                      <RiLogoutCircleLine  />
+                      <RiLogoutCircleLine />
                       <span>Logout</span>
                     </div>
                   </li>

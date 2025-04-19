@@ -5,17 +5,25 @@ import {
 } from "@paypal/react-paypal-js";
 import { useEffect, useState } from "react";
 import {
-  usePaypalPaymentMutation,
+  useIntializePaypalPaymentMutation,
   usePaypalPaymentCaptureMutation,
   useGetClientIdPayPalQuery,
 } from "../redux/apis/paymentApiSlice";
 import Loader from "./Loader";
 import { toast } from "react-toastify";
-export default function PayPalContainer({ refetch, order }) {
+import { useNavigate } from "react-router-dom";
+import { clearCartItems } from "../redux/features/cart/cartSlice";
+import { useDispatch } from "react-redux";
+
+export default function PayPalContainer({ order }) {
   const [, dispatchPayPal] = usePayPalScriptReducer();
   const [message, setMessage] = useState("");
   const [paymentStatus, setPaymentStatus] = useState("pending");
   const { data: clientInfo } = useGetClientIdPayPalQuery();
+  const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+
   useEffect(() => {
     if (!window.paypal) {
       dispatchPayPal(
@@ -34,34 +42,33 @@ export default function PayPalContainer({ refetch, order }) {
     }
   }, [dispatchPayPal, clientInfo]);
 
-  const [createPayPalPayment] = usePaypalPaymentMutation();
+  const [intializePayPalPayment] = useIntializePaypalPaymentMutation();
   const [payPalPaymentCapture] = usePaypalPaymentCaptureMutation();
-  // the createOrder is call the backend adn return the paypal order ID this is functionality
+  // the createOrder is call the backend adn return the paypal order ID,
+  //  this is functionality
   const createOrder = async (data, actions) => {
     try {
       setPaymentStatus("loading");
-      const response = await createPayPalPayment(order.data.order._id).unwrap();
+      const response = await intializePayPalPayment(order).unwrap();
       setMessage("Order prepared for payment...");
       return response?.data?.paypalOrderId; // Return PayPal order ID to PayPalButtons
     } catch (error) {
-      if (error.status === 409) {
-        toast.info(error.data.message);
+      if (error.status < 500) {
+        toast.error(error.data.message);
         setPaymentStatus("pending");
-        return;
       }
       console.log("error", error);
       console.error("Error creating order:", error && error.message);
       setMessage("Failed to create order. Please try again.");
       setPaymentStatus("error");
-      toast.error("Failed to create order. Please try again.");
       throw error;
     }
   };
 
+  // this is functionality for capture the payment
   const onApprove = async (data, actions) => {
     try {
       const captureResponse = await payPalPaymentCapture({
-        id: order.data.order._id,
         paypalOrderId: data.orderID,
       }).unwrap();
       console.log("captureResponse", captureResponse);
@@ -69,18 +76,21 @@ export default function PayPalContainer({ refetch, order }) {
         setMessage(`Payment completed successfully`);
         toast.success(`Payment completed successfully`);
         setPaymentStatus("success");
-        refetch();
       } else {
         setMessage("Payment failed. Please try again.");
         setPaymentStatus("error");
         throw new Error(captureResponse.message);
       }
+      navigate(`/orderslist`);
+      dispatch(clearCartItems());
+      
     } catch (error) {
+      if (error.status < 500) {
+        toast.error(error.data.message);
+        setPaymentStatus("pending");
+      }
       console.error("Capture Error:", error);
       message("Payment capture failed. Please try again or contact support.");
-      toast.error(
-        "Payment capture failed. Please try again or contact support."
-      );
     }
   };
   const onCancel = (data) => {
@@ -107,17 +117,15 @@ export default function PayPalContainer({ refetch, order }) {
       {paymentStatus !== "pending" && (
         <div
           className={`text-center ${
-            paymentStatus === "success" ? "text-green-400" : paymentStatus === "error" ? "text-red-400" : "text-blue-400"
+            paymentStatus === "success"
+              ? "text-green-400"
+              : paymentStatus === "error"
+              ? "text-red-400"
+              : "text-blue-400"
           } flex items-center italic font-semibold`}
         >
           <div>{message}</div>
-          <div>
-            {paymentStatus === "loading" ? (
-              <Loader />
-            ) : (
-              ""
-            )}
-          </div>
+          <div>{paymentStatus === "loading" && <Loader />}</div>
         </div>
       )}
     </>

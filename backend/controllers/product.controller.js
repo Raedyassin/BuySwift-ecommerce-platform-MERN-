@@ -7,10 +7,8 @@ import mongoose from "mongoose";
 
 const addProduct = asyncHandler(
   async (req, res, next) => {
-    const { name, discription, countInStock, price, brand, quantity, category } = req.fields;
+    const { name, discription, price, brand, quantity, category } = req.fields;
     switch (true) {
-      case !countInStock:
-        return res.status(400).json({ status: FAIL, message: "count In Stock is required" })
       case !name:
         return res.status(400).json({ status: FAIL, message: "Name is required" })
       case !discription:
@@ -24,7 +22,7 @@ const addProduct = asyncHandler(
       case !category:
         return res.status(400).json({ status: FAIL, message: "Category is required" })
     }
-    const product = new Product({ name, countInStock, discription, price, brand, quantity, category })
+    const product = new Product({ name, discription, price, brand, quantity, category })
     product.img = "uploads/" + req.fields.img;
     await product.save();
     res.json({ status: SUCCESS, data: { product } })
@@ -33,7 +31,7 @@ const addProduct = asyncHandler(
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, discription, price, countInStock, brand, quantity, category, img } = req.fields;
+  const { name, discription, price, brand, quantity, category, img } = req.fields;
   switch (true) {
     case !name:
       return res.status(400).json({ status: FAIL, message: "Name is required" })
@@ -49,11 +47,9 @@ const updateProduct = asyncHandler(async (req, res) => {
       return res.status(400).json({ status: FAIL, message: "Category is required" })
     case !img:
       return res.status(400).json({ status: FAIL, message: "Img is required" })
-    case !countInStock:
-      return res.status(400).json({ status: FAIL, message: "countInStock is required" })
   }
 
-  const product = await Product.findByIdAndUpdate(id, { name, discription, price, countInStock, brand, quantity, category, img: ("uploads/" + img) });
+  const product = await Product.findByIdAndUpdate(id, { name, discription, price, brand, quantity, category, img: ("uploads/" + img) });
   if (!product) {
     return res.status(404).json({ status: "FAIL", message: "Product not found" });
   }
@@ -104,14 +100,14 @@ const getRelatedProductsByCategory = asyncHandler(
     }).sort({ rating: -1 })
       .limit(pageSize + 1)
       .skip(skip)
-      .select("-__v -updatedAt -createdAt -creatorId -reviews -countInStock -numReview  -discription -quantity");
+      .select("-__v -updatedAt -createdAt -creatorId -reviews -numReview  -discription -quantity");
 
     // this is should delete after testing phase i put it to test only 
     // start{
     if (relatedProducts.length < 6) {
       const plusProducts = await Product.find().sort({ rating: -1 }).
         limit(10).
-        select("-__v -updatedAt -createdAt -creatorId -reviews -countInStock -numReview  -discription -quantity")
+        select("-__v -updatedAt -createdAt -creatorId -reviews -numReview  -discription -quantity")
       relatedProducts = [...relatedProducts, ...plusProducts]
     }
     // end}
@@ -343,15 +339,14 @@ const addOrUpdateProductRating = asyncHandler(
 **/
 
 // query params
-// { page, limit, createdAt, id, name, brand, category, price, quantity, stock }
+// { page, limit, createdAt, id, name, brand, category, price, quantity }
 const fetchAllProducts = asyncHandler(
   async (req, res, next) => {
     const pageSize = req.query.limit >= 50 ? 50 : +req.query.limit || 50;
     const page = (req.query.page ? +req.query.page : 1) || 1;
 
-    // { page, limit, createdAt, id, name, brand, category, price, rating, stock }
-    let { createdAt, id, name, brand, category, price, rating, stock } = req.query;
-
+    // { page, limit, createdAt, id, name, brand, category, price, rating, quantity }
+    let { createdAt, id, name, brand, category, price, rating, quantity } = req.query;
     // the udefind send as a string so it is go as a string 
     if (createdAt === "undefined") {
       createdAt = "";
@@ -374,8 +369,8 @@ const fetchAllProducts = asyncHandler(
     if (rating === "undefined") {
       rating = "";
     }
-    if (stock === "undefined") {
-      stock = "";
+    if (quantity === "undefined") {
+      quantity = "";
     }
 
     let filter = {};
@@ -417,9 +412,10 @@ const fetchAllProducts = asyncHandler(
     if (price && price.trim() !== "") {
       filter.price = minMaxConvertFromString(res, price, "-");
     }
-    if (stock && stock !== "") {
-      filter.countInStock = minMaxConvertFromString(res, stock, "-")
+    if (quantity && quantity !== "") {
+      filter.quantity = minMaxConvertFromString(res, quantity, "-")
     }
+
 
 
     const productsCount = await Product.countDocuments(filter);
@@ -532,7 +528,7 @@ const searchProduct = asyncHandler(
       .limit(pageSize + 1)
       .skip((page - 1) * pageSize)
       .sort({ createdAt: -1 })
-      .select("-updatedAt -__v -reviews -creatorId -quantity -countInStock -category -numReview" );
+      .select("-updatedAt -__v -reviews -creatorId -quantity  -category -numReview" );
 
     const hasNextPage = products.length > pageSize;
     if (hasNextPage) {

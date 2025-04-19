@@ -14,7 +14,7 @@ import uploadUserImgRoutes from './routers/uploadUser.routes.js'
 import dashboardRoutes from './routers/dashboard.routes.js'
 
 import orderRoutes from './routers/order.routes.js'
-import paymentRoutes from './routers/payment.routes.js'
+import paymentRoutes from './routers/paypalPayment.routes.js'
 
 /////////////////////utils
 import { ERROR, FAIL, SUCCESS } from './utils/httpStatucText.js'

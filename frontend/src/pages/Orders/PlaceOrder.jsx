@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
-import {motion} from 'motion/react'
+import PayPalContainer from "../../components/PayPalContainer";
 import ProgressSteps from "../../components/ProgressSteps";
 import Loader from "../../components/Loader";
 import { useCreateOrderMutation } from "../../redux/apis/orderApiSlice";
@@ -11,7 +11,6 @@ import { usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import EmptyCart from "../../components/EmptyCart";
 import ProductShowTable from "../../components/ProductShowTable";
 import PaymentShow from "../../components/PaymentShow";
-
 const PlaceOrder = () => {
   const [, dispatchPaypalLoader] = usePayPalScriptReducer();
   useEffect(() => {
@@ -29,24 +28,24 @@ const PlaceOrder = () => {
   }, [cart.paymentMethod, cart.shippingAddress.address, navigate]);
 
   const dispatch = useDispatch();
-      useEffect(() => {
-        window.document.title = "Place Order";
-      }, []);
-
+  useEffect(() => {
+    window.document.title = "Place Order";
+  }, []);
 
   const placeOrderHandler = async () => {
     try {
-      const res = await createOrder({
+      await createOrder({
         orderItems: cart.cartItems,
         shippingAddress: cart.shippingAddress,
         paymentMethod: cart.paymentMethod,
       }).unwrap();
-      console.log("res", res);
       dispatch(clearCartItems());
       navigate(`/orderslist`);
       // navigate(`/order/${res.data.order._id}`);
     } catch (error) {
-      toast.error(error);
+      toast.error(
+        error.data.message || error.message || "Something went wrong"
+      );
     }
   };
 
@@ -126,19 +125,35 @@ const PlaceOrder = () => {
               {/* <PaymentShow paymentMethod={"VodafoneCash"} /> */}
             </div>
 
-            <button
-              type="submit"
-              className="mt-6 w-full   cursor-pointer
+            <div className="mt-6">
+              <h1 className="text-lg italic font-semibold text-indigo-800">
+                Confirem Order
+              </h1>
+              {cart.paymentMethod === "PayPal" ? (
+                <div className="mt-2">
+                  <PayPalContainer
+                    order={{
+                      orderItems: cart.cartItems,
+                      shippingAddress: cart.shippingAddress,
+                    }}
+                  />
+                </div>
+              ) : (
+                <button
+                  type="submit"
+                  className="mt-2 w-full   cursor-pointer
                 text-white py-3 px-4 rounded-lg font-semibold 
                 transition-all duration-300 flex items-center justify-center 
                 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 
                 hover:to-purple-700 disabled:opacity-50"
-              disabled={cart.cartItems === 0}
-              onClick={placeOrderHandler}
-            >
-              <span>Make Order</span>
-              {isLoading && <Loader />}
-            </button>
+                  disabled={cart.cartItems === 0}
+                  onClick={placeOrderHandler}
+                >
+                  <span>Confirm Order</span>
+                  {isLoading && <Loader loaderColor="border-white" />}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -15,7 +15,6 @@ import {
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import {
-  FaBox,
   FaClock,
   FaShoppingCart,
   FaStar,
@@ -287,11 +286,6 @@ export default function ProductDetails() {
                 <span className="font-medium mr-1">Quantity:</span>{" "}
                 {product?.data?.product?.quantity}
               </p>
-              <p className="flex items-center text-gray-700 text-sm sm:text-base">
-                <FaBox className="mr-2 w-5 h-5 text-indigo-500" />{" "}
-                <span className="font-medium mr-1">In Stock:</span>{" "}
-                {product?.data?.product?.countInStock}
-              </p>
             </div>
           </div>
 
@@ -302,13 +296,13 @@ export default function ProductDetails() {
               text={`${product?.data?.product?.numReview} reviews`}
               className="text-sm sm:text-base text-gray-600"
             />
-            {product?.data?.product?.countInStock > 0 && (
+            {product?.data?.product?.quantity > 0 && (
               <select
                 value={quantityBuyed}
                 onChange={(e) => setQuantityBuyed(Number(e.target.value))}
                 className="p-2 w-24 rounded-lg border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm sm:text-base shadow-sm"
               >
-                {[...Array(product?.data?.product?.countInStock).keys()].map(
+                {[...Array(product?.data?.product?.quantity).keys()].map(
                   (x) => (
                     <option key={x + 1} value={x + 1}>
                       {x + 1}
@@ -322,7 +316,7 @@ export default function ProductDetails() {
           {/* Add to Cart Button */}
           <button
             onClick={addToCartHandler}
-            disabled={product?.data?.product?.countInStock === 0}
+            disabled={product?.data?.product?.quantity === 0}
             className="mt-6 w-full sm:w-auto cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
           >
             Add to Cart

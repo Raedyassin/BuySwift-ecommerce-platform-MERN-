@@ -1,6 +1,7 @@
 import { useGetClientIdPayPalQuery } from "../redux/apis/paymentApiSlice";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 
+// the PayPalWraper is a wrapper for the PayPalScriptProvider on all application
 export default function PayPalWraper({ children }) {
     const { data } = useGetClientIdPayPalQuery();
 

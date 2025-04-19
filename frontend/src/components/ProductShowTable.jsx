@@ -42,7 +42,7 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
           className={`overflow-x-auto ${className} rounded-2xl
             ${showDetails ? "my-5" : "mb-0"}`}
         >
-          <table className="w-full border-collapse">
+          <table className="w-full border-collapse ">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
@@ -71,11 +71,13 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
                   <td className="p-4">
                     <img
                       src={
-                        item.img
+                        item?.product?.img
+                          ? `/uploads/${item.product.img.split("/").pop()}`
+                          : item.img
                           ? `/uploads/${item.img.split("/").pop()}`
                           : `/uploads/${item.image.split("/").pop()}`
                       }
-                      alt={item.name}
+                      alt={item?.product?.name || item.name}
                       className="w-16 h-16 rounded-lg object-cover"
                       onError={(e) => (e.target.src = "")}
                     />
@@ -83,17 +85,17 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
                   <td className="p-4">
                     <Link
                       className="text-black font-medium hover:underline hover:text-purple-600 "
-                      to={`/product/${item._id}`}
+                      to={`/product/${item?.product?._id||item._id}`}
                     >
-                      {item.name}
+                      {item?.product?.name || item.name}
                     </Link>
                   </td>
                   <td className="p-4 text-gray-600">{item.quantity}</td>
                   <td className="p-4 text-gray-600">
-                    ${item.price.toFixed(2)}
+                    ${item?.product?.price?.toFixed(2) || item.price?.toFixed(2)}
                   </td>
                   <td className="p-4 text-indigo-600 font-bold">
-                    ${(item.quantity * item.price).toFixed(2)}
+                    ${(item.quantity * (item?.product?.price || item.price)).toFixed(2)}
                   </td>
                 </tr>
               ))}

@@ -17,7 +17,6 @@ export default function CreateProduct() {
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
-  const [stock, setStock] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const navigate = useNavigate();
 
@@ -40,8 +39,6 @@ export default function CreateProduct() {
       return toast.error("Quantity must be greater than or equal 0");
     if (!brand) return toast.error("Brand is required");
     if (!discription) return toast.error("discription is required");
-    if (!stock) return toast.error("Stock is required");
-    if (+stock < 0) return toast.error("Stock must be greater than or equal 0");
     if (!category) return toast.error("Category is required");
     if (!imageUrl) return toast.error("Choose image is required");
 
@@ -52,7 +49,6 @@ export default function CreateProduct() {
     formData.append("category", category);
     formData.append("quantity", quantity);
     formData.append("brand", brand);
-    formData.append("countInStock", stock);
     formData.append("img", imageUrl);
 
     try {
@@ -139,7 +135,7 @@ export default function CreateProduct() {
                   type="text"
                   name="name"
                   id="name"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300   rounded-lg focus:ring-2 focus:ring-blue-500  focus:border-transparent focus:outline-none"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
@@ -156,7 +152,7 @@ export default function CreateProduct() {
                   min="0"
                   name="price"
                   id="price"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
@@ -173,7 +169,7 @@ export default function CreateProduct() {
                   min="0"
                   name="quantatity"
                   id="quantatity"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
@@ -189,7 +185,7 @@ export default function CreateProduct() {
                   type="text"
                   name="brand"
                   id="brand"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
@@ -208,30 +204,13 @@ export default function CreateProduct() {
                 name="discription"
                 id="discription"
                 rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
                 value={discription}
                 onChange={(e) => setDiscription(e.target.value)}
               ></textarea>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="stock"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Count In Stock
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  name="stock"
-                  id="stock"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={stock}
-                  onChange={(e) => setStock(e.target.value)}
-                />
-              </div>
+            <div className="w-full">
               <div>
                 <label
                   htmlFor="category"
@@ -242,7 +221,7 @@ export default function CreateProduct() {
                 <select
                   name="category"
                   id="category"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:ring-blue-500 "
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >

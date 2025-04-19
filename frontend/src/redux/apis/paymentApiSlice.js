@@ -3,29 +3,30 @@ import { PAYMENT_URL } from '../constance'
 
 const paymentApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    paypalPayment: builder.mutation({
-      query: (id) => ({
-        url: `${PAYMENT_URL}/paypal/${id}`,
-        method: "POST",
-      })
-    }),
     getClientIdPayPal: builder.query({
       query: () => `${PAYMENT_URL}/paypal/config`,
       keepUnusedDataFor: Infinity,
     }),
-    paypalPaymentCapture: builder.mutation({
-      query: ({ id, paypalOrderId }) => ({
-        url: `${PAYMENT_URL}/paypal/${id}/capture`,
+
+    intializePaypalPayment: builder.mutation({
+      query: (order) => ({
+        url: `${PAYMENT_URL}/paypal`,
         method: "POST",
-        body: {paypalOrderId}
+        body: {order}
+      })
+    }),
+    paypalPaymentCapture: builder.mutation({
+      query: ({ paypalOrderId }) => ({
+        url: `${PAYMENT_URL}/paypal/capture`,
+        method: "POST",
+        body: { paypalOrderId }
       })
     })
-
   })
 })
 
 export const {
-  usePaypalPaymentMutation,
+  useIntializePaypalPaymentMutation,
   useGetClientIdPayPalQuery,
   usePaypalPaymentCaptureMutation
 } = paymentApi

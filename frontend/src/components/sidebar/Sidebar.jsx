@@ -56,7 +56,7 @@ export default function Sidebar({
       lg:flex  lg:transition-all lg:duration-500 
       lg:flex-col lg:overflow-hidden justify-between p-4 pb-8 pt-2 bg-white 
       text-black lg:w-[70px] 
-      lg:hover:w-[160px] min-h-screen lg:h-[100vh]  group `}
+      lg:hover:w-[160px] h-[100vh]  group `}
       id="navigation-container"
     >
       {showSidebarMenu && (
@@ -192,7 +192,7 @@ export default function Sidebar({
         {((dropDownOpen && userInfo) || (showSidebarMenu && userInfo)) && (
           <ul
             className={`relative lg:absolute lg:left-0 lg:top-0 mt-22 lg:mt-0 lg:space-y-0  lg:w-48
-                lg:rounded overflow-hidden overflow-y-scroll
+                lg:rounded overflow-hidden overflow-y-auto
               text-gray-600 bottom-20 bg-white `}
             // lg:mt-2 lg:bg-gray-100  lg:border  lg:border-gray-200`}
           >
