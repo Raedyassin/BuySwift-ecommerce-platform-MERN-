@@ -5,6 +5,7 @@ import { useLoginMutation } from "../../redux/apis/userApiSlice";
 import { setCredientials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
+import Footer from "../../components/Footer";
 
 export default function Login() {
   const [password, setPassword] = useState("");
@@ -46,6 +47,7 @@ export default function Login() {
   };
 
   return (
+    <>
     <section className="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-start  bg-white lg:bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1964&q=80')] lg:bg-no-repeat lg:bg-right lg:bg-cover">
       {/* Form Section */}
       <div className="w-full lg:w-1/2 flex justify-center items-center p-4 md:p-6 lg:p-8">
@@ -113,5 +115,7 @@ export default function Login() {
       {/* Empty div for background image space on large screens */}
       <div className="hidden lg:block lg:w-1/2"></div>
     </section>
+    
+      </>
   );
 }

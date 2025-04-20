@@ -7,6 +7,7 @@ import {
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import { setCredientials } from "../../redux/features/auth/authSlice";
+import Footer from "../../components/Footer";
 
 export default function Profile() {
   const [password, setPassword] = useState("");
@@ -84,6 +85,7 @@ export default function Profile() {
   };
 
   return (
+    <>
     <div className="container mx-auto p-4 pt-6 flex justify-center items-center min-h-screen">
       <div
         className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl 
@@ -224,5 +226,9 @@ export default function Profile() {
         </form>
       </div>
     </div>
+        <div className="mt-20">
+          <Footer />
+        </div>
+    </>
   );
 }

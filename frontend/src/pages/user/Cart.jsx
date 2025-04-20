@@ -9,6 +9,7 @@ import { FaTrash } from "react-icons/fa";
 import { motion } from "motion/react";
 import EmptyCart from "../../components/EmptyCart";
 import { useEffect } from "react";
+import Footer from "../../components/Footer";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ export default function Cart() {
   };
 
   return (
+    <>
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8  min-h-[90vh] text-gray-800">
       {/* duplicate wiht checkout */}
       {cart.cartItems.length === 0 ? (
@@ -202,6 +204,11 @@ export default function Cart() {
           </motion.div>
         </div>
       )}
-    </div>
+      </div>
+              <div className="mt-20">
+                <Footer />
+              </div>
+      
+      </>
   );
 }

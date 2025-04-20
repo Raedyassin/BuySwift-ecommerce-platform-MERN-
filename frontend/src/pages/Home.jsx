@@ -2,6 +2,7 @@ import { Link} from "react-router-dom";
 import ProductCard from "./products/ProductCard";
 import { useEffect } from "react";
 import { useGetAllProductsPageQuery } from "../redux/apis/productApiSlice";
+import Footer from "../components/Footer";
 
 export default function Home() {
   useEffect(() => {
@@ -15,9 +16,7 @@ export default function Home() {
     <>
       <div className="px-4 md:px-20 lg:px-30">
         <div className="w-full flex mt-[3rem] justify-between items-center ">
-          <h1 className="  text-[3rem]">
-            Special Products
-          </h1>
+          <h1 className="  text-[3rem]">Special Products</h1>
 
           <Link
             to="/shop"
@@ -29,8 +28,10 @@ export default function Home() {
         </div>
 
         <div>
-          <div className="grid z-0 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2  mt-[2rem] 
-          mb-[2rem] ">
+          <div
+            className="grid z-0 grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2  mt-[2rem] 
+          mb-[2rem] "
+          >
             {data?.data?.products?.map((product) => (
               <div key={product._id}>
                 <ProductCard product={product} />
@@ -38,9 +39,10 @@ export default function Home() {
             ))}
           </div>
         </div>
-
-
       </div>
+        <div className="mt-20">
+          <Footer />
+        </div>
     </>
   );
 }
