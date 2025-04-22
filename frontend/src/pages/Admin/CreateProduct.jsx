@@ -14,6 +14,7 @@ export default function CreateProduct() {
   const [name, setName] = useState("");
   const [discription, setDiscription] = useState("");
   const [price, setPrice] = useState("");
+  const [discount, setDiscount] = useState("");
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
@@ -26,6 +27,7 @@ export default function CreateProduct() {
 
     useEffect(() => {
       window.document.title = "Create Product";
+      window.scrollTo(0, 0);
     }, []);
 
 
@@ -33,10 +35,9 @@ export default function CreateProduct() {
     e.preventDefault();
     if (!name) return toast.error("Name is required");
     if (!price) return toast.error("Price is required");
-    if (+price < 0) return toast.error("Price must be greater than or equal 0");
+    // if (+price < 0) return toast.error("Price must be greater than or equal 0");
     if (!quantity) return toast.error("Quantity is required");
-    if (+quantity < 0)
-      return toast.error("Quantity must be greater than or equal 0");
+    // if (+quantity < 0) return toast.error("Quantity must be greater than or equal 0");
     if (!brand) return toast.error("Brand is required");
     if (!discription) return toast.error("discription is required");
     if (!category) return toast.error("Category is required");
@@ -50,6 +51,7 @@ export default function CreateProduct() {
     formData.append("quantity", quantity);
     formData.append("brand", brand);
     formData.append("img", imageUrl);
+    formData.append("discount", discount === "" ? 0 : discount);
 
     try {
       await createProduct(formData).unwrap();
@@ -59,6 +61,17 @@ export default function CreateProduct() {
       alert("Something went wrong. Please try again later.");
       console.log(err);
     }
+  };
+
+  const discontHandler = (e) => {
+    const dis = +e.target.value;
+    if(dis < 0) {
+      return discount
+    }
+    if (dis > 100) {
+      return discount;
+    }
+    return dis.toString();
   };
 
   const uploadFileHandler = async (e) => {
@@ -81,11 +94,12 @@ export default function CreateProduct() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y:100 }}
-      animate={{ opacity: 1 ,y:0 }}
+      initial={{ opacity: 0, y: 100 }}
+      animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 1  }}
-      className="min-h-screen flex flex-col lg:flex-row">
+      transition={{ duration: 1 }}
+      className="min-h-screen flex flex-col lg:flex-row"
+    >
       {/* Admin Menu */}
       <AdminMenu />
 
@@ -135,9 +149,38 @@ export default function CreateProduct() {
                   type="text"
                   name="name"
                   id="name"
-                  className="w-full px-3 py-2 border border-gray-300   rounded-lg focus:ring-2 focus:ring-blue-500  focus:border-transparent focus:outline-none"
+                  placeholder="Product Name"
+                  className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="quantatity"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Quantatity
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="Product Quantatity"
+                  name="quantatity"
+                  id="quantatity"
+                  className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
+                  value={quantity}
+                  onChange={(e) =>
+                    setQuantity(
+                      Number(e.target.value) >= 0 ? e.target.value : quantity
+                    )
+                  }
                 />
               </div>
               <div>
@@ -151,43 +194,39 @@ export default function CreateProduct() {
                   type="number"
                   min="0"
                   name="price"
+                  placeholder="Product Price"
                   id="price"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+                  className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={(e) =>
+                    setPrice(
+                      Number(e.target.value) >= 0 ? e.target.value : price
+                    )
+                  }
                 />
               </div>
               <div>
                 <label
-                  htmlFor="quantatity"
+                  htmlFor="price"
                   className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  Quantatity
+                  Discount Percentage (%)
                 </label>
                 <input
                   type="number"
                   min="0"
-                  name="quantatity"
-                  id="quantatity"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="brand"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Brand
-                </label>
-                <input
-                  type="text"
-                  name="brand"
-                  id="brand"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
+                  name="price"
+                  id="price"
+                  placeholder="0% to 100%"
+                  className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
+                  value={discount}
+                  onChange={(e) => setDiscount(discontHandler(e)===0?"":discontHandler(e))}
                 />
               </div>
             </div>
@@ -204,13 +243,38 @@ export default function CreateProduct() {
                 name="discription"
                 id="discription"
                 rows="3"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:outline-none"
+                placeholder="Product Discription"
+                className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
                 value={discription}
                 onChange={(e) => setDiscription(e.target.value)}
               ></textarea>
             </div>
 
-            <div className="w-full">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="brand"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Brand
+                </label>
+                <input
+                  type="text"
+                  name="brand"
+                  id="brand"
+                  placeholder="Product Brand"
+                  className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                />
+              </div>
+
               <div>
                 <label
                   htmlFor="category"
@@ -221,7 +285,11 @@ export default function CreateProduct() {
                 <select
                   name="category"
                   id="category"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:ring-blue-500 "
+                  className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
+                  // className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:ring-blue-500 "
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >

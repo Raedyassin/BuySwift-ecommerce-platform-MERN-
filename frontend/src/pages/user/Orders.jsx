@@ -32,6 +32,8 @@ export default function Orders() {
 
   useEffect(() => {
     window.document.title = "Orders";
+        window.scrollTo(0, 0);
+
   }, []);
 
   useEffect(() => {
@@ -91,9 +93,10 @@ export default function Orders() {
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 1 }}
-              className={`fixed z-1000 left-0 lg:left-[70px] top-22 sm:top-24 
-                md:top-14 lg:top-15 w-[50%] bg-white  overflow-auto shadow-[0px_10px_10px_rgba(0,0,0,0.1)]
-                h-[86%] lg:h-[90%] lg:ml-2 lg:w-[15rem] lg:block mt-2 pb-20 lg:pb-0 ${
+              style={{zIndex: 1000}}
+              className={`fixed  left-0 lg:left-[70px] top-22 sm:top-24 
+                md:top-14 lg:top-0 w-[50%] bg-white  overflow-auto shadow-[0px_10px_10px_rgba(0,0,0,0.1)]
+                h-[86%] lg:h-screen lg:ml-2 lg:w-[15rem] lg:block  pb-20 lg:pb-0 ${
                   openOrders ? "block" : "hidden"
                 }`}
             >

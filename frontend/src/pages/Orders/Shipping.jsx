@@ -39,6 +39,8 @@ export default function Shipping() {
 
   useEffect(() => {
     window.document.title = "Shipping";
+        window.scrollTo(0, 0);
+
   }, []);
 
   const shippingSubmitHandler = (e) => {
@@ -141,7 +143,10 @@ export default function Shipping() {
                     value={field.value}
                     onChange={(e) => field.setter(e.target.value)}
                     placeholder={field.placeholder}
-                    className="w-full p-2 sm:p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-200 bg-gray-50 hover:bg-white text-sm sm:text-base"
+                    className="w-full p-2 sm:p-3 border border-gray-200 
+                    rounded-lg focus:outline-none focus:ring-2 
+                    focus:ring-indigo-500 transition-all duration-200 
+                    bg-gray-50 hover:bg-white text-sm sm:text-base"
                   />
                 </div>
               ))}

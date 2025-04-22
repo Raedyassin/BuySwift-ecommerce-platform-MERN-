@@ -33,7 +33,7 @@ export default function UserList() {
   const [page, setPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(0);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [ selectUserForAdmin,setSelectUserForAdmin] = useState(null);
+  const [selectUserForAdmin, setSelectUserForAdmin] = useState(null);
   const [makeAsAdmin, { isLoading: isLoadingMakeAsAdmin }] =
     useMakeAsAdminMutation();
   const {
@@ -115,7 +115,7 @@ export default function UserList() {
     }
   };
   const makeAdminHandler = async (id) => {
-    setSelectUserForAdmin(id)
+    setSelectUserForAdmin(id);
     try {
       await makeAsAdmin(id).unwrap();
       toast.success("user with " + id + " is Admin now");
@@ -145,10 +145,13 @@ export default function UserList() {
     else if (searchBy === "name") setFinalFilterBy({ name: searchValue });
     else if (searchBy === "email") setFinalFilterBy({ email: searchValue });
   };
-      useEffect(() => {
-        window.document.title = "User Table";
-      }, []);
-
+  const inputSearchHandler = (e) => {
+    if (e.key === "Enter")  searchByHandler();
+  }
+  useEffect(() => {
+    window.document.title = "User Table";
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (filterBy === "all") {
@@ -260,6 +263,7 @@ export default function UserList() {
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={(e) => inputSearchHandler(e)}
               placeholder={
                 searchBy === "id"
                   ? "Enter user id"
@@ -451,7 +455,8 @@ export default function UserList() {
                               className="cursor-pointer border-2  border-indigo-500 text-indigo-500 rounded-full p-1 px-3 hover:bg-indigo-500 hover:text-white"
                               onClick={() => makeAdminHandler(user._id)}
                             >
-                              {isLoadingMakeAsAdmin && selectUserForAdmin === user._id ? (
+                              {isLoadingMakeAsAdmin &&
+                              selectUserForAdmin === user._id ? (
                                 <Loader />
                               ) : (
                                 "Make as Admin"

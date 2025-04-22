@@ -56,6 +56,10 @@ export default function OrdersList() {
       toast.error("Invalid order id");
     }
   };
+  const inputSearchHandler = (e) => {
+    if (e.key === "Enter") searchByIdhandler();
+  };
+
 
   const addPriceFilterHandler = () => {
     if (isNaN(startPrice) || isNaN(endPrice)) {
@@ -85,6 +89,7 @@ export default function OrdersList() {
   };
       useEffect(() => {
         window.document.title = "Orders Table";
+        window.scrollTo(0, 0);
       }, []);
 
 
@@ -216,13 +221,16 @@ export default function OrdersList() {
               </div>
             )}
           </div>
-          <div className="border-2 mt-2 w-full justify-between lg:w-[20rem] 
+          <div
+            className="border-2 mt-2 w-full justify-between lg:w-[20rem] 
           lg:order-2 order-1 border-gray-100 rounded-2xl p-2
-          focus-within:border-gray-200 flex items-center gap-2">
+          focus-within:border-gray-200 flex items-center gap-2"
+          >
             <input
               type="text"
               value={searchById}
               onChange={(e) => setSearchById(e.target.value)}
+              onKeyDown={(e) => inputSearchHandler(e)}
               placeholder="Enter order id"
               className="p-1 lg:w-[15rem] w-full focus:outline-none placeholder:italic 
               rounded-xl "
@@ -310,7 +318,7 @@ export default function OrdersList() {
           </div>
         )}
       </motion.div>
-      <AdminMenu/>
+      <AdminMenu />
 
       {/* order table */}
       <motion.div

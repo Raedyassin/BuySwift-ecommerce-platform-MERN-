@@ -1,7 +1,7 @@
 import { PiRainbowCloudFill } from "react-icons/pi";
 import { TiThMenu } from "react-icons/ti";
 import { motion } from "motion/react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchForm from "./SearchForm";
 import { toast } from "react-toastify";
@@ -10,20 +10,26 @@ import { RiLogoutCircleLine } from "react-icons/ri";
 import { useLogoutMutation } from "../../redux/apis/userApiSlice";
 import { logOut } from "../../redux/features/auth/authSlice";
 import { useState } from "react";
+import {
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
+import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
+import { changeToRelative } from "../../redux/features/chagneSearchbarPosition";
 export default function Searchbar({
   setShowSidebarMenu,
   setSearchName,
   searchName,
-  setShowResults,
 }) {
   const userInfo = useSelector((state) => state.auth.userInfo);
+  const homeSearchbarEffect = useSelector((state) => state.homeSearchbarEffect);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [showUserInfo, setShowUserInfo] = useState(false);
   const goToHome = () => {
     navigate("/");
   };
+  
   const [LogOutApi] = useLogoutMutation();
-  const dispatch = useDispatch();
   const profileHandler = () => {
     navigate("/profile");
     setShowUserInfo(!showUserInfo);
@@ -34,7 +40,6 @@ export default function Searchbar({
       dispatch(logOut());
       toast.success("You are logged out");
       setShowUserInfo(false);
-      navigate("/login");
     } catch (err) {
       console.log(err.data.mesage);
     }
@@ -42,8 +47,8 @@ export default function Searchbar({
 
   return (
     <div
-      className="flex items-center flex-wrap w-full justify-between gap-2 
-    px-4 py-2 sm:px-6 "
+      className={`flex items-center flex-wrap w-full justify-between gap-2 
+    px-4 py-2 sm:px-6 transition-all duration-300 ${homeSearchbarEffect === "dark" ? "bg-gray-900" : ""} `}
     >
       {/* Left side (Logo) */}
       <div
@@ -64,12 +69,30 @@ export default function Searchbar({
         <SearchForm
           setSearchName={setSearchName}
           searchName={searchName}
-          setShowResults={setShowResults}
         />
       </div>
 
       {/* Right side (Notifications, User, Menu) */}
-      <div className="flex order-2 md:order-3 items-center gap-2 sm:gap-3">
+      <div className="flex order-2 md:order-3 items-center gap-4 sm:gap-3">
+        <Link
+          to="/cart"
+          onClick={() => setShowSidebarMenu(false)}
+          className={`flex  items-center gap-2  hover:text-indigo-800
+                  ${homeSearchbarEffect === "dark" ? "text-white" : ""}
+                  `}
+        >
+          <div className="relative">
+            <AiOutlineShoppingCart
+              className="w-8 h-8 z-10 object-cover p-1 sm:w-10 sm:h-10   rounded-full cursor-pointer"
+              size={26}
+            />
+            <SelectedCounteSidebar
+              className="top-[5px] left-[15px]"
+              selectorinStore="cart.cartItems"
+            />
+          </div>
+        </Link>
+
         {/* Notifications will add later after i learn socket io */}
         {/* <div className="relative">
           <IoIosNotificationsOutline className="text-2xl sm:text-3xl cursor-pointer hover:text-indigo-600" />
@@ -81,9 +104,10 @@ export default function Searchbar({
           </div>
         </div> */}
         {userInfo ? (
-          <motion.div
-            whileHover={{ scale: 1.1 }}
-            className="relative cursor-pointer"
+          <div
+            // whileHover={{ scale: 1.1 }}
+            style={{zIndex: 100}}
+            className="relative cursor-pointer hover:scale-110 transition-scale duration-300"
           >
             <img
               onClick={() => setShowUserInfo(!showUserInfo)}
@@ -95,7 +119,7 @@ export default function Searchbar({
             />
             {showUserInfo && (
               <div
-                className={`absolute   shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-xl pb-4 
+                className={`absolute shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded-xl pb-4 
                 w-[8rem] md:w-[10rem] bg-white top-8  sm:top-10 right-0`}
               >
                 <ul
@@ -133,19 +157,28 @@ export default function Searchbar({
                 </ul>
               </div>
             )}
-          </motion.div>
+          </div>
         ) : (
           <div className="flex items-center gap-1 sm:gap-2">
             <button
-              onClick={() => navigate("/login")}
-              className="px-2 py-1 sm:px-3 sm:py-1 text-sm sm:text-base cursor-pointer   text-gray-700 rounded-md border border-white hover:border-indigo-600 shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onClick={() => {
+                  navigate("/login");
+                  dispatch(changeToRelative());
+                }}
+              className="px-2 py-1 sm:px-3 font-semibold sm:py-1 text-sm 
+              sm:text-base cursor-pointer   text-gray-700 rounded-md border 
+              hover:bg-gray-50 border-gray-200 "
             >
               Login
             </button>
             <button
-              onClick={() => navigate("/register")}
-              className="px-2 py-1 sm:px-3 sm:py-1 text-sm sm:text-base cursor-pointer   text-gray-700 rounded-md border border-white hover:border-indigo-600 shadow focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              // className="px-2 py-1 sm:px-3 sm:py-1 text-sm sm:text-base cursor-pointer bg-indigo-500 text-white rounded-md hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onClick={() => {
+                  navigate("/register"); 
+                  dispatch(changeToRelative());
+                }}
+              className="px-2 py-1 sm:px-3 sm:py-1 font-semibold text-sm 
+              sm:text-base cursor-pointer   text-gray-700 rounded-md border 
+              hover:bg-gray-50 border-gray-200"
             >
               Register
             </button>
@@ -153,8 +186,10 @@ export default function Searchbar({
         )}
         <TiThMenu
           onClick={() => setShowSidebarMenu((prev) => !prev)}
-          className="text-xl text-gray-600 sm:text-2xl lg:hidden cursor-pointer 
-          hover:text-indigo-600"
+          className={`text-xl text-gray-600 sm:text-2xl lg:hidden cursor-pointer 
+          hover:text-indigo-600
+          ${homeSearchbarEffect === "dark" ? "text-white" : ""}
+          `}
         />
       </div>
     </div>

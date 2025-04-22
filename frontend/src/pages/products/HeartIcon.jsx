@@ -11,7 +11,7 @@ import {
   getFavoritesFromLocalStorage
 } from '../../utils/localstorage'
 import { useEffect } from 'react';
-export default function HeartIcon({ product, colorText, xPosition, yPosition }) {
+export default function HeartIcon({ product, colorText, className }) {
   const dispatch = useDispatch();
   const favorites = useSelector((state) => state.favorites) || [];
   const isFavorite = favorites.some((item) => item._id === product._id);
@@ -43,16 +43,20 @@ export default function HeartIcon({ product, colorText, xPosition, yPosition }) 
     }
   };
   return (
-    <div className={`absolute ${xPosition || "right-2"} ${yPosition || "top-2"} cursor-pointer`}>
+    <div
+      // right-2 top-2
+      className={`absolute ${className}
+    cursor-pointer bg-white/25 p-2 rounded-full`}
+    >
       {isFavorite ? (
         <FaHeart
-          size={24}
+          size={20}
           className="text-pink-600 "
           onClick={toggleFavorite}
         />
       ) : (
         <FaRegHeart
-          size={24}
+          size={20}
           className={`${
             (colorText || "not-black") !== "black" ? "text-white" : "text-black"
           }  font-bold`}

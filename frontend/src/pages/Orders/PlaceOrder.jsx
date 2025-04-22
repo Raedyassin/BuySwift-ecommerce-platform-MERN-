@@ -30,6 +30,7 @@ const PlaceOrder = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     window.document.title = "Place Order";
+    window.scrollTo(0, 0)
   }, []);
 
   const placeOrderHandler = async () => {

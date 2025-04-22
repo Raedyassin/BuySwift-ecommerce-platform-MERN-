@@ -8,16 +8,19 @@ export default function Ratings({ text, rating ,className}) {
   const halfStar = (rating - fullStars) >= 0.5 ? 1 : 0;
   const emptyStars = 5 - fullStars - halfStar;
   return (
-    <div className={`flex items-center w-[15rem] ${className}`}>
+    <div className={`flex items-center  ${className}`}>
+      {/* text-gray-600 */}
       {[...Array(fullStars)].map((_, index) => (
-        <FaStar key={index} className="text-yellow-400 ml-1" />
+        <FaStar key={index} className="text-gray-500 mr-1" />
       ))}
-      {halfStar === 1 && <FaStarHalfAlt className="text-yellow-400 ml-1" />}
+      {halfStar === 1 && <FaStarHalfAlt className="text-gray-500 mr-1" />}
       {[...Array(emptyStars)].map((_, index) => (
-        <FaRegStar key={index} className="text-gray-400 ml-1" />
+        <FaRegStar key={index} className="text-gray-400 mr-1" />
       ))}
 
-      <span className="rating-text ml-2 text-gray-600 font-bold">{text}</span>
+      <span className="rating-text text-sm ml-1 text-gray-600 font-bold">
+        {text}
+      </span>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux"
 
-export default function SelectedCounteSidebar({ selectorinStore }) {
+export default function SelectedCounteSidebar({ selectorinStore,className }) {
   const selecteItmes = useSelector((state) => {
     const keys = selectorinStore.split("."); 
     return keys.reduce((acc, key) => acc?.[key], state) || []; 
@@ -8,7 +8,7 @@ export default function SelectedCounteSidebar({ selectorinStore }) {
 
   const ImtesCount = selecteItmes.length;
   return (
-    <div className="absolute left-2 top-4">
+    <div className={`absolute left-2 top-4 ${className}`}>
       {ImtesCount > 0 && (
         <div className={`absolute text-[12px] top-[-4px] right-[-4px] bg-indigo-500 
         rounded-full w-5 h-5 flex justify-center  px-1 items-center text-white

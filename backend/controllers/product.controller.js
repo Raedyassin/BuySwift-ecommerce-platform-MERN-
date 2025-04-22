@@ -7,7 +7,8 @@ import mongoose from "mongoose";
 
 const addProduct = asyncHandler(
   async (req, res, next) => {
-    const { name, discription, price, brand, quantity, category } = req.fields;
+    const { name, discription, price, brand, quantity, category, discount } = req.fields;
+    
     switch (true) {
       case !name:
         return res.status(400).json({ status: FAIL, message: "Name is required" })
@@ -22,7 +23,17 @@ const addProduct = asyncHandler(
       case !category:
         return res.status(400).json({ status: FAIL, message: "Category is required" })
     }
-    const product = new Product({ name, discription, price, brand, quantity, category })
+    if (isNaN(price)) return res.status(400).json({ status: FAIL, message: "Price should be number" });
+    if (isNaN(quantity)) return res.status(400).json({ status: FAIL, message: "Quantity should be number" });
+    if (price <= 0) return res.status(400).json({ status: FAIL, message: "Price should be greater than 0" });
+    if (quantity <= 0) return res.status(400).json({ status: FAIL, message: "Quantity should be greater than 0" });
+    if (discount && isNaN(discount)) return res.status(400).json({ status: FAIL, message: "Discount should be number" });
+    if(discount && (discount > 100 || discount < 0) ) return res.status(400).json({ status: FAIL, message: "Discount should be between 0 and 100" });
+    // after i add discount and all thing use price so i will add originalPrice 
+    // that have price wtihout discount and the price will be the price with discount
+    const product = new Product({
+      name, discription, price, brand, quantity, category, discount
+    })
     product.img = "uploads/" + req.fields.img;
     await product.save();
     res.json({ status: SUCCESS, data: { product } })
@@ -31,7 +42,7 @@ const addProduct = asyncHandler(
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, discription, price, brand, quantity, category, img } = req.fields;
+  const { name, discription, price, brand, quantity, category, img , discount} = req.fields;
   switch (true) {
     case !name:
       return res.status(400).json({ status: FAIL, message: "Name is required" })
@@ -47,9 +58,18 @@ const updateProduct = asyncHandler(async (req, res) => {
       return res.status(400).json({ status: FAIL, message: "Category is required" })
     case !img:
       return res.status(400).json({ status: FAIL, message: "Img is required" })
+    case !discount:
+      return res.status(400).json({ status: FAIL, message: "Discount is required" })
   }
+  if (isNaN(price)) return res.status(400).json({ status: FAIL, message: "Price should be number" });
+  if (isNaN(quantity)) return res.status(400).json({ status: FAIL, message: "Quantity should be number" });
+  if (isNaN(discount)) return res.status(400).json({ status: FAIL, message: "Discount should be number" });
+  if (discount > 100 || discount < 0) return res.status(400).json({ status: FAIL, message: "Discount should be between 0 and 100" });
 
-  const product = await Product.findByIdAndUpdate(id, { name, discription, price, brand, quantity, category, img: ("uploads/" + img) });
+
+  const product = await Product.findByIdAndUpdate(id, {
+    name,discount, discription, price, brand, quantity, category, img: ("uploads/" + img)
+  });
   if (!product) {
     return res.status(404).json({ status: "FAIL", message: "Product not found" });
   }

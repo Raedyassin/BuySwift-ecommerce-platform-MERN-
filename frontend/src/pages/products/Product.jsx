@@ -6,8 +6,8 @@ export default function Product({ product }) {
   return (
     <div
       className={`w-full  h-[20rem]  hover:scale-105 
-        hover:shadow-2xl transition-all duration-300
-      relative rounded-2xl shadow-lg  `}
+        hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)] transition-all duration-300
+      relative rounded-2xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  `}
     >
       <div className="relative p-4 pb-2 ">
         <img
@@ -15,7 +15,7 @@ export default function Product({ product }) {
           alt={product.name}
           className="w-[100%] h-[10rem]   object-cover cursor-pointer rounded-xl"
         />
-        <HeartIcon product={product} />
+        <HeartIcon product={product} className={" right-5  bottom-5 "} />
       </div>
       <div className="px-4 mb-2 relative flex justify-between items-center">
         <Link to={`/product/${product._id}`}>

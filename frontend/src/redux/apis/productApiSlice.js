@@ -44,6 +44,7 @@ const productApiSlice = apiSlice.injectEndpoints({
           body
         }
       },
+      invalidatesTags: [productTage]
     }),
 
     // ??????????????????????????
@@ -134,14 +135,12 @@ const productApiSlice = apiSlice.injectEndpoints({
      ******************
     */
 
-    // ??????????????????????????
-
     // getAllProductsPage  and getAllProductsTable call the same api endpoint 
     getAllProductsPage: buil.query({
       query: ({ page, limit}) => ({
         url: `${PRODUCT_URL}/products-list?page=${page}&limit=${limit}`,
       }),
-      invalidatesTags: [productTage],
+      providesTags: [productTage],
       serializeQueryArgs: ({ endpointName }) => endpointName,
       merge: (currentCache, newData) => {
         return {

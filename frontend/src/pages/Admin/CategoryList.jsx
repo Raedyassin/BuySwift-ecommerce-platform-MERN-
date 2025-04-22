@@ -34,6 +34,7 @@ export default function CategoryManagement() {
 
     useEffect(() => {
       window.document.title = "Category Table";
+      window.scrollTo(0, 0);
     }, []);
 
 

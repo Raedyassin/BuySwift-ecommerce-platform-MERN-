@@ -20,6 +20,8 @@ export default function Cart() {
 
       useEffect(() => {
         window.document.title = "Shopping Cart";
+            window.scrollTo(0, 0);
+
       }, []);
 
 

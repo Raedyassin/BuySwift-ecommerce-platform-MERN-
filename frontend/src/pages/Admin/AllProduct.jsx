@@ -21,6 +21,7 @@ export default function AllProduct() {
   const loaderRef = useRef(null);
   useEffect(() => {
     window.document.title = "All Product";
+    window.scrollTo(0, 0);
   },[])
   useEffect(() => {
     const observer = new IntersectionObserver(

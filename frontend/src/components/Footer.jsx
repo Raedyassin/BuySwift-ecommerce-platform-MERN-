@@ -152,7 +152,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="text-indigo-600 hover:text-indigo-500 transition-all duration-300 transform hover:scale-125"
               >
-                <Icon size={20} className="sm:size-10" />
+                <Icon size={20}  />
               </a>
             ))}
           </div>

@@ -34,6 +34,7 @@ ChartJS.register(
 export default function Dashboard() {
   useEffect(() => {
     window.document.title = "Dashboard";
+    window.scrollTo(0, 0);
   }, []);
 
   const navigate = useNavigate();

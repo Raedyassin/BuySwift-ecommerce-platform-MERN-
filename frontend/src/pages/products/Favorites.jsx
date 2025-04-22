@@ -10,11 +10,13 @@ export default function Favorites() {
   const favoriteProducts = useSelector(selectFavoriteProduct);
       useEffect(() => {
         window.document.title = "Favorite Product";
+            window.scrollTo(0, 0);
+
       }, []);
 
   return (
     <>
-      <div className="mx-[2rem] py-[2rem]">
+      <div className="mx-[2rem] py-[2rem] min-h-[85vh]">
         <motion.div
           initial={{ opacity: 0, y: -100 }}
           animate={{ opacity: 1, y: 0 }}
@@ -36,7 +38,8 @@ export default function Favorites() {
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 mt-6 mb-3"
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 
+          2xl:grid-cols-6 gap-4 mt-6 mb-3"
         >
           {favoriteProducts.map((product, index) => (
             <Product index={index} key={product._id} product={product} />

@@ -53,6 +53,8 @@ export default function Shope() {
 
   useEffect(() => {
     window.document.title = "🛒 Shop";
+        window.scrollTo(0, 0);
+
   }, []);
 
   // Infinite scroll logic with IntersectionObserver
@@ -90,6 +92,7 @@ export default function Shope() {
     } else {
       setSelectedCategory([...selectedCategory, category]);
     }
+    window.scrollTo(0, { behavior: "smooth" });
     setPage(1);
     setNewInputRadio(0);
   };
@@ -116,6 +119,7 @@ export default function Shope() {
 
   const selectedBrandHandler = (index) => {
     setNewInputRadio(index + 1);
+    window.scrollTo(0 , { behavior: "smooth" });
   };
 
   const priceFilterHandler = (e) => {
@@ -334,9 +338,7 @@ export default function Shope() {
             className="flex-1 p-3"
           >
             <div className="flex justify-between pt-7 md:pt-2 mb-3 items-center">
-              {searchName.trim() === "" ? (
-                <PageHeader>Shop</PageHeader>
-              ) : (
+              {searchName.trim() !== "" && (
                 <>
                   <PageHeader>
                     Search on{" "}

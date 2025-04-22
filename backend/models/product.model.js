@@ -69,6 +69,10 @@ const productSchema = new mongoose.Schema({
     required: true,
     default:0,
   },
+  discount: {
+    type: Number,
+    default:0,
+  },
 },{timestamps:true})
 
 export default mongoose.model("Product", productSchema);

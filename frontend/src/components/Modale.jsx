@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "motion/react";
+import { LiaTimesSolid } from "react-icons/lia";
 
 
 export default function Modale({isOpen,isClose,children}) {
@@ -9,20 +10,24 @@ export default function Modale({isOpen,isClose,children}) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5  }}
+          transition={{ duration: 0.5 }}
+          onClick={isClose}
           className="fixed flex inset-0 items-center justify-center  z-50">
-          <div className="fixed inset-0 bg-gray-900 opacity-15"></div>
+          <div className="fixed inset-0 bg-gray-200/50"></div>
           <div
             className="absolute top-[30%] right-[25%] bg-white
             p-4 rounded-lg z-10 w-[50%] "
           >
             <button
-              className="text-black font-semibold 
+              className="text-gray-500 font-semibold 
               focus:outline-none absolute right-[-25px] top-[-10px] mr-2 
-              border-gray-500 border-solid border-2 cursor-pointer w-10 h-10 rounded-full bg-gray-50 hover:bg-gray-500 hover:text-white "
+              border-gray-200/50 border-solid border-2 cursor-pointer w-10 h-10 
+              rounded-full bg-white hover:bg-gray-100 "
               onClick={isClose}
             >
-              <div className="flex items-center justify-center">X</div>
+              <div className="flex items-center p-2 justify-center">
+                <LiaTimesSolid />
+              </div>
             </button>
             {children}
           </div>

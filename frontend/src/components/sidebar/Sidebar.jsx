@@ -1,7 +1,7 @@
 import "./sidebar.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { FiSearch } from "react-icons/fi";
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
 import {
@@ -17,18 +17,40 @@ import { FaTimes, FaKeyboard, FaRegPlusSquare } from "react-icons/fa";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { FaUsersLine } from "react-icons/fa6";
 import { LiaWalletSolid } from "react-icons/lia";
-
+import { useLocation } from "react-router-dom";
+import {
+  changeToDark,
+  changeToLight,
+} from "../../redux/features/changeColorSidebar";
+import {
+  chageToFixed,
+  changeToRelative,
+} from "../../redux/features/chagneSearchbarPosition";
+import { changeToLightSearchbar } from "../../redux/features/hoemSearchbarEffect";
+import { showSearchResult } from '../../redux/features/searchResult'
 export default function Sidebar({
   showSidebarMenu,
-  setShowResults,
   setShowAdminMenu,
   showAdminMenu,
   setShowSidebarMenu,
 }) {
   const { userInfo } = useSelector((state) => state.auth);
+  const sidebarColor = useSelector((state) => state.changeColorSidebar);
+  const searchbarPosition = useSelector((state) => state.searchbarPosition);
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
+  const location = useLocation();
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (searchbarPosition === "fixed") {
+      dispatch(changeToLight());
+    }
+  }, [searchbarPosition, dispatch]);
+  useEffect(() => {
+    if (location.pathname === "/") dispatch(changeToDark());
+    else dispatch(changeToLight());
+  }, [location, dispatch]);
   const toggleDropDown = () => {
     if (showSidebarMenu === true) return;
     setDropDownOpen(!dropDownOpen);
@@ -53,12 +75,19 @@ export default function Sidebar({
       style={{ zIndex: 10000 }}
       className={`${showSidebarMenu ? "block" : "hidden"}
       fixed top-0  w-full sm:w-[50%]  lg:top-0 left-0  overflow-auto
-      lg:flex  lg:transition-all lg:duration-500 
-      lg:flex-col lg:overflow-hidden justify-between p-4 pb-8 pt-2 bg-white 
-      text-black lg:w-[70px] 
+      lg:flex  transition-all duration-300 
+      lg:flex-col lg:overflow-hidden justify-between p-4 pb-8 pt-2
+      ${
+        sidebarColor == "light"
+          ? "lg:bg-white lg:text-black"
+          : "lg:bg-gray-900 lg:text-white"
+      }
+      bg-white text-black
+      lg:w-[70px] 
       lg:hover:w-[160px] h-[100vh]  group `}
       id="navigation-container"
     >
+      {/* bg-white text-black */}
       {showSidebarMenu && (
         <FaTimes
           style={{ zIndex: 10000 }}
@@ -121,7 +150,7 @@ export default function Sidebar({
           } `}
         >
           <div className="relative">
-            <CiHeart className=" my-[1rem]" size={26} />
+            <CiHeart className=" my-[1rem] font-bold  " size={26} />
             <SelectedCounteSidebar selectorinStore="favorites" />
           </div>
           <span className=" lg:hidden group-hover:block my-[1rem] ">
@@ -137,27 +166,31 @@ export default function Sidebar({
           } `}
         >
           <div>
-            <CiDeliveryTruck className="my-[1rem]" size={26} />
+            <CiDeliveryTruck className="my-[1rem] font-bold" size={26} />
           </div>
           <span className=" lg:hidden group-hover:block my-[1rem] ">
             Orders
           </span>
         </Link>
         {/* search */}
-        {/* <div
-          onClick={() => setShowResults((prev) => !prev)}
-          className={`flex items-center  cursor-pointer gap-2 transition-transform transform 
-          hover:translate-x-2  hover:text-indigo-800 ${
-            window.location.pathname === "/orderslist" ? "text-indigo-600" : ""
-          } `}
+        <div
+          onClick={() => {
+            dispatch(showSearchResult());
+            dispatch(changeToLightSearchbar());
+            dispatch(chageToFixed());
+            // if (searchbarPosition === "fixed")
+            //   return dispatch(changeToRelative());
+          }}
+          className={` items-center hidden lg:flex  cursor-pointer gap-2 transition-transform 
+            transform hover:translate-x-2  hover:text-indigo-800  `}
         >
           <div>
-            <FiSearch className="my-[1rem]" size={20} />
+            <FiSearch className="my-[1rem] font-bold" size={20} />
           </div>
           <span className=" lg:hidden group-hover:block my-[1rem] ">
             Search
           </span>
-        </div> */}
+        </div>
       </div>
 
       {/* user name */}
@@ -168,10 +201,16 @@ export default function Sidebar({
               setDropDownOpen(showSidebarMenu === true ? false : true)
             }
             onClick={toggleDropDown}
+            // text-gray-800
             className={`flex cursor-pointer items-center flex-col justify-center 
-          text-gray-800 focus:outline-none hover:text-indigo-400 gap-1 ${
-            dropDownOpen ? "text-indigo-400" : ""
-          }`}
+                  ${
+                    sidebarColor == "light"
+                      ? "bg-white text-black"
+                      : "bg-gray-900 text-white"
+                  }
+                  focus:outline-none hover:text-indigo-400 gap-1 ${
+                    dropDownOpen ? "text-indigo-400" : ""
+                  } transition-all duration-300`}
             id="admin-cion"
           >
             <>
@@ -192,9 +231,14 @@ export default function Sidebar({
         {((dropDownOpen && userInfo) || (showSidebarMenu && userInfo)) && (
           <ul
             className={`relative lg:absolute lg:left-0 lg:top-0 mt-22 lg:mt-0 lg:space-y-0  lg:w-48
-                lg:rounded overflow-hidden overflow-y-auto
-              text-gray-600 bottom-20 bg-white `}
-            // lg:mt-2 lg:bg-gray-100  lg:border  lg:border-gray-200`}
+                lg:rounded overflow-hidden overflow-y-auto transition-all duration-300
+                ${
+                  sidebarColor == "light"
+                    ? "lg:bg-white lg:text-black"
+                    : "lg:bg-gray-900 lg:text-white"
+                }
+              bg-white text-black bottom-20  `}
+            // lg:mt-2 bg-white text-gray-600 lg:bg-gray-100  lg:border  lg:border-gray-200`}
           >
             {userInfo.isAdmin && (
               <>

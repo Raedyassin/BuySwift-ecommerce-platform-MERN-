@@ -43,7 +43,6 @@ export default function UserList() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const {
     data: products,
-    // refetch,
     isFetching,
     error,
     isLoading,
@@ -70,6 +69,10 @@ export default function UserList() {
     if (selectedProduct === userId) return setSelectedProduct(null);
     setSelectedProduct(userId);
   };
+    const inputSearchHandler = (e) => {
+      if (e.key === "Enter") searchByHandler();
+    };
+
 
   const searchByHandler = () => {
     if (!searchValue) return toast.error("Search value is required");
@@ -82,13 +85,14 @@ export default function UserList() {
     else if (searchBy === "name") setFinalFilterBy({ name: searchValue });
     else if (searchBy === "brand") setFinalFilterBy({ brand: searchValue });
     else if (searchBy === "price") setFinalFilterBy({ price: searchValue });
-    else if (searchBy === "quantity") setFinalFilterBy({ quantity: searchValue });
+    else if (searchBy === "quantity")
+      setFinalFilterBy({ quantity: searchValue });
     // setSearchValue("");
   };
-      useEffect(() => {
-        window.document.title = "Product Table";
-      }, []);
-
+  useEffect(() => {
+    window.document.title = "Product Table";
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     if (filterBy === "all") {
@@ -120,8 +124,6 @@ export default function UserList() {
     }
   };
 
-  console.log("products", products);
-  // {page, limit, createdAt, id, name, brand, category, price, quantity }
   useEffect(() => {
     if (error && error?.status < 500) {
       toast.error(error?.data?.data?.title || error?.data?.message);
@@ -135,7 +137,6 @@ export default function UserList() {
       </Message>
     );
   }
-
 
   return (
     <div className="mx-[2rem] pt-[2rem]">
@@ -287,6 +288,7 @@ export default function UserList() {
               type="text"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={(e) => inputSearchHandler(e)}
               placeholder={
                 searchBy === "id"
                   ? "Enter user id"
