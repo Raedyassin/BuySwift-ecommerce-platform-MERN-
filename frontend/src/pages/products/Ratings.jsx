@@ -9,7 +9,6 @@ export default function Ratings({ text, rating ,className}) {
   const emptyStars = 5 - fullStars - halfStar;
   return (
     <div className={`flex items-center  ${className}`}>
-      {/* text-gray-600 */}
       {[...Array(fullStars)].map((_, index) => (
         <FaStar key={index} className="text-gray-500 mr-1" />
       ))}

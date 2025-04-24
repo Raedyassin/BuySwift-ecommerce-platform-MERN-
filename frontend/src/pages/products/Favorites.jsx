@@ -1,22 +1,20 @@
-import { useSelector } from "react-redux"
-import {selectFavoriteProduct} from '../../redux/features/favorite/favoriteSlice'
+import { useSelector } from "react-redux";
+import { selectFavoriteProduct } from "../../redux/features/favorite/favoriteSlice";
 import Product from "./Product";
 import PageHeader from "../../components/PageHeader";
 import DontHave from "../../components/DontHave";
 import { motion } from "motion/react";
 import { useEffect } from "react";
-import Footer from "../../components/Footer";
 export default function Favorites() {
   const favoriteProducts = useSelector(selectFavoriteProduct);
-      useEffect(() => {
-        window.document.title = "Favorite Product";
-            window.scrollTo(0, 0);
-
-      }, []);
+  useEffect(() => {
+    window.document.title = "Favorite Product";
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>
-      <div className="mx-[2rem] py-[2rem] min-h-[85vh]">
+      <div className="px-4  md:px-15 lg:px-25 py-[2rem] min-h-[85vh]">
         <motion.div
           initial={{ opacity: 0, y: -100 }}
           animate={{ opacity: 1, y: 0 }}
@@ -46,9 +44,6 @@ export default function Favorites() {
           ))}
         </motion.div>
       </div>
-        <div className="mt-20">
-          <Footer />
-        </div>
     </>
   );
 }

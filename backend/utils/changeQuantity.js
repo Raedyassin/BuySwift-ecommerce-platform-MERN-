@@ -12,6 +12,7 @@ const reduceQuantity = async (res, products) => {
       break;
     }
     productFromDB.quantity -= product.quantity;
+    productFromDB.sold += product.quantity;
     await productFromDB.save();
   }
 
@@ -20,6 +21,7 @@ const reduceQuantity = async (res, products) => {
       const product = products[i];
       const productFromDB = await Product.findById(product._id);
       productFromDB.quantity += product.quantity;
+      productFromDB.sold -= product.quantity;
       await productFromDB.save();
     }
     return false;
@@ -31,6 +33,7 @@ const increaseQuantity = async (products) => {
     const product = products[i];
     const productFromDB = await Product.findById(product._id)
     productFromDB.quantity += product.quantity;
+    productFromDB.sold -= product.quantity;
     await productFromDB.save();
   }
 }

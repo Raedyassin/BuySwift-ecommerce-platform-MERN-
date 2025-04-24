@@ -48,7 +48,9 @@ export default function Searchbar({
   return (
     <div
       className={`flex items-center flex-wrap w-full justify-between gap-2 
-    px-4 py-2 sm:px-6 transition-all duration-300 ${homeSearchbarEffect === "dark" ? "bg-gray-900" : ""} `}
+    px-4 py-2 sm:px-6 transition-all duration-300 ${
+      homeSearchbarEffect === "dark" ? "bg-gray-900" : ""
+    } `}
     >
       {/* Left side (Logo) */}
       <div
@@ -66,10 +68,7 @@ export default function Searchbar({
         className="flex order-3 md:order-2 w-full  
       md:w-[50%] lg:w-[40%] items-center gap-2"
       >
-        <SearchForm
-          setSearchName={setSearchName}
-          searchName={searchName}
-        />
+        <SearchForm setSearchName={setSearchName} searchName={searchName} />
       </div>
 
       {/* Right side (Notifications, User, Menu) */}
@@ -106,14 +105,19 @@ export default function Searchbar({
         {userInfo ? (
           <div
             // whileHover={{ scale: 1.1 }}
-            style={{zIndex: 100}}
+            style={{ zIndex: 100 }}
             className="relative cursor-pointer hover:scale-110 transition-scale duration-300"
           >
             <img
               onClick={() => setShowUserInfo(!showUserInfo)}
               onMouseEnter={() => setShowUserInfo(true)}
               onMouseLeave={() => setShowUserInfo(false)}
-              src={userInfo?.img}
+              // src={userInfo?.img}
+              src={
+                userInfo?.img
+                  ? "/uploads/user/" + userInfo?.img?.split("/").pop()
+                  : "../../../public/userImge.png"
+              }
               alt={userInfo?.username}
               className="w-8 h-8 z-10 object-cover sm:w-10 sm:h-10 border-2 border-indigo-500 rounded-full cursor-pointer"
             />
@@ -161,10 +165,10 @@ export default function Searchbar({
         ) : (
           <div className="flex items-center gap-1 sm:gap-2">
             <button
-                onClick={() => {
-                  navigate("/login");
-                  dispatch(changeToRelative());
-                }}
+              onClick={() => {
+                navigate("/login");
+                dispatch(changeToRelative());
+              }}
               className="px-2 py-1 sm:px-3 font-semibold sm:py-1 text-sm 
               sm:text-base cursor-pointer   text-gray-700 rounded-md border 
               hover:bg-gray-50 border-gray-200 "
@@ -172,10 +176,10 @@ export default function Searchbar({
               Login
             </button>
             <button
-                onClick={() => {
-                  navigate("/register"); 
-                  dispatch(changeToRelative());
-                }}
+              onClick={() => {
+                navigate("/register");
+                dispatch(changeToRelative());
+              }}
               className="px-2 py-1 sm:px-3 sm:py-1 font-semibold text-sm 
               sm:text-base cursor-pointer   text-gray-700 rounded-md border 
               hover:bg-gray-50 border-gray-200"

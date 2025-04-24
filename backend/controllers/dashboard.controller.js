@@ -36,9 +36,14 @@ const getDashboardData = asyncHandler(async (req, res) => {
   ]);
 
 
-  const topRatedProducts = await Product.find()
-    .select("name brand price rating img numReview")
-    .sort({ rating: -1 })
+  // const topRatedProducts = await Product.find()
+  //   .select("name brand price rating img numReview")
+  //   .sort({ rating: -1 })
+  //   .limit(10)
+  //   .lean();
+  const topSoldProducts = await Product.find()
+    .select("name sold brand price img ")
+    .sort({ sold: -1 })
     .limit(10)
     .lean();
 
@@ -53,7 +58,7 @@ const getDashboardData = asyncHandler(async (req, res) => {
     totalOrders,
     totalProducts,
     ordersByStatus,
-    topRatedProducts,
+      topSoldProducts,
   }});
 });
 

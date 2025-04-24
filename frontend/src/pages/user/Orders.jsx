@@ -86,7 +86,7 @@ export default function Orders() {
   return (
     <div className="min-h-screen ">
       <div className=" mx-auto px-4 sm:px-6 lg:pl-8 py-8">
-        <div className="lg:flex lg:flex-row">
+        <div className="lg:flex lg:flex-row relative">
           {/* Left Sidebar  */}
           {data?.ordersLength > 0 && (
             <motion.div
@@ -95,8 +95,8 @@ export default function Orders() {
               transition={{ duration: 1 }}
               style={{zIndex: 1000}}
               className={`fixed  left-0 lg:left-[70px] top-22 sm:top-24 
-                md:top-14 lg:top-0 w-[50%] bg-white  overflow-auto shadow-[0px_10px_10px_rgba(0,0,0,0.1)]
-                h-[86%] lg:h-screen lg:ml-2 lg:w-[15rem] lg:block  pb-20 lg:pb-0 ${
+                md:top-14  lg:top-0 w-[50%] bg-white  overflow-auto shadow-[0px_10px_10px_rgba(0,0,0,0.1)]
+                  h-[87.5%] sm:h-[86%] lg:h-screen lg:ml-2 lg:w-[15rem] lg:block  pb-20 lg:pb-0 ${
                   openOrders ? "block" : "hidden"
                 }`}
             >

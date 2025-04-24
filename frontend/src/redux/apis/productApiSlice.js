@@ -122,6 +122,7 @@ const productApiSlice = apiSlice.injectEndpoints({
         body
       }),
     }),
+
     createRating: buil.mutation({
       query: ({ id, ...body }) => ({
         url: `${PRODUCT_URL}/${id}/rating`,
@@ -156,6 +157,7 @@ const productApiSlice = apiSlice.injectEndpoints({
         return currentArg.page !== previousArg?.page
       }
     }),
+
     getAllProductsTable: buil.query({
       query: ({ page, limit, createdAt, id, name, brand, category, price, rating, quantity }) => ({
         url: `${PRODUCT_URL}/products-list?page=${page}&limit=${limit}&createdAt=${createdAt}&id=${id}&name=${name}&brand=${brand}&category=${category}&price=${price}&rating=${rating}&quantity=${quantity}`,
@@ -163,20 +165,14 @@ const productApiSlice = apiSlice.injectEndpoints({
     }),
 
     // ??????????????????????????
-    getTopProducts: buil.query({
+    getHomeProducts: buil.query({
       query: () => ({
-        url: `${PRODUCT_URL}/top`,
+        url: `${PRODUCT_URL}/home`,
       }),
-      keepUnusedDataFor: 5
+      keepUnusedDataFor: Infinity,
+      providesTags: [productTage],
     }),
 
-    // ??????????????????????????
-    getNewProducts: buil.query({
-      query: () => ({
-        url: `${PRODUCT_URL}/new`,
-      }),
-      keepUnusedDataFor: 5
-    }),
 
     getSearchedProducts: buil.query({
       query: ({ selectedCategory, price, page, searchName, limit }) => ({
@@ -245,9 +241,8 @@ export const {
   useUpdateProductMutation,
   useCreateReviewMutation,
   useDeleteProductMutation,
-  useGetNewProductsQuery,
   useGetProductByIdQuery,
-  useGetTopProductsQuery,
+  useGetHomeProductsQuery,
   useUploadProductImageMutation,
   // why i use query wiht post method because i query make auto-fetch and post don't make caching 
   // and mutation don't make caching but i need post to but the data in the body of the reqest

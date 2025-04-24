@@ -7,7 +7,6 @@ import {
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import { setCredientials } from "../../redux/features/auth/authSlice";
-import Footer from "../../components/Footer";
 
 export default function Profile() {
   const [password, setPassword] = useState("");
@@ -225,9 +224,6 @@ export default function Profile() {
             </div>
           </form>
         </div>
-      </div>
-      <div className="mt-20">
-        <Footer />
       </div>
     </>
   );

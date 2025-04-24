@@ -26,7 +26,6 @@ export default function UpdateProduct() {
   const navigate = useNavigate();
 
   const { data: product, isLoading } = useGetProductByIdQuery(id);
-  console.log(product);
   const [deleteProduct] = useDeleteProductMutation();
   const [uploadProductImage] = useUploadProductImageMutation();
   const [updateProduct] = useUpdateProductMutation();
@@ -36,7 +35,7 @@ export default function UpdateProduct() {
     if (product) {
       setName(product.data.product.name);
       setDiscription(product.data.product.discription);
-      setPrice(product.data.product.price);
+      setPrice(product.data.product.originalPrice);
       setCategory(product.data.product.category);
       setQuantity(product.data.product.quantity);
       setBrand(product.data.product.brand);
@@ -45,6 +44,7 @@ export default function UpdateProduct() {
       setDiscount(product.data.product.discount);
     }
   }, [product]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -151,10 +151,7 @@ export default function UpdateProduct() {
             {imageUrl && (
               <div className="flex justify-center mb-6">
                 <img
-                  src={
-                    image instanceof File
-                      ? URL.createObjectURL(image)
-                      : "/" + imageUrl
+                  src={"/uploads/" + imageUrl.split("/").pop()
                   }
                   alt="product image"
                   className="max-h-48 rounded-lg shadow-md object-cover"

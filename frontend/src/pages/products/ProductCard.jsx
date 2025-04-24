@@ -6,7 +6,7 @@ import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings";
 import {numberReviewsHandler} from '../../utils/numberReviews'
 import PriceDiscont from "./priceDiscont";
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, sold }) {
   const dispatch = useDispatch();
   return (
     <div
@@ -33,6 +33,14 @@ export default function ProductCard({ product }) {
                 {product.discount}% off
               </div>
             )}
+            {(+product.sold > 99 || sold) && (
+              <div
+                className="absolute top-0 right-0 bg-yellow-500 text-white text-xs
+              sm:text-sm px-2 py-1 rounded-bl-lg rounded-tr-lg font-semibold"
+              >
+                Best Seller
+              </div>
+            )}
           </div>
         </Link>
         <HeartIcon product={product} className={" bottom-3 right-3 "} />
@@ -42,7 +50,7 @@ export default function ProductCard({ product }) {
           <div className="flex justify-between flex-col items-start space-y-1">
             <Link to={`/product/${product._id}`}>
               <h5
-                className={`text-lg sm:text-xl font-bold text-gray-700 
+                className={`sm:text-lg font-bold text-gray-700 
               hover:text-indigo-600 hover:underline transition-colors 
               duration-200 line-clamp-2`}
               >
@@ -54,7 +62,11 @@ export default function ProductCard({ product }) {
               text={`(${numberReviewsHandler(product.numReview)})`}
             />
             <div className="">
-              <PriceDiscont price={product.price} discount={product.discount||0} />
+              <PriceDiscont
+                price={product.price}
+                originalPrice={product.originalPrice}
+                discount={product.discount || 0}
+              />
             </div>
           </div>
           <p

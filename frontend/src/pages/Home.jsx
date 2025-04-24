@@ -1,8 +1,6 @@
-import { Link } from "react-router-dom";
 import ProductCard from "./products/ProductCard";
-import { useEffect, useRef } from "react";
-import { useGetAllProductsPageQuery } from "../redux/apis/productApiSlice";
-import Footer from "../components/Footer";
+import { useEffect, useRef, useState } from "react";
+import { useGetHomeProductsQuery } from "../redux/apis/productApiSlice";
 import HomeWelcome from "../components/HomeWelcome";
 import {
   changeToLight,
@@ -13,6 +11,8 @@ import {
   changeToDarkSearchbar,
   changeToLightSearchbar,
 } from "../redux/features/hoemSearchbarEffect";
+import PageHeader from "../components/PageHeader";
+import ProductLoader from "./products/ProductLoader";
 export default function Home() {
   const welcomeRef = useRef(null);
   const searchbarPosition = useSelector((state) => state.searchbarPosition);
@@ -22,8 +22,9 @@ export default function Home() {
     window.scrollTo(0, 0);
   }, []);
 
-  
-  const { data } = useGetAllProductsPageQuery({});
+  const [windowSize, setWindowSize] = useState(window.innerWidth);
+  console.log("windowSize", windowSize);
+  const { data: homeProducts, isLoading } = useGetHomeProductsQuery();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -52,33 +53,90 @@ export default function Home() {
     };
   }, [dispatch, welcomeRef, showSearchResult, searchbarPosition]);
 
+  useEffect(() => {
+    // let timeout;
+    const debouncedResize = () => {
+      // clearTimeout(timeout);
+      // timeout = setTimeout(() => {
+        setWindowSize(window.innerWidth);
+      // }, 100);
+    };
+    window.addEventListener("resize", debouncedResize);
+    return () => {
+      window.removeEventListener("resize", debouncedResize);
+      // clearTimeout(timeout);
+    };
+  }, []);
+
+  const resizeWindow = () => {
+    let size = 6;
+    if (windowSize >= 640) { //sm
+      size = 9;
+    }
+    if (windowSize >= 1024) { //lg
+      size = 12;
+    }
+    if (windowSize >= 1280) { //xl
+      size = 10;
+    }
+    if (windowSize >= 1536) {// 2xl
+      size = 12;
+    }
+    return size
+  }
+
   return (
     <>
       <div ref={welcomeRef}>
         <HomeWelcome />
       </div>
-      <main className="px-4 mt-10 md:px-20 lg:px-30 space-y-10">
-        {/* Top Rating Products */}
-        <div>
-          <h1 className=" text-2xl font-semibold italic ">Top Rating Products</h1>
-          <div>
-            <div
-              className="grid z-0 grid-cols-2 sm:grid-cols-3  lg:grid-cols-4 
-              xl:grid-cols-5 2xl:grid-cols-6  gap-2  mt-[1rem] 
-              mb-[2rem] space-y-2" 
-            >
-              {data?.data?.products?.map((product) => (
-                <div key={product._id}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
+      <main className="px-4 mt-10 md:px-15 lg:px-25 space-y-10">
+        {[
+          {
+            product: homeProducts?.data?.topDiscountProducts,
+            label: "Top Discount Products",
+          },
+          {
+            product: homeProducts?.data?.topSoldProducts,
+            label: "Top Sold Products",
+          },
+          {
+            product: homeProducts?.data?.newProducts,
+            label: "New Products",
+          },
+          {
+            product: homeProducts?.data?.topRatingProducts,
+            label: "Top Rated Products",
+          },
+        ].map((products, index) => (
+          <div key={index} className="mt-[3rem]">
+            <PageHeader className={"md:text-3xl md:h-15 text-2xl h-13 "}>
+              {products.label}
+            </PageHeader>
+            <div>
+              <div
+                className="grid z-0 grid-cols-2 sm:grid-cols-3  lg:grid-cols-4 
+                    xl:grid-cols-5 2xl:grid-cols-6  gap-2  mt-[1.5rem] 
+                    mb-[2rem] space-y-2  "
+              >
+                {isLoading
+                  ? [...Array(6 + 6)]
+                      .slice(0, resizeWindow())
+                      .map((_, index) => (
+                        <div key={index}>
+                          <ProductLoader />
+                        </div>
+                      ))
+                  : products.product.slice(0, resizeWindow()).map((product) => (
+                      <div key={product._id}>
+                        <ProductCard product={product} sold={index === 1} />
+                      </div>
+                    ))}
+              </div>
             </div>
           </div>
-        </div>
+        ))}
       </main>
-      <div className="mt-20">
-        <Footer />
-      </div>
     </>
   );
 }

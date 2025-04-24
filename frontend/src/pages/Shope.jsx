@@ -4,17 +4,18 @@ import { useGetAllCategoryQuery } from "../redux/apis/categoryApiSlice";
 import { toast } from "react-toastify";
 import ProductCard from "./products/ProductCard";
 import PageLoader from "../components/PageLoader";
-import Loader from "../components/Loader";
 import { FiFilter } from "react-icons/fi";
 import { motion } from "motion/react";
-import { useLocation ,useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
-import Footer from "../components/Footer";
+import ProductLoader from "./products/ProductLoader";
 
 export default function Shope() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const [searchName,setSearchName] = useState(searchParams.get("search") || "")
+  const [searchName, setSearchName] = useState(
+    searchParams.get("search") || ""
+  );
   const [showFilter, setShowFilter] = useState(false);
   const LoaderRef = useRef(null);
   const [page, setPage] = useState(1);
@@ -46,15 +47,14 @@ export default function Shope() {
   const clearSearchResult = () => {
     setSearchName("");
     navigate("/shop");
-  }
+  };
   useEffect(() => {
     setSearchName(searchParams.get("search") || "");
   }, [searchParams]);
 
   useEffect(() => {
     window.document.title = "🛒 Shop";
-        window.scrollTo(0, 0);
-
+    window.scrollTo(0, 0);
   }, []);
 
   // Infinite scroll logic with IntersectionObserver
@@ -119,7 +119,7 @@ export default function Shope() {
 
   const selectedBrandHandler = (index) => {
     setNewInputRadio(index + 1);
-    window.scrollTo(0 , { behavior: "smooth" });
+    window.scrollTo(0, { behavior: "smooth" });
   };
 
   const priceFilterHandler = (e) => {
@@ -371,7 +371,8 @@ export default function Shope() {
               className="grid grid-cols-2 md:grid-cols-2 
             lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-3"
             >
-              {filterData?.data?.products?.map((prod, index) => {
+              { !isFetching &&
+                filterData?.data?.products?.map((prod, index) => {
                 if (newInputRadio !== 0) {
                   if (uniqueBrands[newInputRadio - 1] === prod.brand) {
                     return (
@@ -411,18 +412,16 @@ export default function Shope() {
                 );
               })}
               <div className=" h-60 " ref={LoaderRef}></div>
-              {isFetching && (
-                <div className="flex justify-center  h-60 w-10">
-                  <Loader />
-                </div>
-              )}
+              {isFetching &&
+                [...Array(10)].map((_, index) => (
+                  <div key={index}>
+                    <ProductLoader />
+                  </div>
+                ))}
             </div>
           </motion.div>
         </div>
       </div>
-        <div className="mt-20">
-          <Footer />
-        </div>
     </>
   );
 }

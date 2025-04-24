@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import HeartIcon from "./HeartIcon";
 export default function Product({ product }) {
-  console.log("product", product.name);
   
   return (
     <div
@@ -20,27 +19,22 @@ export default function Product({ product }) {
       <div className="px-4 mb-2 relative flex justify-between items-center">
         <Link to={`/product/${product._id}`}>
           <div
-            className="text-lg text-black hover:text-purple-600 hover:underline font-simibold italic
+            className="text-lg text-black hover:text-purple-600 hover:underline 
+            font-simibold italic line-clamp-2
             "
           >
-            {product.name.length > 20
-              ? product.name.substring(0, 20) + "..."
-              : product.name}
+            {product.name}
           </div>
         </Link>
         <span
           className="bg-indigo-800 text-sm font-medium
               px-2.5 py-0.5 rounded-full  text-white absolute top-1 right-4"
         >
-          {"$ " + product.price}
+          {"$ " + product?.originalPrice?.toFixed(2)}
         </span>
       </div>
-      <p className="px-4 mb-4  font-normal text-gray-700">
-        {product?.discription?.substring(0, 60)}
-        <span className=" italic font-bold">
-          {" "}
-          {product?.discription?.length > 65 ? "..." : ""}
-        </span>
+      <p className="px-4 mb-4  font-normal text-gray-700 line-clamp-3">
+        {product?.discription}
       </p>
     </div>
   );

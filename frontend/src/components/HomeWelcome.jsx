@@ -37,7 +37,7 @@ export default function HomeWelcome() {
         px-4  sm:px-6 md:px-10 lg:pt-15 lg:px-30"
     >
       {/* Top */}
-      <div className="flex flex-col lg:flex-row items-center justify-between w-full">
+      <div className="flex flex-col lg:flex-row items-center justify-between md:justify-around w-full">
         <div className="w-full lg:w-2/4 text-center lg:text-left">
           {ecommerceNameWords.map((line, lineIndex) => (
             <div key={lineIndex} className={lineIndex > 0 ? "mt-2" : ""}>
@@ -72,7 +72,7 @@ export default function HomeWelcome() {
         </motion.div>
       </div>
       {/* Bottom */}
-      <div className="mt-6 sm:mt-8 lg:mt-10 flex flex-col lg:flex-row items-center justify-between w-full">
+      <div className="mt-6 sm:mt-8 lg:mt-10 flex flex-col lg:flex-row items-center justify-between md:justify-around w-full">
         <div className="border-2 w-full max-w-md md:max-w-lg m-3 sm:m-4 p-3 sm:p-4 rounded-2xl border-gray-400 border-s-indigo-600 border-e-indigo-600">
           <div className="text-base sm:text-lg lg:text-xl text-center whitespace-pre-wrap break-words">
             {ecommerceDescriptionWords.map((line, lineIndex) => (

@@ -9,8 +9,7 @@ import {
   fetchProductById,
   fetchAllProducts,
   addProductReview,
-  fetchTopProducts,
-  fetchnewProducts,
+  fetchHomeProducts,
   searchProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,
@@ -25,12 +24,10 @@ route.route("/")
 
 route.route("/products-list")
   .get(fetchAllProducts)
-route.route("/top")
-  .get(fetchTopProducts)
-route.route("/new")
-  .get(fetchnewProducts)
-route.route("/search")
+  route.route("/search")
   .get(searchProduct)
+route.route("/home")
+  .get(fetchHomeProducts)
 
 
 route.route("/related/:id")

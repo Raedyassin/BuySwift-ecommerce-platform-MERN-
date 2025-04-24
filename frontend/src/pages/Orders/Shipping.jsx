@@ -8,7 +8,6 @@ import {
 import { toast } from "react-toastify";
 import ProgressSteps from "../../components/ProgressSteps";
 import PaymentShow from "../../components/PaymentShow";
-import Footer from "../../components/Footer";
 
 export default function Shipping() {
   const [paymentMethod, setPaymentMethod] = useState("OnDelivery");
@@ -295,10 +294,6 @@ export default function Shipping() {
         </div>
       </div>
       </div>
-              <div className="mt-20">
-                <Footer />
-              </div>
-      
     </>
   );
 }

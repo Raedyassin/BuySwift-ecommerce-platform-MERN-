@@ -5,6 +5,7 @@ import { calcTotalPrice } from '../utils/clacTotalPrice.js'
 import productsIsFound from '../utils/productsIsFound.js'
 import { reduceQuantity } from "../utils/changeQuantity.js";
 
+// this is for manual order payied
 const createOrder = asyncHandler(async (req, res, next) => {
   const { orderItems, shippingAddress } = req.body;
   let { paymentMethod } = req.body;
@@ -39,7 +40,7 @@ const createOrder = asyncHandler(async (req, res, next) => {
 
   const reducesQuantitySuccess = await reduceQuantity(res,dbOrderItems);
   if (!reducesQuantitySuccess) return;
-  
+
   const order = new Order({
     orderItems: dbOrderItems.map((item) => ({
       quantity: item.quantity,
@@ -266,6 +267,8 @@ const markorderTransit = asyncHandler(async (req, res, next) => {
 })
 // until now i will make the adimin cancle the order only
 const cancleOrderByAdmin = asyncHandler(async (req, res, next) => {
+  // should when admin cancle the order the orderItems in Prouct Model 
+  // sould increase but i now i don't make this i will make this later
   const order = await Order.findById(req.params.id)
     .populate("orderItems.product", "brand img name price") //////////////
   if(order.status === "delivered"){

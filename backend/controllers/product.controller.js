@@ -7,8 +7,8 @@ import mongoose from "mongoose";
 
 const addProduct = asyncHandler(
   async (req, res, next) => {
-    const { name, discription, price, brand, quantity, category, discount } = req.fields;
-    
+    let { name, discription, price, brand, quantity, category, discount } = req.fields;
+
     switch (true) {
       case !name:
         return res.status(400).json({ status: FAIL, message: "Name is required" })
@@ -28,11 +28,18 @@ const addProduct = asyncHandler(
     if (price <= 0) return res.status(400).json({ status: FAIL, message: "Price should be greater than 0" });
     if (quantity <= 0) return res.status(400).json({ status: FAIL, message: "Quantity should be greater than 0" });
     if (discount && isNaN(discount)) return res.status(400).json({ status: FAIL, message: "Discount should be number" });
-    if(discount && (discount > 100 || discount < 0) ) return res.status(400).json({ status: FAIL, message: "Discount should be between 0 and 100" });
+    if (discount && (discount > 100 || discount < 0)) return res.status(400).json({ status: FAIL, message: "Discount should be between 0 and 100" });
     // after i add discount and all thing use price so i will add originalPrice 
     // that have price wtihout discount and the price will be the price with discount
+    // i name this name becasue i use price in all thing(order and product) so i will add originalPrice
+
+    let originalPrice = +price;
+    if (+discount > 0) {
+      price = +(originalPrice * (1 - discount / 100)).toFixed(2);
+    }
+
     const product = new Product({
-      name, discription, price, brand, quantity, category, discount
+      name, discription, originalPrice, price, brand, quantity, category, discount
     })
     product.img = "uploads/" + req.fields.img;
     await product.save();
@@ -42,7 +49,14 @@ const addProduct = asyncHandler(
 
 const updateProduct = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { name, discription, price, brand, quantity, category, img , discount} = req.fields;
+  let product = await Product.findById(id);
+  if (!product) {
+    return res.status(404).json({ status: "FAIL", message: "Product not found" });
+  }
+
+  let { name, discription, price, brand,
+    quantity, category, img, discount } = req.fields;
+  let originalPrice = +price;
   switch (true) {
     case !name:
       return res.status(400).json({ status: FAIL, message: "Name is required" })
@@ -61,20 +75,27 @@ const updateProduct = asyncHandler(async (req, res) => {
     case !discount:
       return res.status(400).json({ status: FAIL, message: "Discount is required" })
   }
+
   if (isNaN(price)) return res.status(400).json({ status: FAIL, message: "Price should be number" });
   if (isNaN(quantity)) return res.status(400).json({ status: FAIL, message: "Quantity should be number" });
   if (isNaN(discount)) return res.status(400).json({ status: FAIL, message: "Discount should be number" });
   if (discount > 100 || discount < 0) return res.status(400).json({ status: FAIL, message: "Discount should be between 0 and 100" });
-
-
-  const product = await Product.findByIdAndUpdate(id, {
-    name,discount, discription, price, brand, quantity, category, img: ("uploads/" + img)
-  });
-  if (!product) {
-    return res.status(404).json({ status: "FAIL", message: "Product not found" });
+  if (+discount > 0) {
+    price = +(originalPrice * (1 - discount / 100)).toFixed(2);
   }
 
-
+  product.name = name;
+  product.discription = discription;
+  product.price = price;
+  product.originalPrice = originalPrice;
+  product.brand = brand;
+  product.quantity = quantity;
+  product.category = category;
+  product.discount = discount;
+  product.img = "uploads/" + img;
+  // = await Product.findByIdAndUpdate(id, {
+  //   name,discount,originalPrice, discription, price, brand, quantity, category, img: ("uploads/" + img)
+  // });
   await product.save();
   res.json({ status: "SUCCESS", data: { product } });
 });
@@ -159,17 +180,16 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
   const pageSize = req.query.limit ? (+req.query.limit > 50 ? 50 : +req.query.limit) : 10; // make the page size configurable
   const skip = (page - 1) * pageSize;
 
-  let product = await Product.findById(id).select("reviews"); // Only fetch reviews field to optimize
+  let product = await Product.findById(id)
+    .populate("reviews.user", 'username img')
+    .select("reviews"); // Only fetch reviews field to optimize
 
   if (!product) {
     return res.status(404).json({ status: FAIL, message: "Product not found" });
   }
+  // console.log(product.reviews)
 
   product.reviews = product.reviews.filter(review => review.rating !== -1);
-
-  // if (product.reviews.length === 0) {
-  //   return res.status(404).json({ status: FAIL, message: "Product has no reviews" });
-  // }
 
   let filteredReviews = product.reviews || [];
   let plusOne = 0;
@@ -177,7 +197,7 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
     let ourReview = {};
     filteredReviews = product.reviews.
       filter(review => {
-        if (review.user.toString() === req.user._id.toString()) {
+        if (review.user._id.toString() === req.user._id.toString()) {
           ourReview = review;
           return false;
         }
@@ -194,7 +214,7 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
   let paginatedReviews = filteredReviews.slice(skip, skip + pageSize + plusOne);
   if (page !== 1) {
     paginatedReviews = paginatedReviews.filter(review => {
-      return review.user.toString() !== req.user._id.toString();
+      return review.user._id.toString() !== req.user._id.toString();
     })
   }
   const totalPages = Math.ceil(totalReviews / pageSize);
@@ -218,7 +238,7 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
 const editProductReview = asyncHandler(async (req, res, next) => {
   const { id, reviewId } = req.params; // id is the product id
   const { comment } = req.body;
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).populate("reviews.user", 'username img');
   if (!product) {
     return res.status(404).json({ status: FAIL, message: "Product not found" });
   }
@@ -227,8 +247,6 @@ const editProductReview = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ status: FAIL, message: "Review not found" });
   }
   review.comment = comment;
-  review.img = req.user.img;
-  review.name = req.user.username
   await product.save();
   res.json({ status: SUCCESS, data: { review } });
 });
@@ -236,14 +254,15 @@ const editProductReview = asyncHandler(async (req, res, next) => {
 const addProductReview = asyncHandler(
   async (req, res, next) => {
     const { comment } = req.body;
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findById(req.params.id).populate("reviews.user", 'username img')
+    console.log("product", product)
     if (!product) {
       return res.status(404).json({ status: FAIL, message: "Product not found" });
     }
     let alreadyIndex = -1;
     const alreadyReviewed = product.reviews.find(
       (r, index) => {
-        if (r.user.toString() === req.user._id.toString()) {
+        if (r.user._id.toString() === req.user._id.toString()) {
           alreadyIndex = index;
           return true
         }
@@ -257,16 +276,12 @@ const addProductReview = asyncHandler(
         ...product.reviews[alreadyIndex],
         comment,
         rating: product.reviews[alreadyIndex].rating,
-        name: req.user.username,
-        img: req.user.img,
         user: req.user._id,
       }
     } else {
       const review = {
         comment,
-        name: req.user.username,
-        img: req.user.img,
-        user: req.user._id,
+        // user: req.user._id,
       }
       product.reviews.push(review)
     }
@@ -274,17 +289,19 @@ const addProductReview = asyncHandler(
     product.numReview = product.reviews.length;
 
     await product.save();
+    console.log("updatedProduct", product.reviews[alreadyIndex]);
+    // const updatedProduct = await product.save();
     let sendingReview = {};
     if (alreadyIndex !== -1) {
       sendingReview = product.reviews[alreadyIndex].toObject();
     } else {
       sendingReview = product.reviews.at(-1).toObject(); // because it will return all Mongoose Document object search on it 
     }
-
+    console.log("sendingReview", sendingReview);
     res.status(201).json({
       status: SUCCESS, data:
       {
-        review: sendingReview
+        review: { ...sendingReview, user: { _id: req.user._id, username: req.user.username, img: req.user.img } }
       }
     })
   }
@@ -293,7 +310,7 @@ const addProductReview = asyncHandler(
 const addOrUpdateProductRating = asyncHandler(
   async (req, res, next) => {
     const { rating } = req.body;
-    const product = await Product.findById(req.params.id)
+    const product = await Product.findById(req.params.id).populate("reviews.user", 'username img')
     if (!product) {
       return res.status(404).json({ status: FAIL, message: "Product not found" });
     }
@@ -318,15 +335,11 @@ const addOrUpdateProductRating = asyncHandler(
         ...product.reviews[alreadyIndex],
         comment: product.reviews[alreadyIndex].comment,
         rating: +rating,
-        name: req.user.username,
-        img: req.user.img,
         user: req.user._id,
       }
     } else {
       const review = {
         rating: +rating,
-        name: req.user.username,
-        img: req.user.img,
         user: req.user._id,
       }
       product.reviews.push(review)
@@ -348,7 +361,7 @@ const addOrUpdateProductRating = asyncHandler(
     } else {
       sendingReview = product.reviews.at(-1).toObject(); // because it will return all Mongoose Document object search on it 
     }
-
+    console.log("sendingReview", sendingReview);
     res.status(201).json({ status: SUCCESS, data: { review: sendingReview } })
   }
 );
@@ -466,36 +479,28 @@ const fetchAllProducts = asyncHandler(
   }
 )
 
-const fetchTopProducts = asyncHandler(
+const fetchHomeProducts = asyncHandler(
   async (req, res, next) => {
-    const page = req.query.page ? +req.query.page : 1;
-    const pageSize = 10;
-    const products = await Product.find().sort({ rating: -1 })
+    const pageSize = req.query.limit ? +req.query.limit : 20;
+    const newProducts = await Product.find().sort({ createdAt: -1 })
       .limit(pageSize)
-      .skip((page - 1) * pageSize);
+    
+    const topRatingProducts = await Product.find().sort({ rating: -1 })
+      .limit(pageSize)
+    
+    const topSoldProducts = await Product.find().sort({ sold: -1 })
+      .limit(pageSize)
+    
+    const topDiscountProducts = await Product.find().sort({ discount: -1 })
+      .limit(pageSize)
 
     res.json({
       status: SUCCESS,
       data: {
-        products,
-        page
-      }
-    })
-  }
-)
-
-const fetchnewProducts = asyncHandler(
-  async (req, res, next) => {
-    const page = req.query.page ? +req.query.page : 1;
-    const pageSize = 10;
-    const products = await Product.find().sort({ _id: -1 })
-      .limit(pageSize)
-      .skip((page - 1) * pageSize);
-    res.json({
-      status: SUCCESS,
-      data: {
-        products,
-        page
+        newProducts,
+        topRatingProducts,
+        topSoldProducts,
+        topDiscountProducts
       }
     })
   }
@@ -508,8 +513,8 @@ const searchProduct = asyncHandler(
     const page = req.query.page ? +req.query.page : 1;
     const pageSize = req.query.limit ? (+req.query.limit > 50 ? 50 : +req.query.limit) : 10;
     let searchName = req.query.searchName?.trim();
-    const categoriesID = req.query.cateogries?.split(',') || []; 
-    const price = req.query.price?.split(',').map(value => +value) || []; 
+    const categoriesID = req.query.cateogries?.split(',') || [];
+    const price = req.query.price?.split(',').map(value => +value) || [];
     let args = {};
 
     // validation
@@ -518,9 +523,9 @@ const searchProduct = asyncHandler(
     }
     if (searchName !== "") {
       // clear extra spaces that insed the searchValue
-      searchName = searchName.split(" ");      
-      searchName = searchName.reduce((acc,word ) => {
-        if(word === "") {
+      searchName = searchName.split(" ");
+      searchName = searchName.reduce((acc, word) => {
+        if (word === "") {
           return acc;
         } else {
           return `${acc} ${word}`
@@ -529,7 +534,7 @@ const searchProduct = asyncHandler(
       args.name = { $regex: searchName.trim(), $options: "i" }
     }
     if (req.query.cateogries !== "" && req.query.cateogries !== "undefined" && categoriesID.length > 0) {
-      const validCategoryIds = categoriesID.filter(id =>mongoose.Types.ObjectId.isValid(id));
+      const validCategoryIds = categoriesID.filter(id => mongoose.Types.ObjectId.isValid(id));
       if (validCategoryIds.length !== categoriesID.length) {
         return res.status(400).json({ status: FAIL, message: "The category id is not structured correctly" });
       }
@@ -548,7 +553,7 @@ const searchProduct = asyncHandler(
       .limit(pageSize + 1)
       .skip((page - 1) * pageSize)
       .sort({ createdAt: -1 })
-      .select("-updatedAt -__v -reviews -creatorId -quantity  -category -numReview" );
+      .select("-updatedAt -__v -reviews -creatorId -quantity  -category -numReview");
 
     const hasNextPage = products.length > pageSize;
     if (hasNextPage) {
@@ -567,7 +572,6 @@ const searchProduct = asyncHandler(
   }
 )
 
-
 export {
   addProduct,
   updateProduct,
@@ -575,8 +579,7 @@ export {
   fetchProductById,
   fetchAllProducts,
   addProductReview,
-  fetchTopProducts,
-  fetchnewProducts,
+  fetchHomeProducts,
   searchProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,

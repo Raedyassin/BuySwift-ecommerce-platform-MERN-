@@ -5,6 +5,7 @@ import { addToCart } from "../../redux/features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { motion } from "motion/react";
+import { GiFlamethrowerSoldier } from "react-icons/gi";
 import {
   useGetProductByIdQuery,
   useCreateReviewMutation,
@@ -52,9 +53,8 @@ export default function ProductDetails() {
   );
 
   const userInfo = useSelector((state) => state.auth.userInfo);
-
   const [createReview, { isLoading: isLoadingCreateReview }] =
-    useCreateReviewMutation();
+  useCreateReviewMutation();
   const [createRating] = useCreateRatingMutation();
   const [pageReviews, setPageReviews] = useState(1);
   const {
@@ -63,12 +63,13 @@ export default function ProductDetails() {
     isFetching: isFetchingReviews,
     isError: isErrorReviews,
   } = useGetReviewsProductByIdQuery(
-    { id, page: pageReviews, limit: 5 },
+    { id, page: pageReviews, limit: 10 },
     {
       skip: shouldFetchReviews,
       refetchOnMountOrArgChange: true,
     }
   );
+  console.log("reviews", reviews);
 
   const loadMoreReviews = useRef(null);
   useEffect(() => {
@@ -99,6 +100,7 @@ export default function ProductDetails() {
     setComment("");
     setHoveredStar(-1);
   }, [id]);
+
   useEffect(() => {
     if (reviews?.data?.reviews[0]?.user === userInfo?._id) {
       setHoveredStar(reviews?.data?.reviews[0]?.rating);
@@ -260,6 +262,7 @@ export default function ProductDetails() {
               <PriceDiscont
                 className="mt-4 gap-8"
                 text="text-3xl font-bold"
+                originalPrice={product?.data?.product?.originalPrice}
                 price={product?.data?.product?.price}
                 discount={product?.data?.product?.discount || 0}
               />
@@ -294,6 +297,11 @@ export default function ProductDetails() {
                   <FaShoppingCart className="mr-2 w-5 h-5 text-indigo-500" />{" "}
                   <span className="font-medium mr-1">Quantity:</span>{" "}
                   {product?.data?.product?.quantity}
+                </p>
+                <p className="flex items-center text-gray-700 text-sm sm:text-base">
+                  <GiFlamethrowerSoldier className="mr-2 w-5 h-5 text-indigo-500" />{" "}
+                  <span className="font-medium mr-1">sold:</span>{" "}
+                  {product?.data?.product?.sold}
                 </p>
               </div>
             </div>
@@ -519,7 +527,9 @@ export default function ProductDetails() {
                     onClick={createReviewtHandler}
                   >
                     Submit
-                    {isLoadingCreateReview && <Loader />}
+                    {isLoadingCreateReview && (
+                      <Loader loaderColor="border-white" />
+                    )}
                   </button>
                 </div>
               )}
@@ -566,7 +576,6 @@ export default function ProductDetails() {
           </section>
         </motion.div>
       </div>
-      <Footer />
     </>
   );
 }

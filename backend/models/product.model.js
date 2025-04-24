@@ -2,22 +2,12 @@ import mongoose from "mongoose";
 const { ObjectId } = mongoose.Schema
 
 const reviewSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required:true
-  },
-  img: {
-    type: String,
-    default:'../uploads/user/defaultImage.png'
-  },
   rating: {
     type: Number,
-    // required: true,
     default:-1,
   },
   comment:{
     type: String,
-    // required:true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -65,6 +55,16 @@ const productSchema = new mongoose.Schema({
     default:0,
   },
   price: {
+    type: Number,
+    required: true,
+    default:0,
+  },
+  sold: {
+    type: Number,
+    required: true,
+    default:0
+  },
+  originalPrice: {
     type: Number,
     required: true,
     default:0,

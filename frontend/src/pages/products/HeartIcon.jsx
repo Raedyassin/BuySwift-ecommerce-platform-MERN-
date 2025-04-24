@@ -26,7 +26,7 @@ export default function HeartIcon({ product, colorText, className }) {
       // dispatch(addToFavorite(product));
       dispatch(
         addToFavorite({
-          price: product.price,
+          originalPrice: product.originalPrice,
           discription: product.discription,
           name: product.name,
           _id: product._id,
@@ -34,7 +34,7 @@ export default function HeartIcon({ product, colorText, className }) {
         })
       );
       addFavoriteToLocalStorage({
-        price: product.price,
+        originalPrice: product.originalPrice,
         discription: product.discription,
         name: product.name,
         _id: product._id,

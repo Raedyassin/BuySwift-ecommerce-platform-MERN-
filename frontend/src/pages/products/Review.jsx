@@ -59,11 +59,12 @@ export default function Review({ review, userInfo, productId  }) {
   //   }
   // }, [userInfo, review, setHoveredStar]);
 
+  console.log("review", review);
   return (
     <div
       key={review._id}
       className={`${
-        userInfo?._id === review?.user
+        userInfo?._id === review?.user?._id
           ? " bg-gray-100 border-2 border-gray-200"
           : "  bg-gray-50 "
       } p-2 rounded-lg  sm:ml-[0rem]`}
@@ -72,21 +73,21 @@ export default function Review({ review, userInfo, productId  }) {
         <div className="flex justify-start items-center gap-3">
           <img
             src={
-              review?.img
-                ? "/uploads/user/" + review?.img.split("/").pop()
+              review?.user?.img
+                ? "/uploads/user/" + review?.user?.img?.split("/").pop()
                 : "../../../public/userImge.png"
             }
-            alt={review?.name}
+            alt={review?.user?.username}
             className="w-11 h-11 object-cover rounded-full"
           />
           <div className="text-sm sm:text-base">
-            <strong className="text-[#B0B0B0]">{review.name}</strong>
+            <strong className="text-[#B0B0B0]">{review?.user?.username}</strong>
             <p className="text-[#B0B0B0]">
               {review?.updatedAt?.substring(0, 10)}
             </p>
           </div>
         </div>
-        {review?.user === userInfo?._id && (
+        {review?.user?._id === userInfo?._id && (
           <div>
             <button
               className="mr-2 p-1 px-2 rounded-2xl hover:bg-gray-200 italic text-gray-500 hover:text-gray-700 

@@ -55,7 +55,7 @@ export default function Dashboard() {
     totalpaidOrders,
     totalProducts,
     ordersByStatus,
-    topRatedProducts,
+    topSoldProducts,
   } = data?.data || {};
 
   // Bar Chart Data for Orders by Status
@@ -211,11 +211,11 @@ export default function Dashboard() {
           {/* Top-Rated Products */}
           <div className="bg-white p-4 sm:p-6 rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)]">
             <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 mb-4">
-              Top 10 Rated Products
+              Top Sold Products
             </h2>
             <ul className="space-y-3  pr-2">
-              {topRatedProducts?.length ? (
-                topRatedProducts.map((product) => (
+              {topSoldProducts?.length ? (
+                topSoldProducts.map((product) => (
                   <li
                     key={product._id}
                     className="flex items-center justify-between p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition duration-200"
@@ -233,15 +233,17 @@ export default function Dashboard() {
                         {product.name}
                       </span>
                     </div>
-                    <span className="text-xs sm:text-sm text-gray-600 text-right">
-                      <span className="font-semibold text-yellow-500">{product.rating.toFixed(2)}</span> (
-                      {product.numReview})
-                    </span>
+                    {/* <span className="text-xs sm:text-sm text-gray-600 text-right">
+                      <span className="font-semibold text-yellow-500">
+                        {product.rating.toFixed(2)}
+                      </span>{" "}
+                      ({product.numReview})
+                    </span> */}
                   </li>
                 ))
               ) : (
                 <li className="p-2 text-gray-500 text-sm sm:text-base text-center">
-                  No top-rated products
+                  No top-sold products
                 </li>
               )}
             </ul>

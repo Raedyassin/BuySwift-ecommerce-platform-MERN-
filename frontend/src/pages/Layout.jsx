@@ -11,6 +11,7 @@ import { useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { chageToFixed, changeToRelative } from "../redux/features/chagneSearchbarPosition";
 import { changeToLightSearchbar } from "../redux/features/hoemSearchbarEffect";
+import Footer from '../components/Footer'
 export default function Layout() {
   const [showSidebarMenu, setShowSidebarMenu] = useState(false);
   const [showAdminMenu, setShowAdminMenu] = useState(true);
@@ -19,9 +20,7 @@ export default function Layout() {
   const searchbarPosition = useSelector((state) => state.searchbarPosition);
   const showSearchResult = useSelector((state) => state.showSearchReasult);
   const [searchName, setSearchName] = useState("");
-
   const dispatch = useDispatch();
-
 
   useEffect(() => { 
     if (location.pathname !== "/") {
@@ -100,21 +99,22 @@ export default function Layout() {
             />
             {showSearchResult && (
               <div>
-                <SearchResults
-                  searchName={searchName}
-                />
+                <SearchResults searchName={searchName} />
               </div>
             )}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <main
-        //   ${ searchbarPosition === "fixed" ? "lg:pt-15 " : "lg:pt-0" }
-        className={`pt-24 sm:pt-15 lg:pt-0 ml-[0px] lg:ml-[70px]`}
-      >
+      <main className={`pt-24 sm:pt-15 lg:pt-0 ml-[0px] lg:ml-[70px]`}>
         <Outlet />
       </main>
+
+      {location.pathname !== "/orderslist" && (
+        <div className="mt-[10rem] pl-[0px] lg:pl-[70px] ">
+          <Footer />
+        </div>
+      )}
     </div>
   );
 }
