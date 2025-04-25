@@ -408,14 +408,16 @@ export default function OrdersList() {
           </div>
         )}
       </motion.div>
-      <motion.div
-        initial={{ opacity: 0, y: 100 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-        className="flex justify-center  items-center gap-5"
-      >
-        <PageSlider setPage={setPage} page={page} pagesCount={pagesCount} />
-      </motion.div>
+      {!isFetching && pagesCount > 1 && (
+        <motion.div
+          initial={{ opacity: 0, y: 100 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="flex justify-center  items-center gap-5"
+        >
+          <PageSlider setPage={setPage} page={page} pagesCount={pagesCount} />
+        </motion.div>
+      )}
       <div className=" h-15"></div>
     </div>
   );

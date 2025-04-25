@@ -84,6 +84,7 @@ const productApiSlice = apiSlice.injectEndpoints({
         return {
           ...currentCache,
           data: {
+            numComments: newData.data.numComments,
             reviews: [...currentCache.data.reviews, ...newData.data.reviews],
           },
           currentPage: newData.currentPage,

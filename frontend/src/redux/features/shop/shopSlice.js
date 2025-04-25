@@ -25,7 +25,6 @@ const shopSlice = createSlice({
       state.checked = action.payload;
     },
     setRadio: (state, action) => {
-      console.log("action.payload", action.payload);
       state.radio = action.payload;
     },
     setBrandCheckBoxes: (state, action) => {

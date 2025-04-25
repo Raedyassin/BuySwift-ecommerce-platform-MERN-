@@ -44,12 +44,25 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
   reviews: [reviewSchema],
+  // AVG rating
   rating: {
     type: Number,
     required: true,
     default:0
   },
-  numReview: {
+  // i make allRating because i use rating in all project 
+  // so i don't change all things because it will take a lot of time
+  allRating: {
+    type: Number,
+    required: true,
+    default:0
+  },
+  numRatings: {
+    type: Number,
+    required: true,
+    default:0,
+  },
+  numComments: {
     type: Number,
     required: true,
     default:0,

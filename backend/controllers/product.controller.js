@@ -32,14 +32,14 @@ const addProduct = asyncHandler(
     // after i add discount and all thing use price so i will add originalPrice 
     // that have price wtihout discount and the price will be the price with discount
     // i name this name becasue i use price in all thing(order and product) so i will add originalPrice
-
-    let originalPrice = +price;
+    price = Number(price);
+    let originalPrice = price;
     if (+discount > 0) {
-      price = +(originalPrice * (1 - discount / 100)).toFixed(2);
+      price = +(+originalPrice * (1 - discount / 100)).toFixed(2);
     }
 
     const product = new Product({
-      name, discription, originalPrice, price, brand, quantity, category, discount
+      name, discription, originalPrice: originalPrice.toFixed(2), price: price.toFixed(2), brand, quantity, category, discount
     })
     product.img = "uploads/" + req.fields.img;
     await product.save();
@@ -56,7 +56,8 @@ const updateProduct = asyncHandler(async (req, res) => {
 
   let { name, discription, price, brand,
     quantity, category, img, discount } = req.fields;
-  let originalPrice = +price;
+  price = Number(price);
+  let originalPrice = price;
   switch (true) {
     case !name:
       return res.status(400).json({ status: FAIL, message: "Name is required" })
@@ -182,43 +183,34 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
 
   let product = await Product.findById(id)
     .populate("reviews.user", 'username img')
-    .select("reviews"); // Only fetch reviews field to optimize
+    .select("reviews numComments");
 
   if (!product) {
     return res.status(404).json({ status: FAIL, message: "Product not found" });
   }
-  // console.log(product.reviews)
 
-  product.reviews = product.reviews.filter(review => review.rating !== -1);
+  // get all reviews that hame comment only
+  const reviews = product.reviews.filter(review => review.comment);
 
-  let filteredReviews = product.reviews || [];
-  let plusOne = 0;
+  let myReviewIndex = -1;
   if (page === 1 && req.user) {
-    let ourReview = {};
-    filteredReviews = product.reviews.
-      filter(review => {
-        if (review.user._id.toString() === req.user._id.toString()) {
-          ourReview = review;
-          return false;
-        }
-        return true;
-      });
-    if (filteredReviews.length !== product.reviews.length) {
-      plusOne = 1;
-      filteredReviews = [ourReview, ...filteredReviews];
-    }
+    myReviewIndex = reviews.findIndex(review => (
+      review.user._id.toString() === req.user._id.toString()));
   }
 
-  const totalReviews = product.reviews.length;
-
-  let paginatedReviews = filteredReviews.slice(skip, skip + pageSize + plusOne);
-  if (page !== 1) {
-    paginatedReviews = paginatedReviews.filter(review => {
-      return review.user._id.toString() !== req.user._id.toString();
-    })
+  let paginatedReviews = [];
+  if (myReviewIndex !== -1) {
+    paginatedReviews = [reviews[myReviewIndex], ...reviews.slice(skip, skip + pageSize)];
+  } else {
+    paginatedReviews = reviews.slice(skip, skip + pageSize);
   }
-  const totalPages = Math.ceil(totalReviews / pageSize);
-  const hasNextPage = page < totalPages;
+
+  // this is not perefect but it works
+  paginatedReviews = paginatedReviews.filter((review,index) => {
+    return (index === 0 && myReviewIndex !== -1) || review.user._id.toString() !== req.user._id.toString();
+  })
+
+  const hasNextPage = page < Math.ceil(product.numComments / pageSize);
   const hasPrevPage = page > 1;
 
   res.json({
@@ -228,81 +220,77 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
     },
     currentPage: page,
     pageSize,
-    totalReviews,
-    totalPages,
     hasNextPage,
     hasPrevPage,
   });
 });
 
-const editProductReview = asyncHandler(async (req, res, next) => {
+const editProductComment = asyncHandler(async (req, res, next) => {
   const { id, reviewId } = req.params; // id is the product id
   const { comment } = req.body;
-  const product = await Product.findById(id).populate("reviews.user", 'username img');
-  if (!product) {
+  if (!comment) {
+    return res.status(400).json({ status: FAIL, message: "comment is required" });
+  }
+  let productFound = await Product.findById(id)
+    .populate("reviews.user", 'username img')
+    .select("numComments reviews")
+  if (!productFound) {
     return res.status(404).json({ status: FAIL, message: "Product not found" });
   }
-  const review = product.reviews.find(review => review._id.toString() === reviewId);
-  if (!review || !review?.comment) {
-    return res.status(404).json({ status: FAIL, message: "Review not found" });
+
+  const reviewIndex = productFound.reviews.findIndex(review => review._id.toString() === reviewId.toString());
+  if (reviewIndex === -1) {
+    return res.status(404).json({ status: FAIL, message: "comment not found" });
   }
-  review.comment = comment;
-  await product.save();
-  res.json({ status: SUCCESS, data: { review } });
+  if (!productFound.reviews[reviewIndex].comment) {
+    return res.status(404).json({ status: FAIL, message: "you don not have a comment" });
+  }
+  productFound.reviews[reviewIndex].comment = comment;
+  await productFound.save();
+  productFound = await productFound.populate("reviews.user", 'username img')
+  res.json({ status: SUCCESS, data: { review: productFound.reviews[reviewIndex] } });
 });
 
-const addProductReview = asyncHandler(
+const addProductComment = asyncHandler(
   async (req, res, next) => {
     const { comment } = req.body;
-    const product = await Product.findById(req.params.id).populate("reviews.user", 'username img')
-    console.log("product", product)
-    if (!product) {
+    if (!comment) {
+      return res.status(400).json({ status: FAIL, message: "comment is required" });
+    }
+    let productFound = await Product.findById(req.params.id)
+      .populate("reviews.user", 'username img')
+      .select("numComments reviews")
+    if (!productFound) {
       return res.status(404).json({ status: FAIL, message: "Product not found" });
     }
-    let alreadyIndex = -1;
-    const alreadyReviewed = product.reviews.find(
-      (r, index) => {
-        if (r.user._id.toString() === req.user._id.toString()) {
-          alreadyIndex = index;
-          return true
-        }
-        return false;
-      });
-    if (alreadyReviewed?.comment) {
-      return res.status(400).json({ status: FAIL, message: "Product already reviewed" })
-    }
-    if (alreadyIndex !== -1) { // that mean the user is make comment in this product before
-      product.reviews[alreadyIndex] = {
-        ...product.reviews[alreadyIndex],
+
+    const reviewIndex = productFound.reviews.findIndex(review => review.user._id.toString() === req.user._id.toString());
+    if (reviewIndex === -1) {
+      // i you dont' make Review (rating or comment) it will be -1
+      productFound.reviews.push({
         comment,
-        rating: product.reviews[alreadyIndex].rating,
         user: req.user._id,
-      }
+      })
     } else {
-      const review = {
-        comment,
-        // user: req.user._id,
+      // if you already have a review (make a comment or rating or both)
+      if (productFound.reviews[reviewIndex].comment) {
+        return res.status(400).json({ status: FAIL, message: "You already have a review" });
+      } else {
+        productFound.reviews[reviewIndex].comment = comment
       }
-      product.reviews.push(review)
     }
-
-    product.numReview = product.reviews.length;
-
-    await product.save();
-    console.log("updatedProduct", product.reviews[alreadyIndex]);
-    // const updatedProduct = await product.save();
-    let sendingReview = {};
-    if (alreadyIndex !== -1) {
-      sendingReview = product.reviews[alreadyIndex].toObject();
+    productFound.numComments += 1;
+    await productFound.save();
+    productFound = await productFound.populate("reviews.user", 'username img')
+    let review = {}
+    if (reviewIndex === -1) {
+      review = productFound.reviews.at(-1).toObject();
     } else {
-      sendingReview = product.reviews.at(-1).toObject(); // because it will return all Mongoose Document object search on it 
+      review = productFound.reviews[reviewIndex].toObject();
     }
-    console.log("sendingReview", sendingReview);
     res.status(201).json({
-      status: SUCCESS, data:
-      {
-        review: { ...sendingReview, user: { _id: req.user._id, username: req.user.username, img: req.user.img } }
-      }
+      status: SUCCESS,
+      data: { review, numComments: productFound.numComments }
     })
   }
 );
@@ -310,59 +298,52 @@ const addProductReview = asyncHandler(
 const addOrUpdateProductRating = asyncHandler(
   async (req, res, next) => {
     const { rating } = req.body;
-    const product = await Product.findById(req.params.id).populate("reviews.user", 'username img')
-    if (!product) {
-      return res.status(404).json({ status: FAIL, message: "Product not found" });
-    }
-    let alreadyIndex = -1;
-    const alreadyRating = product.reviews.
-      find((r, index) => {
-        if (r.user.toString() === req.user._id.toString()) {
-          alreadyIndex = index;
-          return true;
-        }
-        return false;
-      });
-    // if (alreadyRating?.rating !== undefined && alreadyRating?.rating !== -1) {
-    //   return res.status(400).json({ status: FAIL, message: "Product already rating" })
-    // }
     if (isNaN(rating) || !(+rating >= 0 && +rating <= 5)) {
       return res.status(400).json({ status: FAIL, message: "the rating should be number between 0 and 5" })
     }
 
-    if (alreadyIndex !== -1) { // that mean the user is make comment in this product before
-      product.reviews[alreadyIndex] = {
-        ...product.reviews[alreadyIndex],
-        comment: product.reviews[alreadyIndex].comment,
-        rating: +rating,
-        user: req.user._id,
-      }
-    } else {
-      const review = {
-        rating: +rating,
-        user: req.user._id,
-      }
-      product.reviews.push(review)
-    }
-    product.numReview = product.reviews.length;
+    let productFound = await Product.findById(req.params.id)
+      .populate("reviews.user", 'username img')
+      .select("numRatings allRating rating reviews")
 
-    // it is not correct but form performance but correct forom logic and i will add it
-    // untill now and update the performance
-    product.rating = product.reviews.reduce((acc, review) => {
-      if (review.rating === -1) {
-        return acc;
-      }
-      return review.rating + acc;
-    }, 0) / product.reviews.length;
-    await product.save();
-    let sendingReview = {};
-    if (alreadyIndex !== -1) {
-      sendingReview = product.reviews[alreadyIndex].toObject();
-    } else {
-      sendingReview = product.reviews.at(-1).toObject(); // because it will return all Mongoose Document object search on it 
+    if (!productFound) {
+      return res.status(404).json({ status: FAIL, message: "Product not found" });
     }
-    console.log("sendingReview", sendingReview);
-    res.status(201).json({ status: SUCCESS, data: { review: sendingReview } })
+
+    // check by user id
+    const reviewIndex = productFound.reviews.findIndex(review => review.user._id.toString() === req.user._id.toString());
+
+    // if user don't have a review
+    if (reviewIndex === -1) {
+      productFound.reviews.push({
+        rating: +rating,
+        user: req.user._id,
+      })
+      productFound.numRatings += 1;
+    } else {
+      // product have comment and don't have rating
+      if (productFound.reviews[reviewIndex].rating === -1) {
+        productFound.reviews[reviewIndex].rating = +rating;
+        productFound.numRatings += 1;
+      } else {
+        // product have comment and have rating
+        productFound.allRating -= productFound.reviews[reviewIndex].rating;
+        productFound.reviews[reviewIndex].rating = +rating;
+      }
+    }
+    productFound.allRating += +rating;
+    productFound.rating = (productFound.allRating / productFound.numRatings).toFixed(1);
+
+    await productFound.save();
+    productFound = await productFound.populate("reviews.user", 'username img')
+
+    let review = {};
+    if (reviewIndex === -1) {
+      review = productFound.reviews.at(-1).toObject();
+    } else {
+      review = productFound.reviews[reviewIndex].toObject();
+    }
+    res.status(201).json({ status: SUCCESS, data: { review } })
   }
 );
 
@@ -484,13 +465,13 @@ const fetchHomeProducts = asyncHandler(
     const pageSize = req.query.limit ? +req.query.limit : 20;
     const newProducts = await Product.find().sort({ createdAt: -1 })
       .limit(pageSize)
-    
+
     const topRatingProducts = await Product.find().sort({ rating: -1 })
       .limit(pageSize)
-    
+
     const topSoldProducts = await Product.find().sort({ sold: -1 })
       .limit(pageSize)
-    
+
     const topDiscountProducts = await Product.find().sort({ discount: -1 })
       .limit(pageSize)
 
@@ -578,11 +559,11 @@ export {
   deleteProduct,
   fetchProductById,
   fetchAllProducts,
-  addProductReview,
+  addProductComment,
   fetchHomeProducts,
   searchProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,
-  editProductReview,
+  editProductComment,
   addOrUpdateProductRating,
 }

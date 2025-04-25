@@ -35,7 +35,6 @@ const updateCategory = asyncHandler(
       return res.status(404).json({ status: FAIL, message: "Category not existed" });
     }
     const newName = await Category.find({ name });
-    console.log(newName);
     if (newName.length !== 0) {//This Category Name already exist
       return res.status(409).json({ status: FAIL, message: "This Category Name already exist" });
     }

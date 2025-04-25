@@ -5,10 +5,9 @@ import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
-import { clearCartItems } from "../redux/features/cart/cartSlice";
 import SearchResults from "../components/searchbar/SearchResults";
 import { useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import { chageToFixed, changeToRelative } from "../redux/features/chagneSearchbarPosition";
 import { changeToLightSearchbar } from "../redux/features/hoemSearchbarEffect";
 import Footer from '../components/Footer'
@@ -27,11 +26,6 @@ export default function Layout() {
       dispatch(changeToLightSearchbar());
     } 
   },[location, dispatch])
-
-  // Clear cart items on mount
-  useEffect(() => {
-    dispatch(clearCartItems());
-  }, [dispatch]);
 
   // show the searchbar in home when usr refresh the page in small screen less than 1024
   useEffect(() => {
@@ -79,14 +73,10 @@ export default function Layout() {
       <AnimatePresence>
         {((location.pathname !== "/" &&
           location.pathname !== "/login" &&
-          location.pathname !== "register") ||
+          location.pathname !== "/register") ||
           searchbarPosition === "fixed" ||
           showSearchbarInHome === true) && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+          <div
             style={{ zIndex: 9999 }}
             className={`fixed ${
               searchbarPosition === "fixed" ? "lg:fixed" : "lg:relative"
@@ -102,7 +92,7 @@ export default function Layout() {
                 <SearchResults searchName={searchName} />
               </div>
             )}
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
@@ -110,8 +100,10 @@ export default function Layout() {
         <Outlet />
       </main>
 
-      {location.pathname !== "/orderslist" && (
-        <div className="mt-[10rem] pl-[0px] lg:pl-[70px] ">
+      {!(location.pathname === "/orderslist" ||
+        location.pathname === "/login" ||
+        location.pathname === "/register") && (
+        <div className="mt-[6rem] pl-[0px] lg:pl-[70px] ">
           <Footer />
         </div>
       )}

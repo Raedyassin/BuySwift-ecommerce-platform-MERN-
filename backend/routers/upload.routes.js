@@ -17,7 +17,6 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const extname = path.extname(file.originalname);
-    console.log("file.fieldname", file.fieldname)
     cb(null, file.fieldname + "-" + Date.now() + extname);
   }
 });
@@ -36,20 +35,20 @@ const upload = multer({
   fileFilter
 });
 
-const uploadSingleImage = upload.single("img");
+export const uploadProductImage = upload.single("img");
 
-route.post("/", (req, res) => {
-  uploadSingleImage(req, res, (err) => {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ status: FAIL, message: err.message });
-    } else if (err) {
-      return res.status(400).json({ status: FAIL, message: err.message });
-    }
-    if (!req.file) {
-      return res.status(400).json({ status: FAIL, message: "No file uploaded" });
-    }
-    return res.status(200).json({ status: SUCCESS, data: { image: req.file.filename } });
-  });
-});
+// route.post("/", (req, res) => {
+//   uploadProductImage(req, res, (err) => {
+//     if (err instanceof multer.MulterError) {
+//       return res.status(400).json({ status: FAIL, message: err.message });
+//     } else if (err) {
+//       return res.status(400).json({ status: FAIL, message: err.message });
+//     }
+//     if (!req.file) {
+//       return res.status(400).json({ status: FAIL, message: "No file uploaded" });
+//     }
+//     return res.status(200).json({ status: SUCCESS, data: { image: req.file.filename } });
+//   });
+// });
 
 export default route;

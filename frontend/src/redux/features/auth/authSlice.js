@@ -13,14 +13,15 @@ const authSlice = createSlice({
     setCredientials: (state, acion) => {
       state.userInfo = acion.payload;
       localStorage.setItem("userInfo", JSON.stringify(acion.payload));
-      const expirationTime = new Date() + 24 * 60 * 60 * 100;
-      localStorage.setItem("expirationTime", JSON.stringify(expirationTime));
+      const expirationTokenDate = new Date(Date.now() + 23.5 * 60 * 60 * 1000);;
+      localStorage.setItem("expirationTokenDate", JSON.stringify(expirationTokenDate));
     },
+
     //////////////////////////////////////
     logOut: (state) => {
       state.userInfo = null;
       localStorage.removeItem("userInfo");
-      localStorage.removeItem("expirationTime");
+      localStorage.removeItem("expirationTokenDate");
     }
   }
 })

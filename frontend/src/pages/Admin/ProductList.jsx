@@ -119,8 +119,8 @@ export default function UserList() {
       deleteProduct(id).unwrap();
       toast.success("Product deleted successfully");
     } catch (err) {
-      alert("Something went wrong. Please try again later.");
-      console.log(err);
+      toast.error("Something went wrong. Please try again later.");
+      console.error(err);
     }
   };
 

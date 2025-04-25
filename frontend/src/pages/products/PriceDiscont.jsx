@@ -8,7 +8,7 @@ export default function PriceDiscont({ price, originalPrice, discount, className
             text !== "" ? text : "font-semibold text-sm sm:text-base"
           } `}
         >
-          ${price.toFixed(2)}
+          ${price}
         </p>
       ) : (
         <p
@@ -16,7 +16,7 @@ export default function PriceDiscont({ price, originalPrice, discount, className
             text !== "" ? text : "font-semibold text-sm sm:text-base"
           }`}
         >
-          ${(originalPrice||price).toFixed(2)}
+          ${(originalPrice||price)}
         </p>
       )}
       {+discount !== 0 && (
@@ -25,7 +25,7 @@ export default function PriceDiscont({ price, originalPrice, discount, className
             text !== "" ? text : "font-semibold text-sm sm:text-base"
           }`}
         >
-          ${(originalPrice || price).toFixed(2)}
+          ${(originalPrice || price)}
         </p>
       )}
     </div>

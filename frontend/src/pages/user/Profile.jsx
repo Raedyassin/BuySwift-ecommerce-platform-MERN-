@@ -32,8 +32,6 @@ export default function Profile() {
     window.scrollTo(0, 0);
   }, [userInfo]);
 
-  console.log(userInfo);
-
   const handleUpates = async (e) => {
     e.preventDefault();
     if (userInfo?.username === username) {
@@ -54,14 +52,13 @@ export default function Profile() {
     if (!email) delete body.email;
     try {
       const res = await updateProfile(body).unwrap();
-      console.log(res);
       dispatch(setCredientials(res.data.user));
       toast.success(res.data.user.username + " update his information");
     } catch (err) {
       if (err.status === 404) {
         toast.error(err.data.message);
       } else {
-        alert("Something went wrong. Please try again later.");
+        toast.error("Something went wrong. Please try again later.");
       }
     }
   };
@@ -78,7 +75,7 @@ export default function Profile() {
       if (err.status === 404 || err.status === 400) {
         toast.error(err.data.message);
       } else {
-        alert("Something went wrong. Please try again later.");
+        toast.error("Something went wrong. Please try again later.");
       }
     }
   };

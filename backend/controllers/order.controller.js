@@ -85,7 +85,6 @@ const getAllOrders = asyncHandler(async (req, res, next) => {
   }
   if (createdAt && createdAt !== "") {
     const [year, month, day] = createdAt.split("-"); // e.g., "2025-03-18"
-    // console.log("year", year, "month", month, "day", day)
     if (parseInt(year) < 2025 || (parseInt(year) <= 2025 && parseInt(month) < 3) || (parseInt(year) <= 2025 && parseInt(month) <= 3 && parseInt(day) < 16)) {
       return res.status(400).json({ status: "FAIL", data: { title: "this date is not valid" } });
     }
@@ -98,7 +97,6 @@ const getAllOrders = asyncHandler(async (req, res, next) => {
   if (price && price !== "") {
     const [start, end] = price.split("-").map(Number); // e.g., "100-500"
     filter.totalPrice = { $gte: parseInt(start)||Infinity, $lte: parseInt(end)||Infinity };
-    // console.log("filter.totalPrice", filter.totalPrice)
   }
   if (payment && payment !== "") {
     filter.isPaid = payment === "paid";

@@ -163,7 +163,6 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
 
 const updateCurrentUserProfile = asyncHandler(async (req, res, next) => {
   const id  = req.user._id;
-  
   const { username, email, password } = req.body;
   const user = await User.findById(id).select("-password -__v");
   if (user) {
@@ -192,7 +191,7 @@ const updateUserImage = asyncHandler(async (req, res, next) => {
   }
 
   const imageUrl = "uploads/user/" + req.file.filename  // From upload route response
-  if (!imageUrl) {
+  if (!req?.file?.filename) {
     return res.status(400).json({ status: FAIL, message: "No image provided" });
   }
 
@@ -201,9 +200,7 @@ const updateUserImage = asyncHandler(async (req, res, next) => {
     const oldImagePath = path.join(process.cwd(), user.img);
     try {
       await fs.unlink(oldImagePath);
-      // console.log(`Deleted old image: ${oldImagePath}`);
     } catch (err) {
-      // console.error(`Failed to delete old image: ${err.message}`);
       return res.status(500).json({ status: FAIL, message: "Server error" });
     }
   }

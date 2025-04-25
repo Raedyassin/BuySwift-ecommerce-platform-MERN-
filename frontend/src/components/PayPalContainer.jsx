@@ -57,7 +57,7 @@ export default function PayPalContainer({ order }) {
         toast.error(error.data.message);
         setPaymentStatus("pending");
       }
-      console.log("error", error);
+      // console.log("error", error);
       console.error("Error creating order:", error && error.message);
       setMessage("Failed to create order. Please try again.");
       setPaymentStatus("error");
@@ -71,7 +71,6 @@ export default function PayPalContainer({ order }) {
       const captureResponse = await payPalPaymentCapture({
         paypalOrderId: data.orderID,
       }).unwrap();
-      console.log("captureResponse", captureResponse);
       if (captureResponse.status === "success") {
         setMessage(`Payment completed successfully`);
         toast.success(`Payment completed successfully`);
@@ -93,8 +92,7 @@ export default function PayPalContainer({ order }) {
       message("Payment capture failed. Please try again or contact support.");
     }
   };
-  const onCancel = (data) => {
-    console.log("Payment cancelled:", data); // Log cancellation details
+  const onCancel = () => {
     setPaymentStatus("pending");
     setMessage("");
     toast.info("Payment was cancelled. You can try again if you'd like.");

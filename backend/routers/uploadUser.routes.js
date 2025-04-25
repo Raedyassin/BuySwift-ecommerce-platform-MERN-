@@ -46,24 +46,24 @@ const upload = multer({
 
 export const uploadSingleImage = upload.single("img");
 
-route.post("/", uploadSingleImage, async (req, res) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({ status: FAIL, message: "No file uploaded" });
-    }
-    const imageUrl = `/uploads/user/${req.file.filename}`;
-    res.status(200).json({ status: SUCCESS, data: { img: imageUrl } });
-  } catch (err) {
-    if (err instanceof multer.MulterError) {
-      return res.status(400).json({ status: FAIL, message: err.message });
-    } else if (err) {
-      return res.status(400).json({ status: FAIL, message: err.message });
-    }
-    if (!req.file) {
-      return res.status(400).json({ status: FAIL, message: "No file uploaded" });
-    }
-    return res.status(200).json({ status: SUCCESS, data: { image: req.file.filename } });
-  }
-});
+// route.post("/", uploadSingleImage, async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ status: FAIL, message: "No file uploaded" });
+//     }
+//     const imageUrl = `/uploads/user/${req.file.filename}`;
+//     res.status(200).json({ status: SUCCESS, data: { img: imageUrl } });
+//   } catch (err) {
+//     if (err instanceof multer.MulterError) {
+//       return res.status(400).json({ status: FAIL, message: err.message });
+//     } else if (err) {
+//       return res.status(400).json({ status: FAIL, message: err.message });
+//     }
+//     if (!req.file) {
+//       return res.status(400).json({ status: FAIL, message: "No file uploaded" });
+//     }
+//     return res.status(200).json({ status: SUCCESS, data: { image: req.file.filename } });
+//   }
+// });
 
 export default route;

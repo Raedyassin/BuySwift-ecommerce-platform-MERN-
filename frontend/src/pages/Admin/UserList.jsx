@@ -78,7 +78,7 @@ export default function UserList() {
       if (err.status === 404) {
         toast.error(err.data.message);
       } else {
-        alert("Something went wrong. Please try again later.");
+        toast.error("Something went wrong. Please try again later.");
       }
     }
   };
@@ -110,7 +110,7 @@ export default function UserList() {
       } else if (err.status === 404) {
         toast.error(err.data.message);
       } else {
-        alert("Something went wrong. Please try again later.");
+        toast.error("Something went wrong. Please try again later.");
       }
     }
   };
@@ -126,7 +126,7 @@ export default function UserList() {
       } else if (err.status === 404) {
         toast.error(err.data.message);
       } else {
-        alert("Something went wrong. Please try again later.");
+        toast.error("Something went wrong. Please try again later.");
       }
     }
   };
@@ -510,7 +510,6 @@ export default function UserList() {
             <PageSlider setPage={setPage} page={page} pagesCount={pagesCount} />
           </div>
         )}
-        <div className=" h-15"></div>
       </motion.div>
     </div>
   );

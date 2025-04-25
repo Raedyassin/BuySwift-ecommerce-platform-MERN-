@@ -59,7 +59,6 @@ export default function CategoryManagement() {
         id: selectedCategory._id,
         body: { name: updatingName },
       }).unwrap();
-      console.log("res", res);
       
       setModalVisible(false);
       setSelectedCategory(null);

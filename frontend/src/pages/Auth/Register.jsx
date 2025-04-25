@@ -44,13 +44,17 @@ export default function Register() {
       if (err.status === 409 || err.status === 400) {
         toast.error(err.data.message);
       } else {
-        alert("Something went wrong. Please try again later.");
+        toast.error("Something went wrong. Please try again later.");
       }
     }
   };
+  
 
   return (
-    <section className="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-start bg-white lg:bg-[url('https://images.unsplash.com/photo-1576502200916-3808e07386a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2065&q=80')] lg:bg-no-repeat lg:bg-right lg:bg-cover">
+    <section className="min-h-screen flex flex-col lg:flex-row items-center 
+    justify-center lg:justify-start bg-white
+    lg:bg-[url('https://images.unsplash.com/photo-1576502200916-3808e07386a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2065&q=80')]
+    lg:bg-no-repeat lg:bg-right lg:bg-cover">
       {/* Form Section */}
       <div className="w-full lg:w-1/2 flex justify-center items-center p-4 md:p-6 lg:p-8">
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-lg p-6 sm:p-8">

@@ -1,8 +1,9 @@
 import "./sidebar.css";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { FiSearch } from "react-icons/fi";
+
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
 import {
   AiOutlineHome,
@@ -11,7 +12,11 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { RiLoginCircleLine, RiProductHuntLine } from "react-icons/ri";
-import { CiDeliveryTruck, CiHeart } from "react-icons/ci";
+// import { CiDeliveryTruck, CiHeart } from "react-icons/ci";
+import { TbTruckDelivery } from "react-icons/tb";
+
+import { IoMdHeartEmpty } from "react-icons/io";
+
 import { MdAdminPanelSettings, MdOutlineCategory } from "react-icons/md";
 import { FaTimes, FaKeyboard, FaRegPlusSquare } from "react-icons/fa";
 import { LuLayoutDashboard } from "react-icons/lu";
@@ -22,12 +27,15 @@ import {
   changeToDark,
   changeToLight,
 } from "../../redux/features/changeColorSidebar";
-import {
-  chageToFixed,
-  changeToRelative,
-} from "../../redux/features/chagneSearchbarPosition";
+import { chageToFixed } from "../../redux/features/chagneSearchbarPosition";
 import { changeToLightSearchbar } from "../../redux/features/hoemSearchbarEffect";
-import { showSearchResult } from '../../redux/features/searchResult'
+import { showSearchResult } from "../../redux/features/searchResult";
+import { TbUserHexagon } from "react-icons/tb";
+import { RiLogoutCircleLine } from "react-icons/ri";
+import { toast } from "react-toastify";
+import { logOut } from "../../redux/features/auth/authSlice";
+import { useLogoutMutation } from "../../redux/apis/userApiSlice";
+
 export default function Sidebar({
   showSidebarMenu,
   setShowAdminMenu,
@@ -41,6 +49,7 @@ export default function Sidebar({
   const [showSidebar, setShowSidebar] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (searchbarPosition === "fixed") {
@@ -67,6 +76,18 @@ export default function Sidebar({
       setShowAdminMenu(false);
     }
   }, [setShowAdminMenu]);
+
+  const [LogOutApi] = useLogoutMutation();
+  const logoutHandler = async () => {
+    try {
+      await LogOutApi().unwrap();
+      navigate("/");
+      dispatch(logOut());
+      toast.success("You are logged out");
+    } catch (err) {
+      console.error(err.data.mesage);
+    }
+  };
 
   return (
     <div
@@ -127,6 +148,25 @@ export default function Sidebar({
           </div>
           <span className=" lg:hidden group-hover:block  my-[1rem] ">Shop</span>
         </Link>
+        {/* search */}
+        <div
+          onClick={() => {
+            dispatch(showSearchResult());
+            dispatch(changeToLightSearchbar());
+            dispatch(chageToFixed());
+            // if (searchbarPosition === "fixed")
+            //   return dispatch(changeToRelative());
+          }}
+          className={` items-center hidden lg:flex  cursor-pointer gap-2 transition-transform 
+            transform hover:translate-x-2  hover:text-indigo-800  `}
+        >
+          <div>
+            <FiSearch className="my-[1rem] font-bold" size={24} />
+          </div>
+          <span className=" lg:hidden group-hover:block my-[1rem] ">
+            Search
+          </span>
+        </div>
         <Link
           to="/cart"
           onClick={() => setShowSidebarMenu(false)}
@@ -150,47 +190,61 @@ export default function Sidebar({
           } `}
         >
           <div className="relative">
-            <CiHeart className=" my-[1rem] font-bold  " size={26} />
+            <IoMdHeartEmpty className=" my-[1rem] font-bold  " size={26} />
             <SelectedCounteSidebar selectorinStore="favorites" />
           </div>
           <span className=" lg:hidden group-hover:block my-[1rem] ">
             Favorite
           </span>
         </Link>
-        <Link
-          to="/orderslist"
-          onClick={() => setShowSidebarMenu(false)}
-          className={`flex items-center  gap-2 transition-transform transform 
-          hover:translate-x-2  hover:text-indigo-800 ${
-            window.location.pathname === "/orderslist" ? "text-indigo-600" : ""
-          } `}
-        >
-          <div>
-            <CiDeliveryTruck className="my-[1rem] font-bold" size={26} />
-          </div>
-          <span className=" lg:hidden group-hover:block my-[1rem] ">
-            Orders
-          </span>
-        </Link>
-        {/* search */}
-        <div
-          onClick={() => {
-            dispatch(showSearchResult());
-            dispatch(changeToLightSearchbar());
-            dispatch(chageToFixed());
-            // if (searchbarPosition === "fixed")
-            //   return dispatch(changeToRelative());
-          }}
-          className={` items-center hidden lg:flex  cursor-pointer gap-2 transition-transform 
-            transform hover:translate-x-2  hover:text-indigo-800  `}
-        >
-          <div>
-            <FiSearch className="my-[1rem] font-bold" size={20} />
-          </div>
-          <span className=" lg:hidden group-hover:block my-[1rem] ">
-            Search
-          </span>
-        </div>
+        {userInfo && (
+          <>
+            <Link
+              to="/orderslist"
+              onClick={() => setShowSidebarMenu(false)}
+              className={`flex items-center  gap-2 transition-transform transform 
+              hover:translate-x-2  hover:text-indigo-800 ${
+                window.location.pathname === "/orderslist"
+                  ? "text-indigo-600"
+                  : ""
+              } `}
+            >
+              <div>
+                <TbTruckDelivery className="my-[1rem] font-bold" size={26} />
+              </div>
+              <span className=" lg:hidden group-hover:block my-[1rem] ">
+                Orders
+              </span>
+            </Link>
+            <Link
+              to="/profile"
+              onClick={() => setShowSidebarMenu(false)}
+              className={`flex items-center  gap-2 transition-transform transform 
+              hover:translate-x-2  hover:text-indigo-800 ${
+                window.location.pathname === "/profile" ? "text-indigo-600" : ""
+              } `}
+            >
+              <div>
+                <TbUserHexagon className="my-[1rem] font-bold" size={26} />
+              </div>
+              <span className=" lg:hidden group-hover:block my-[1rem] ">
+                Profile
+              </span>
+            </Link>
+            <div
+              onClick={logoutHandler}
+              className={`flex items-center  gap-2 transition-transform transform 
+              hover:translate-x-2 cursor-pointer hover:text-indigo-800 `}
+            >
+              <div>
+                <RiLogoutCircleLine className="my-[1rem] font-bold" size={26} />
+              </div>
+              <span className=" lg:hidden group-hover:block my-[1rem] ">
+                Logout
+              </span>
+            </div>
+          </>
+        )}
       </div>
 
       {/* user name */}

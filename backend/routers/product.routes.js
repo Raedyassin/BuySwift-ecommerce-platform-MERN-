@@ -8,12 +8,12 @@ import {
   deleteProduct,
   fetchProductById,
   fetchAllProducts,
-  addProductReview,
+  addProductComment,
   fetchHomeProducts,
   searchProduct,
   getRelatedProductsByCategory,
   fetchProductReviews,
-  editProductReview,
+  editProductComment,
   addOrUpdateProductRating,
 } from "../controllers/product.controller.js";
 
@@ -29,7 +29,6 @@ route.route("/products-list")
 route.route("/home")
   .get(fetchHomeProducts)
 
-
 route.route("/related/:id")
   .get(getRelatedProductsByCategory)
 
@@ -39,13 +38,13 @@ route.route("/:id")
   .get(checkID, fetchProductById)
 
 route.route("/:id/reviews")
-  .post(authenticate, checkID, addProductReview)
+  .post(authenticate, checkID, addProductComment)
   .get(ifAuthenticate, checkID, fetchProductReviews)
 
 route.route("/:id/rating")
   .post(authenticate, checkID, addOrUpdateProductRating)
 
 route.route("/reviewsedit/:id/:reviewId")
-  .patch(authenticate, checkID, editProductReview)
+  .patch(authenticate, checkID, editProductComment)
 
 export default route;

@@ -4,6 +4,7 @@ import { PiRainbowCloudFill } from "react-icons/pi";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 export default function Footer() {
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function Footer() {
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     // Placeholder for newsletter subscription logic
-    alert(`Subscribed with ${email}`);
+    toast.success(`Subscribed with ${email}`);
     setEmail("");
   };
 

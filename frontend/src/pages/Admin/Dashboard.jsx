@@ -56,23 +56,37 @@ export default function Dashboard() {
     totalProducts,
     ordersByStatus,
     topSoldProducts,
+    topRatedProducts,
   } = data?.data || {};
 
+  console.log("ordersByStatus", ordersByStatus);
   // Bar Chart Data for Orders by Status
+  const StatusColorTemp = [
+    "#EF4444", // indigo-500 (cancelled)
+    "#10B981", // green-500 (delivered)
+    "#5b9bbb", // yellow-500 (ontheroute)
+    "#2DCCFF", // blue-500 (packed)
+    "#FFB302", // red-500 (pending)
+  ];
+  const StatusColor = ordersByStatus?.map((status) => {
+    return status._id === "cancelled"
+      ? StatusColorTemp[0]
+      : status._id === "delivered"
+      ? StatusColorTemp[1]
+      : status._id === "ontheroute"
+      ? StatusColorTemp[2]
+      : status._id === "packed"
+      ? StatusColorTemp[3]
+      : StatusColorTemp[4];
+  });
   const ordersByStatusChart = {
     labels: ordersByStatus?.map((status) => status._id) || [],
     datasets: [
       {
         label: "Orders by Status",
-        data: ordersByStatus?.map((status) => status.count) || [],
-        backgroundColor: [
-          "#EF4444", // indigo-500 (cancelled)
-          "#10B981", // green-500 (delivered)
-          "#5b9bbb", // yellow-500 (ontheroute)
-          "#2DCCFF", // blue-500 (packed)
-          "#FFB302", // red-500 (pending)
-        ],
-        borderColor: ["#EF4444", "#10B981", "#5b9bbb", "#2DCCFF", "#FFB302"],
+        data: ordersByStatus?.map((status) => status.count || 1) || [],
+        backgroundColor: StatusColor,
+        borderColor: StatusColor,
         borderWidth: 1,
       },
     ],
@@ -209,44 +223,86 @@ export default function Dashboard() {
           </div>
 
           {/* Top-Rated Products */}
-          <div className="bg-white p-4 sm:p-6 rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)]">
-            <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 mb-4">
-              Top Sold Products
-            </h2>
-            <ul className="space-y-3  pr-2">
-              {topSoldProducts?.length ? (
-                topSoldProducts.map((product) => (
-                  <li
-                    key={product._id}
-                    className="flex items-center justify-between p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition duration-200"
-                  >
-                    <div className="flex items-center space-x-2 sm:space-x-3">
-                      <img
-                        src={"/uploads/" + product.img.split("/").pop()}
-                        alt={product.name}
-                        className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
-                      />
-                      <span
-                        className="text-sm sm:text-base text-gray-800 hover:text-indigo-600 cursor-pointer transition-colors duration-200"
-                        onClick={() => navigate(`/product/${product._id}`)}
-                      >
-                        {product.name}
+          <div className=" space-y-5 ">
+            <div className="p-4 sm:p-6 rounded-xl  shadow-[0px_0px_10px_rgba(0,0,0,0.1)]">
+              <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 mb-4">
+                Top Sold Products
+              </h2>
+              <ul className="space-y-1 grid grid-cols-2  pr-2">
+                {topSoldProducts?.length ? (
+                  topSoldProducts.map((product) => (
+                    <li
+                      key={product._id}
+                      className="flex items-center justify-between p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition duration-200"
+                    >
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <img
+                          src={"/uploads/" + product.img.split("/").pop()}
+                          alt={product.name}
+                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                        />
+                        <span
+                          className="text-sm sm:text-base text-gray-800 
+                          hover:text-indigo-600 cursor-pointer transition-colors 
+                          duration-200 line-clamp-2"
+                          onClick={() => navigate(`/product/${product._id}`)}
+                        >
+                          {product.name}
+                        </span>
+                      </div>
+                      <span className="text-xs sm:text-sm text-gray-600 text-right">
+                        ({product.sold})
                       </span>
-                    </div>
-                    {/* <span className="text-xs sm:text-sm text-gray-600 text-right">
-                      <span className="font-semibold text-yellow-500">
-                        {product.rating.toFixed(2)}
-                      </span>{" "}
-                      ({product.numReview})
-                    </span> */}
+                    </li>
+                  ))
+                ) : (
+                  <li className="p-2 text-gray-500 text-sm sm:text-base text-center">
+                    No top-sold products
                   </li>
-                ))
-              ) : (
-                <li className="p-2 text-gray-500 text-sm sm:text-base text-center">
-                  No top-sold products
-                </li>
-              )}
-            </ul>
+                )}
+              </ul>
+            </div>
+            <div className="p-4 sm:p-6 rounded-xl  shadow-[0px_0px_10px_rgba(0,0,0,0.1)]">
+              <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 mb-4">
+                Top Rated Products
+              </h2>
+              <ul className="space-y-1 grid grid-cols-2  pr-2">
+                {topRatedProducts?.length ? (
+                  topRatedProducts.map((product) => (
+                    <li
+                      key={product._id}
+                      className="flex items-center justify-between p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition duration-200"
+                    >
+                      <div className="flex items-center space-x-2 sm:space-x-3">
+                        <img
+                          src={"/uploads/" + product.img.split("/").pop()}
+                          alt={product.name}
+                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                        />
+                        <span
+                          className="text-sm sm:text-base text-gray-800 
+                          hover:text-indigo-600 cursor-pointer transition-colors 
+                          duration-200 line-clamp-2"
+                          onClick={() => navigate(`/product/${product._id}`)}
+                        >
+                          {product.name}
+                        </span>
+                      </div>
+                      <span className="text-xs sm:text-sm text-gray-600 text-right">
+                        <span className="font-semibold text-yellow-500">
+                          {product.rating.toFixed(2)}
+                        </span>{" "}
+                        ({product.numReview})
+                      </span>
+                    </li>
+                  ))
+                ) : (
+                  <li className="p-2 text-gray-500 text-sm sm:text-base text-center">
+                    No top-Related products
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
         </div>
       </div>

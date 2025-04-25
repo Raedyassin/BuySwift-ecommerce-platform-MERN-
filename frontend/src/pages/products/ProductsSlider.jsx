@@ -165,7 +165,7 @@ export default function RelatedProducts({ relatedProducts }) {
     <div className="relative px-4 sm:px-6 lg:px-8">
       <Slider {...settings} className="w-full">
         {relatedProducts?.data?.data?.products?.map((product) => (
-          <div key={product._id} className=" focus:outline-none">
+          <div key={product._id} className=" focus:outline-none ml-2">
             <div
               className="group relative w-40 sm:w-48 md:w-52   h-56 sm:h-64 md:h-72 
               bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 

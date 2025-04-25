@@ -67,7 +67,7 @@ export default function AllProduct() {
                 All Products ({products.data.products.length})
               </PageHeader>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1  md:grid-cols-2 xl:grid-cols-3 gap-6">
               {products.data.products.map((product) => (
                 <Link
                   key={product._id}
@@ -79,7 +79,7 @@ export default function AllProduct() {
                   <div className="flex items-start gap-4">
                     <div className="relative flex-shrink-0">
                       <img
-                        src={`/${product.img}`}
+                        src={'/uploads/'+ product.img.split("/").pop()}
                         alt={product.name}
                         className="w-24 h-24 object-cover rounded-lg 
                         transition-transform duration-300 hover:scale-105"

@@ -24,7 +24,6 @@ import PageLoader from "../../components/PageLoader";
 import DontHave from "../../components/DontHave";
 import Review from "./Review";
 import apiSlice from "../../redux/services/apiSlice";
-import Footer from "../../components/Footer";
 import PriceDiscont from "./priceDiscont";
 
 export default function ProductDetails() {
@@ -54,7 +53,7 @@ export default function ProductDetails() {
 
   const userInfo = useSelector((state) => state.auth.userInfo);
   const [createReview, { isLoading: isLoadingCreateReview }] =
-  useCreateReviewMutation();
+    useCreateReviewMutation();
   const [createRating] = useCreateRatingMutation();
   const [pageReviews, setPageReviews] = useState(1);
   const {
@@ -69,7 +68,6 @@ export default function ProductDetails() {
       refetchOnMountOrArgChange: true,
     }
   );
-  console.log("reviews", reviews);
 
   const loadMoreReviews = useRef(null);
   useEffect(() => {
@@ -102,7 +100,7 @@ export default function ProductDetails() {
   }, [id]);
 
   useEffect(() => {
-    if (reviews?.data?.reviews[0]?.user === userInfo?._id) {
+    if (reviews?.data?.reviews[0]?.user._id === userInfo?._id) {
       setHoveredStar(reviews?.data?.reviews[0]?.rating);
     }
   }, [userInfo, id, reviews]);
@@ -114,20 +112,18 @@ export default function ProductDetails() {
         id,
         rating: +e.target.value,
       }).unwrap();
-      if (reviews?.data?.reviews[0]?.user === userInfo?._id) {
-        const createdRating = updatedRatingResponse.data.review;
-        dispatch(
-          apiSlice.util.updateQueryData(
-            "getReviewsProductById",
-            { id, page: 1 },
-            (draft) => {
+      const createdRating = updatedRatingResponse.data.review;
+      dispatch(
+        apiSlice.util.updateQueryData(
+          "getReviewsProductById",
+          { id, page: 1 },
+          (draft) => {
+            if (draft.data.reviews[0]?.user._id === createdRating.user._id) {
               draft.data.reviews[0] = createdRating;
-              draft.totalReviews += 1; // i make it but when the date is rerfetch
-              // the totalReview will add correctely if has comment or not
             }
-          )
-        );
-      }
+          }
+        )
+      );
       toast.success("Rating submitted successfully");
     } catch (error) {
       if (error.status < 500) {
@@ -145,30 +141,17 @@ export default function ProductDetails() {
         comment,
       }).unwrap();
       setComment("");
-
-      const createdReview = updatedReviewResponse.data.review;
-      if (reviews?.data?.reviews[0]?.user === userInfo?._id) {
-        dispatch(
-          apiSlice.util.updateQueryData(
-            "getReviewsProductById",
-            { id, page: 1 },
-            (draft) => {
-              draft.data.reviews[0] = createdReview;
-            }
-          )
-        );
-      } else {
-        dispatch(
-          apiSlice.util.updateQueryData(
-            "getReviewsProductById",
-            { id, page: 1 },
-            (draft) => {
-              draft.data.reviews.unshift(createdReview);
-              draft.totalReviews += 1;
-            }
-          )
-        );
-      }
+      console.log(updatedReviewResponse);
+      dispatch(
+        apiSlice.util.updateQueryData(
+          "getReviewsProductById",
+          { id, page: 1 },
+          (draft) => {
+            draft.data.reviews.unshift(updatedReviewResponse.data.review);
+            draft.data.numComments = updatedReviewResponse.data.numComments;
+          }
+        )
+      );
       toast.success("Review submitted successfully");
     } catch (error) {
       if (error.status < 500) {
@@ -224,15 +207,24 @@ export default function ProductDetails() {
             />
             <HeartIcon
               product={product?.data?.product}
-              className={" right-2 top-2  "}
+              className={" right-2 bottom-2  "}
             />
             {product?.data?.product?.discount !== 0 && (
               <div
                 className="absolute top-0 left-0 bg-gray-800 text-white
-                text-base sm:text-lg px-2 py-1 rounded-br-lg rounded-tl-lg
+                text-base sm:text-lg px-2 py-1 rounded-br-lg rounded-tl-md
                 font-semibold "
               >
                 {product?.data?.product?.discount}% off
+              </div>
+            )}
+            {product?.data?.product?.sold > 99 && (
+              <div
+                className="absolute top-0 right-0 bg-yellow-500 text-white 
+                text-base sm:text-lg px-2 py-1 rounded-bl-lg rounded-tr-md
+                font-semibold"
+              >
+                Best Seller
               </div>
             )}
           </div>
@@ -284,7 +276,7 @@ export default function ProductDetails() {
                 <p className="flex items-center text-gray-700 text-sm sm:text-base">
                   <FaStar className="mr-2 w-5 h-5 text-indigo-500" />{" "}
                   <span className="font-medium mr-1">Reviews:</span>{" "}
-                  {product?.data?.product?.numReview}
+                  {product?.data?.product?.numRatings}
                 </p>
               </div>
               <div className="space-y-2">
@@ -310,7 +302,7 @@ export default function ProductDetails() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mt-6">
               <Ratings
                 rating={product?.data?.product?.rating}
-                text={`(${product?.data?.product?.numReview})`}
+                text={`(${product?.data?.product?.numRatings})`}
                 className="text-sm sm:text-base text-gray-600"
               />
               {product?.data?.product?.quantity > 0 && (
@@ -371,7 +363,7 @@ export default function ProductDetails() {
           className="mt-12 bg-white shadow-lg rounded-xl p-6"
         >
           <h1 className="text-2xl sm:text-3xl font-semibold text-gray-800">
-            Product Reviews ({product?.data?.product?.numReview})
+            Product Reviews ({product?.data?.product?.numComments})
           </h1>
           <hr className="my-4 border-gray-200" />
           {userInfo && (
@@ -545,20 +537,14 @@ export default function ProductDetails() {
               <div>
                 {reviews?.data?.reviews?.length > 0 ? (
                   <div className="space-y-6">
-                    {reviews?.data?.reviews
-                      // now i have problem that the rating user is return too so
-                      // i will skip them from frontend utill fix it in backend
-                      // so i add filter function to filter them
-                      // return ( //this is correct code
-                      ?.filter((review) => review?.comment?.trim()?.length > 0)
-                      ?.map((review) => (
-                        <Review
-                          productId={id}
-                          key={review._id}
-                          userInfo={userInfo}
-                          review={review}
-                        />
-                      ))}
+                    {reviews?.data?.reviews?.map((review) => (
+                      <Review
+                        productId={id}
+                        key={review._id}
+                        userInfo={userInfo}
+                        review={review}
+                      />
+                    ))}
                     {isFetchingReviews && (
                       <div className="flex items-center justify-center h-16">
                         <Loader />

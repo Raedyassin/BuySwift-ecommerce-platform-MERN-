@@ -2,6 +2,7 @@ import ProductCard from "./products/ProductCard";
 import { useEffect, useRef, useState } from "react";
 import { useGetHomeProductsQuery } from "../redux/apis/productApiSlice";
 import HomeWelcome from "../components/HomeWelcome";
+import { motion } from "motion/react";
 import {
   changeToLight,
   changeToDark,
@@ -23,7 +24,6 @@ export default function Home() {
   }, []);
 
   const [windowSize, setWindowSize] = useState(window.innerWidth);
-  console.log("windowSize", windowSize);
   const { data: homeProducts, isLoading } = useGetHomeProductsQuery();
   const dispatch = useDispatch();
 
@@ -40,7 +40,7 @@ export default function Home() {
         }
       },
       {
-        threshold: 0.001,
+        threshold: 0.3,
       }
     );
     if (welcomeRef.current) {
@@ -54,36 +54,35 @@ export default function Home() {
   }, [dispatch, welcomeRef, showSearchResult, searchbarPosition]);
 
   useEffect(() => {
-    // let timeout;
     const debouncedResize = () => {
-      // clearTimeout(timeout);
-      // timeout = setTimeout(() => {
-        setWindowSize(window.innerWidth);
-      // }, 100);
+      setWindowSize(window.innerWidth);
     };
     window.addEventListener("resize", debouncedResize);
     return () => {
       window.removeEventListener("resize", debouncedResize);
-      // clearTimeout(timeout);
     };
   }, []);
 
   const resizeWindow = () => {
     let size = 6;
-    if (windowSize >= 640) { //sm
+    if (windowSize >= 640) {
+      //sm
       size = 9;
     }
-    if (windowSize >= 1024) { //lg
+    if (windowSize >= 1024) {
+      //lg
       size = 12;
     }
-    if (windowSize >= 1280) { //xl
+    if (windowSize >= 1280) {
+      //xl
       size = 10;
     }
-    if (windowSize >= 1536) {// 2xl
+    if (windowSize >= 1536) {
+      // 2xl
       size = 12;
     }
-    return size
-  }
+    return size;
+  };
 
   return (
     <>
@@ -127,10 +126,21 @@ export default function Home() {
                           <ProductLoader />
                         </div>
                       ))
-                  : products.product.slice(0, resizeWindow()).map((product) => (
-                      <div key={product._id}>
-                        <ProductCard product={product} sold={index === 1} />
-                      </div>
+                  : products.product.slice(0, resizeWindow()).map((product,i) => (
+                      <motion.div
+                        // className="flex justify-center items-center"
+                        key={product._id}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: 0.1 * (i % 10),
+                          ease: "easeOut",
+                        }}
+                      >
+                          <ProductCard product={product} sold={index === 1} />
+                      </motion.div>
                     ))}
               </div>
             </div>

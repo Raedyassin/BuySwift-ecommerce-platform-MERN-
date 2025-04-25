@@ -75,8 +75,8 @@ export default function UpdateProduct() {
       toast.success("Product updated successfully");
       navigate("/product/" + id);
     } catch (err) {
-      alert("Something went wrong. Please try again later.");
-      console.log(err);
+      toast.error("Something went wrong. Please try again later.");
+      console.error(err);
     }
   };
     const discontHandler = (e) => {
@@ -100,12 +100,11 @@ export default function UpdateProduct() {
       toast.success("Image uploaded successfully");
       setImageUrl(res.data.image);
       setImage(e.target.files[0]);
-      console.log(res.data.image);
     } catch (err) {
       if (err.status === 400) {
         toast.error("Image must be less than 10 MB");
       }
-      console.log(err);
+      console.error(err);
     }
   };
     useEffect(() => {
@@ -121,8 +120,8 @@ export default function UpdateProduct() {
       toast.success("Product deleted successfully");
       navigate("/");
     } catch (err) {
-      alert("Something went wrong. Please try again later.");
-      console.log(err);
+      toast.error("Something went wrong. Please try again later.");
+      console.error(err);
     }
   };
 

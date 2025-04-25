@@ -1,11 +1,10 @@
-import { useState } from "react";
+import {  useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useLoginMutation } from "../../redux/apis/userApiSlice";
 import { setCredientials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
-import Footer from "../../components/Footer";
 
 export default function Login() {
   const [password, setPassword] = useState("");
@@ -19,6 +18,7 @@ export default function Login() {
   const sp = new URLSearchParams(search);
   const redirect = sp.get("redirect") || "/";
 
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -31,9 +31,7 @@ export default function Login() {
       return;
     }
     try {
-      const res = await loginFech({ password, email }).unwrap();
-      console.log(res);
-      
+      const res = await loginFech({ password, email }).unwrap();      
       dispatch(setCredientials(res.data.user));
       toast.success(`${res.data.user.username} signed in`);
       navigate(redirect);
@@ -41,7 +39,7 @@ export default function Login() {
       if (err.status === 401) {
         toast.error(err.data.message);
       } else {
-        alert("Something went wrong. Please try again later.");
+        toast.error("Something went wrong. Please try again later.");
       }
     }
   };

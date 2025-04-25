@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Ratings from "./Ratings";
 import { IoCloseSharp } from "react-icons/io5";
 import { IoMdCheckmark } from "react-icons/io";
@@ -41,7 +41,7 @@ export default function Review({ review, userInfo, productId  }) {
             );
             if (reviewIndex !== -1) {
               draft.data.reviews[reviewIndex] = {
-                ...draft.data.reviews[reviewIndex],
+                // ...draft.data.reviews[reviewIndex],
                 ...updatedReview,
               };
             }
@@ -49,17 +49,10 @@ export default function Review({ review, userInfo, productId  }) {
         )
       );
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Please try Edit your review again later.");
     }
   };
-  // useEffect(() => {
-  //   if (review.user === userInfo?._id) {
-  //     setHoveredStar(review?.rating||-1);
-  //   }
-  // }, [userInfo, review, setHoveredStar]);
-
-  console.log("review", review);
   return (
     <div
       key={review._id}

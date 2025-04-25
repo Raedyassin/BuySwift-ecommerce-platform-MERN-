@@ -1,6 +1,5 @@
 import { PiRainbowCloudFill } from "react-icons/pi";
 import { TiThMenu } from "react-icons/ti";
-import { motion } from "motion/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchForm from "./SearchForm";
@@ -37,20 +36,20 @@ export default function Searchbar({
   const logoutHandler = async () => {
     try {
       await LogOutApi().unwrap();
+      navigate("/");
       dispatch(logOut());
       toast.success("You are logged out");
       setShowUserInfo(false);
     } catch (err) {
-      console.log(err.data.mesage);
+      console.error(err.data.mesage);
     }
   };
 
   return (
     <div
+      // transition-all duration-300
       className={`flex items-center flex-wrap w-full justify-between gap-2 
-    px-4 py-2 sm:px-6 transition-all duration-300 ${
-      homeSearchbarEffect === "dark" ? "bg-gray-900" : ""
-    } `}
+        px-4 py-2 sm:px-6  ${homeSearchbarEffect === "dark" ? "bg-gray-900" : ""} `}
     >
       {/* Left side (Logo) */}
       <div
@@ -77,8 +76,8 @@ export default function Searchbar({
           to="/cart"
           onClick={() => setShowSidebarMenu(false)}
           className={`flex  items-center gap-2  hover:text-indigo-800
-                  ${homeSearchbarEffect === "dark" ? "text-white" : ""}
-                  `}
+            ${homeSearchbarEffect === "dark" ? "text-white" : ""}
+            `}
         >
           <div className="relative">
             <AiOutlineShoppingCart

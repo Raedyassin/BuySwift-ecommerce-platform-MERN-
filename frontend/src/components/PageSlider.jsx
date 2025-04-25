@@ -1,7 +1,5 @@
 import { MdKeyboardDoubleArrowLeft, MdKeyboardDoubleArrowRight } from "react-icons/md";
 export default function PageSlider({ page, setPage, pagesCount }) {
-  console.log("pagesCount", pagesCount);
-  console.log("page", page);
   return (
     <div
         className="flex justify-center  items-center gap-5"
