@@ -3,14 +3,16 @@ import express from 'express'
 import 'dotenv/config'
 import path from 'path'
 import cookieParser from 'cookie-parser'
+import multer from "multer";
+
 // import cors from 'cors'
 
 // routes
 import userRoutes from "./routers/users.routes.js"
 import categoryRoutes from './routers/category.routes.js'
 import productRoutes from './routers/product.routes.js'
-import uploadRoutes from './routers/upload.routes.js'
-import uploadUserImgRoutes from './routers/uploadUser.routes.js'
+// import uploadRoutes from './routers/upload.routes.js'
+// import uploadUserImgRoutes from './routers/uploadUser.routes.js'
 import dashboardRoutes from './routers/dashboard.routes.js'
 
 import orderRoutes from './routers/order.routes.js'
@@ -31,7 +33,7 @@ app.use(cookieParser());
 app.use('/api/users', userRoutes)
 app.use('/api/category', categoryRoutes)
 app.use('/api/products', productRoutes)
-app.use('/api/upload', uploadRoutes)
+// app.use('/api/upload', uploadRoutes)
 // app.use('/api/upload/img', uploadUserImgRoutes)
 app.use('/api/order', orderRoutes)
 app.use('/api/payment', paymentRoutes)
@@ -48,7 +50,19 @@ app.use((err, req, res, next) => {
   if (err instanceof AppError) {
     return res.status(err.status).json({ status: err.statusText, message: err.message });
   }
-  console.log(err)
+  // image error (by multer)
+  else if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        status: FAIL,
+        message: 'Image size should not exceed 10MB',
+      });
+    }
+    return res.status(400).json({
+      status: FAIL,
+      message: err.message,
+    });
+  }
   return res.status(500).json({ status: ERROR, message: "Internal server error" });
 })
 

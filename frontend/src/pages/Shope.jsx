@@ -41,6 +41,7 @@ export default function Shope() {
     searchName,
     price,
     page,
+    // pageLoader make error when loader more product so change it to Loader
     limit: 50,
   });
   const navigate = useNavigate();
@@ -341,7 +342,7 @@ export default function Shope() {
               {searchName.trim() !== "" && (
                 <>
                   <PageHeader>
-                    Search on{" "}
+                    Results for{" "}
                     <span className="text-indigo-500">{searchName}</span>
                   </PageHeader>
                   <button
@@ -371,46 +372,46 @@ export default function Shope() {
               className="grid grid-cols-2 md:grid-cols-2 
             lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-3"
             >
-              { !isFetching &&
+              {!isFetching &&
                 filterData?.data?.products?.map((prod, index) => {
-                if (newInputRadio !== 0) {
-                  if (uniqueBrands[newInputRadio - 1] === prod.brand) {
-                    return (
-                      <motion.div
-                        className="flex justify-center items-center"
-                        key={prod._id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: 0.1 * (index % 10),
-                          ease: "easeOut",
-                        }}
-                      >
-                        <ProductCard product={prod} />
-                      </motion.div>
-                    );
+                  if (newInputRadio !== 0) {
+                    if (uniqueBrands[newInputRadio - 1] === prod.brand) {
+                      return (
+                        <motion.div
+                          className="flex justify-center items-center"
+                          key={prod._id}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{
+                            duration: 0.5,
+                            delay: 0.1 * (index % 10),
+                            ease: "easeOut",
+                          }}
+                        >
+                          <ProductCard product={prod} />
+                        </motion.div>
+                      );
+                    }
+                    return;
                   }
-                  return;
-                }
-                return (
-                  <motion.div
-                    className="flex justify-center items-center"
-                    key={prod._id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: 0.1 * (index % 10),
-                      ease: "easeOut",
-                    }}
-                  >
-                    <ProductCard product={prod} />
-                  </motion.div>
-                );
-              })}
+                  return (
+                    <motion.div
+                      className="flex justify-center items-center"
+                      key={prod._id}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.1 * (index % 10),
+                        ease: "easeOut",
+                      }}
+                    >
+                      <ProductCard product={prod} />
+                    </motion.div>
+                  );
+                })}
               <div className=" h-60 " ref={LoaderRef}></div>
               {isFetching &&
                 [...Array(10)].map((_, index) => (

@@ -8,7 +8,7 @@ export default function PriceDiscont({ price, originalPrice, discount, className
             text !== "" ? text : "font-semibold text-sm sm:text-base"
           } `}
         >
-          ${price}
+          ${price.toLocaleString()}
         </p>
       ) : (
         <p
@@ -16,7 +16,7 @@ export default function PriceDiscont({ price, originalPrice, discount, className
             text !== "" ? text : "font-semibold text-sm sm:text-base"
           }`}
         >
-          ${(originalPrice||price)}
+          ${(originalPrice || price).toLocaleString()}
         </p>
       )}
       {+discount !== 0 && (
@@ -25,7 +25,7 @@ export default function PriceDiscont({ price, originalPrice, discount, className
             text !== "" ? text : "font-semibold text-sm sm:text-base"
           }`}
         >
-          ${(originalPrice || price)}
+          ${(originalPrice || price).toLocaleString()}
         </p>
       )}
     </div>

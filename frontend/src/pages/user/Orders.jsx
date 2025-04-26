@@ -93,12 +93,12 @@ export default function Orders() {
               initial={{ x: -100, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ duration: 1 }}
-              style={{zIndex: 1000}}
+              style={{ zIndex: 1000 }}
               className={`fixed  left-0 lg:left-[70px] top-22 sm:top-24 
                 md:top-14  lg:top-0 w-[50%] bg-white  overflow-auto shadow-[0px_10px_10px_rgba(0,0,0,0.1)]
                   h-[87.5%] sm:h-[86%] lg:h-screen lg:ml-2 lg:w-[15rem] lg:block  pb-20 lg:pb-0 ${
-                  openOrders ? "block" : "hidden"
-                }`}
+                    openOrders ? "block" : "hidden"
+                  }`}
             >
               <div className="shadow-[0px_0px_10px_rgba(0,0,0,0.1)] rounded flex justify-center h-20 items-center">
                 <h1 className="text-lg font-bold italic">
@@ -172,7 +172,7 @@ export default function Orders() {
               <motion.div
                 key={selectedItem}
                 initial={{ opacity: 0 }}
-                animate={{  opacity: 1 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.6 }}
                 className="text-center"
               >
@@ -276,17 +276,19 @@ export default function Orders() {
                                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors duration-200"
                               >
                                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                  <img
-                                    className="w-full sm:w-24 sm:h-24 object-cover rounded-lg"
-                                    src={`/uploads/${item.product.img
-                                      .split("/")
-                                      .pop()}`}
-                                    onError={(e) =>
-                                      (e.target.src =
-                                        "../../../public/userImge.png")
-                                    }
-                                    alt={item.product.name}
-                                  />
+                                  <div className="w-full sm:w-24 sm:h-24 rounded-lg">
+                                    <img
+                                      className="max-w-full max-h-full"
+                                      src={`/uploads/${item.product.img
+                                        .split("/")
+                                        .pop()}`}
+                                      onError={(e) =>
+                                        (e.target.src =
+                                          "../../../public/userImge.png")
+                                      }
+                                      alt={item.product.name}
+                                    />
+                                  </div>
                                   <div className="flex flex-col text-gray-600 space-y-1">
                                     <h1
                                       onClick={() =>

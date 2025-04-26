@@ -1,7 +1,7 @@
 import { Router } from "express";
-import formidable from 'express-formidable'
 import { authenticate, authorizeAdmin, ifAuthenticate } from '../middlewares/authMeddileware.js'
 import checkID from "../middlewares/checkID.js";
+import { uploadImageSettings }from "../utils/uploadImageSettings.js"
 import {
   addProduct,
   updateProduct,
@@ -20,7 +20,7 @@ import {
 const route = Router();
 
 route.route("/")
-  .post(authenticate, authorizeAdmin, formidable(), addProduct)
+  .post(authenticate, authorizeAdmin, uploadImageSettings(false), addProduct)
 
 route.route("/products-list")
   .get(fetchAllProducts)
@@ -33,7 +33,7 @@ route.route("/related/:id")
   .get(getRelatedProductsByCategory)
 
 route.route("/:id")
-  .put(authenticate, authorizeAdmin, checkID, formidable(), updateProduct)
+  .put(authenticate, authorizeAdmin, checkID, uploadImageSettings(false), updateProduct)
   .delete(authenticate, authorizeAdmin, checkID, deleteProduct)
   .get(checkID, fetchProductById)
 

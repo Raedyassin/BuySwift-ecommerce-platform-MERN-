@@ -20,11 +20,16 @@ export default function ProductCard({ product, sold }) {
             className="relative w-full h-40 sm:h-48 md:h-52  rounded-lg 
             cursor-pointer p-2"
           >
-            <img
-              src={"/uploads/" + product.img.split("/").pop()}
-              className="w-full h-full object-cover rounded-lg"
-              alt={product.name}
-            />
+            <div
+              className="w-full h-full flex justify-center items-center 
+              rounded-lg "
+            >
+              <img
+                src={"/uploads/" + product.img.split("/").pop()}
+                alt={product?.name}
+                className=" max-h-full max-w-full  "
+              />
+            </div>
             {+product.discount !== 0 && (
               <div
                 className="absolute top-0 left-0 bg-gray-800 text-white text-xs
@@ -42,8 +47,8 @@ export default function ProductCard({ product, sold }) {
               </div>
             )}
           </div>
+          <HeartIcon product={product} className={" bottom-3 right-3 "} />
         </Link>
-        <HeartIcon product={product} className={" bottom-3 right-3 "} />
       </section>
       <div className="p-3 py-0 pb-2 flex-1 flex flex-col justify-between">
         <div>
@@ -59,7 +64,7 @@ export default function ProductCard({ product, sold }) {
             </Link>
             <Ratings
               rating={product.rating}
-              text={`(${numberReviewsHandler(product.numReview)})`}
+              text={`(${numberReviewsHandler(product.numRatings)})`}
             />
             <div className="">
               <PriceDiscont
@@ -70,7 +75,7 @@ export default function ProductCard({ product, sold }) {
             </div>
           </div>
           <p
-            className={`text-gray-600 text-sm sm:text-base mt-1 
+            className={`text-gray-600 text-xs sm:text-sm mt-1 
               line-clamp-3`}
           >
             {product.discription}
@@ -79,12 +84,14 @@ export default function ProductCard({ product, sold }) {
         <div className="flex justify-between items-center  pt-1 ">
           <span
             className="text-xs sm:text-sm bg-indigo-100
-            text-indigo-900 font-bold  px-2 py-0.5 rounded-full"
+            text-indigo-900 font-bold  px-2 py-0.5 rounded-full line-clamp-1"
           >
             {product.brand}
           </span>
           <AiOutlineShoppingCart
-            onClick={() => dispatch(addToCart({ ...product, quantity: 1 }))}
+            onClick={() =>
+              dispatch(addToCart({ ...product, totalQuantity: product.quantity , quantity: 1 }))
+            }
             className="text-indigo-600 cursor-pointer hover:text-indigo-900 
             transition-colors duration-200 text-2xl sm:text-3xl  
             "

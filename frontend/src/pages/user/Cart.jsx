@@ -9,6 +9,7 @@ import { FaTrash } from "react-icons/fa";
 import { motion } from "motion/react";
 import EmptyCart from "../../components/EmptyCart";
 import { useEffect } from "react";
+import QuantitySelector from "../products/QuantitySelector";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -30,9 +31,8 @@ export default function Cart() {
     dispatch(clearCartItems());
   };
 
-  const quantityChangeHandler = (e, item) => {
-    e.preventDefault();
-    dispatch(addToCart({ ...item, quantity: Number(e.target.value) }));
+  const quantityChangeHandler = (newValue, item) => {
+    dispatch(addToCart({ ...item, quantity: Number(newValue) }));
   };
 
   const removeFromCartHandler = (item) => {
@@ -41,7 +41,7 @@ export default function Cart() {
 
   return (
     <>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8  min-h-[90vh] text-gray-800">
+      <div className="container mx-auto px-4 md:px-15 lg:px-25 py-8  min-h-[90vh] text-gray-800">
         {/* duplicate wiht checkout */}
         {cart.cartItems.length === 0 ? (
           <EmptyCart />
@@ -57,7 +57,8 @@ export default function Cart() {
               <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                 <h1
                   className="text-xl sm:text-2xl md:text-3xl font-bold 
-              bg-gradient-to-r  from-indigo-500 to-purple-300 bg-clip-text text-transparent "
+                      bg-gradient-to-r from-indigo-500 to-indigo-300 
+                      bg-clip-text text-transparent "
                 >
                   Shopping Cart ({cart?.cartItems?.length})
                 </h1>
@@ -80,7 +81,10 @@ export default function Cart() {
                     transition-all duration-300 
                   hover:shadow-[0_0px_10px_rgb(0,0,0,0.1)] shadow-md"
                   >
-                    <div className="w-20 h-20 sm:w-24 sm:h-24  flex-shrink-0">
+                    <div
+                      className="w-20 h-20 sm:w-24 sm:h-24  flex-shrink-0 flex 
+                      items-center justify-center"
+                    >
                       <img
                         src={
                           item.img
@@ -92,9 +96,7 @@ export default function Cart() {
                         }
                         onError={(e) => (e.target.src = "/userImge.png")}
                         alt={item.name}
-                        className="w-full h-full object-cover rounded-lg border
-                      border-gray-300 hover:border-indigo-400 
-                      transition-colors"
+                        className=" max-h-full max-w-full rounded-lg "
                       />
                     </div>
                     <div className="flex-1 mt-4 sm:mt-0 ml-4">
@@ -102,7 +104,7 @@ export default function Cart() {
                         to={`/product/${item._id}`}
                         className="text-base sm:text-lg md:text-xl font-semibold 
                       text-black hover:underline hover:text-purple-600 transition-colors 
-                      duration-300"
+                      duration-300 sm:line-clamp-1 line-clamp-2 "
                       >
                         {item.name}
                       </Link>
@@ -118,27 +120,23 @@ export default function Cart() {
                       </p>
                     </div>
                     <div className="mt-4 sm:mt-0 sm:ml-4 flex items-center gap-3">
-                      <div className="flex items-center">
-                        <span
-                          className="text-xs sm:text-sm md:text-base 
-                      text-gray-600 italic mr-2"
-                        >
-                          Qty:
-                        </span>
-                        <select
-                          value={item.quantity}
-                          onChange={(e) => quantityChangeHandler(e, item)}
-                          className="bg-gray-100 border border-gray-300 rounded-lg
-                        text-sm sm:text-base text-gray-800  p-[2px]
-                        focus:outline-none focus:ring-2 focus:ring-indigo-400 
-                        transition-colors"
-                        >
-                          {[...Array(item.countInStock)].map((_, index) => (
-                            <option key={index + 1} value={index + 1}>
-                              {index + 1}
-                            </option>
-                          ))}
-                        </select>
+                      <div className="flex items-center ">
+                        <QuantitySelector
+                          className="w-4 h-4 sm:w-5 sm:h-5"
+                          quantityBuyed={item.quantity}
+                          maxQuantity={item.totalQuantity}
+                          increase={() =>
+                            quantityChangeHandler(
+                              item.quantity >= item.totalQuantity
+                                ? item.quantity
+                                : item.quantity + 1,
+                              item
+                            )
+                          }
+                          decrease={() =>
+                            quantityChangeHandler(item.quantity - 1, item)
+                          }
+                        />
                       </div>
                       <FaTrash
                         onClick={() => removeFromCartHandler(item._id)}
@@ -164,7 +162,7 @@ export default function Cart() {
               >
                 <h2
                   className="text-lg font-bold sm:text-xl md:text-2xl 
-                bg-gradient-to-r from-indigo-500 to-purple-300 bg-clip-text text-transparent mb-4"
+                bg-gradient-to-r from-indigo-500 to-indigo-300 bg-clip-text text-transparent mb-4"
                 >
                   Order Summary
                 </h2>

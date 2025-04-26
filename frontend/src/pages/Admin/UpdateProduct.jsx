@@ -2,7 +2,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
-  useUploadProductImageMutation,
   useDeleteProductMutation,
 } from "../../redux/apis/productApiSlice";
 import { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ import PageLoader from "../../components/PageLoader";
 export default function UpdateProduct() {
   const { id } = useParams();
   const [image, setImage] = useState("");
+  const [newImage, setNewImage] = useState("");
   const [name, setName] = useState("");
   const [discription, setDiscription] = useState("");
   const [price, setPrice] = useState("");
@@ -21,13 +21,11 @@ export default function UpdateProduct() {
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
 
   const navigate = useNavigate();
 
   const { data: product, isLoading } = useGetProductByIdQuery(id);
   const [deleteProduct] = useDeleteProductMutation();
-  const [uploadProductImage] = useUploadProductImageMutation();
   const [updateProduct] = useUpdateProductMutation();
   const { data: categories } = useGetAllCategoryQuery();
 
@@ -39,12 +37,11 @@ export default function UpdateProduct() {
       setCategory(product.data.product.category);
       setQuantity(product.data.product.quantity);
       setBrand(product.data.product.brand);
-      setImageUrl(product.data.product.img);
       setImage(product.data.product.img);
+      setNewImage(product.data.product.img);
       setDiscount(product.data.product.discount);
     }
   }, [product]);
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,8 +54,7 @@ export default function UpdateProduct() {
     if (!brand) return toast.error("Brand is required");
     if (!discription) return toast.error("discription is required");
     if (!category) return toast.error("Category is required");
-    if (!imageUrl) return toast.error("Choose image is required");
-    if(!discount) return toast.error("Discount is required  or equal 0");
+    if (!discount && discount !== 0) return toast.error("Discount is required  or equal 0");
 
     const formData = new FormData();
     formData.append("name", name);
@@ -67,7 +63,7 @@ export default function UpdateProduct() {
     formData.append("category", category);
     formData.append("quantity", quantity);
     formData.append("brand", brand);
-    formData.append("img", imageUrl);
+    if(newImage!==image) formData.append("img", newImage);
     formData.append("discount", discount === "" ? 0 : discount);
 
     try {
@@ -75,43 +71,32 @@ export default function UpdateProduct() {
       toast.success("Product updated successfully");
       navigate("/product/" + id);
     } catch (err) {
+      if(err.status < 500) return toast.error(err.data.message);
       toast.error("Something went wrong. Please try again later.");
       console.error(err);
     }
   };
-    const discontHandler = (e) => {
-      const dis = +e.target.value;
-      if (dis < 0) {
-        return discount;
-      }
-      if (dis > 100) {
-        return discount;
-      }
-      return dis.toString();
-    };
-
+  const discontHandler = (e) => {
+    const dis = +e.target.value;
+    if (dis < 0) {
+      return discount;
+    }
+    if (dis > 100) {
+      return discount;
+    }
+    return dis.toString();
+  };
 
   const uploadFileHandler = async (e) => {
     e.preventDefault();
-    const fromData = new FormData();
-    fromData.append("img", e.target.files[0]);
-    try {
-      const res = await uploadProductImage(fromData).unwrap();
-      toast.success("Image uploaded successfully");
-      setImageUrl(res.data.image);
-      setImage(e.target.files[0]);
-    } catch (err) {
-      if (err.status === 400) {
-        toast.error("Image must be less than 10 MB");
-      }
-      console.error(err);
-    }
+    setNewImage(e.target.files[0]);
+    console.log(e.target.files[0]);
   };
-    useEffect(() => {
-      window.document.title = "Update Product: " + product?.data?.product?.name;
-      window.scrollTo(0, 0);
-    }, [product]);
 
+  useEffect(() => {
+    window.document.title = "Update Product: " + product?.data?.product?.name;
+    window.scrollTo(0, 0);
+  }, [product]);
 
   const handleDelete = (e) => {
     e.preventDefault();
@@ -125,7 +110,7 @@ export default function UpdateProduct() {
     }
   };
 
-  if (isLoading) return <PageLoader/>;
+  if (isLoading) return <PageLoader />;
 
   return (
     <>
@@ -147,12 +132,15 @@ export default function UpdateProduct() {
             </h1>
 
             {/* Image Upload Section */}
-            {imageUrl && (
+            {newImage && (
               <div className="flex justify-center mb-6">
                 <img
-                  src={"/uploads/" + imageUrl.split("/").pop()
+                  src={
+                    newImage !== image
+                      ? URL.createObjectURL(newImage)
+                      : "/uploads/" + image.split("/").pop()
                   }
-                  alt="product image"
+                  alt={name}
                   className="max-h-48 rounded-lg shadow-md object-cover"
                 />
               </div>
@@ -160,7 +148,7 @@ export default function UpdateProduct() {
             <div className="mb-6">
               <label className="flex items-center justify-center w-full px-4 py-6 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-200 transition duration-300">
                 <span className="text-gray-600 font-medium">
-                  {image ? image.name || "Upload Image" : "Upload Image"}
+                  {newImage ? newImage.name || "Upload Image" : "Upload Image"}
                 </span>
                 <input
                   type="file"

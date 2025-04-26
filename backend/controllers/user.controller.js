@@ -186,18 +186,20 @@ const updateUserImage = asyncHandler(async (req, res, next) => {
   const id = req.user._id; // From authenticate middleware
   const user = await User.findById(id).select("-password -__v -updatedAt -createdAt");
 
-  if (!user) {
-    return res.status(404).json({ status: FAIL, message: "User not found" });
-  }
-
   const imageUrl = "uploads/user/" + req.file.filename  // From upload route response
   if (!req?.file?.filename) {
     return res.status(400).json({ status: FAIL, message: "No image provided" });
   }
 
+  if (!user) {
+    // should delete the image here
+    await fs.unlink(path.join(process.cwd(), imageUrl));
+    return res.status(404).json({ status: FAIL, message: "User not found" });
+  }
+
   // Delete old image if it exists
-  if (user.img && user.img !== "../uploads/user/defaultImage.png") {
-    const oldImagePath = path.join(process.cwd(), user.img);
+  if (user.img && user.img.split("/").pop() !== "defaultImage.png") {
+    const oldImagePath = path.join(process.cwd(), "uploads/user/" +user.img.split("/").pop());
     try {
       await fs.unlink(oldImagePath);
     } catch (err) {

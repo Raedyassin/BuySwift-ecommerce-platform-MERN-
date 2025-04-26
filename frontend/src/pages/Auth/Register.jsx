@@ -51,10 +51,12 @@ export default function Register() {
   
 
   return (
-    <section className="min-h-screen flex flex-col lg:flex-row items-center 
+    <section
+      className="min-h-screen flex flex-col lg:flex-row items-center 
     justify-center lg:justify-start bg-white
     lg:bg-[url('https://images.unsplash.com/photo-1576502200916-3808e07386a5?ixlib=rb-4.0.3&auto=format&fit=crop&w=2065&q=80')]
-    lg:bg-no-repeat lg:bg-right lg:bg-cover">
+    lg:bg-no-repeat lg:bg-right lg:bg-cover"
+    >
       {/* Form Section */}
       <div className="w-full lg:w-1/2 flex justify-center items-center p-4 md:p-6 lg:p-8">
         <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-lg p-6 sm:p-8">
@@ -128,7 +130,15 @@ export default function Register() {
                 type="submit"
                 className="w-full cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md  p-2 sm:p-3 bg-gradient-to-r from-[#0094D4] to-[#00C4B4] text-white font-bold rounded-md hover:from-[#0083d4] hover:to-[#00b3a3] focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm md:text-base"
               >
-                {isLoading ? <Loader loaderText="Registering" /> : "Register"}
+                {isLoading ? (
+                  <Loader
+                    loaderText="Registering"
+                    textColor="text-white"
+                    loaderColor={"border-white"}
+                  />
+                ) : (
+                  "Register"
+                )}
               </button>
             </div>
           </form>

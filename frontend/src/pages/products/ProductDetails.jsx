@@ -25,6 +25,8 @@ import DontHave from "../../components/DontHave";
 import Review from "./Review";
 import apiSlice from "../../redux/services/apiSlice";
 import PriceDiscont from "./priceDiscont";
+import QuantitySelector from "./QuantitySelector";
+import ImageZoom from "./ImageZoom";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -161,11 +163,19 @@ export default function ProductDetails() {
       }
     }
   };
+  useEffect(() => {
+    window.scrollTo(0, { behavior: "smooth" });
+    setQuantityBuyed(1);
+  }, []);
 
   const addToCartHandler = () => {
     if (userInfo) {
       dispatch(
-        addToCart({ ...product?.data?.product, quantity: quantityBuyed })
+        addToCart({
+          ...product?.data?.product,
+          totalQuantity:product?.data?.product?.quantity,
+          quantity: quantityBuyed,
+        })
       );
       toast.success("Product added to cart");
     } else {
@@ -197,49 +207,62 @@ export default function ProductDetails() {
           className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white shadow-lg rounded-xl p-6"
         >
           {/* Image Section */}
-          <div className="relative ">
-            <img
-              src={`/uploads/${product?.data?.product?.img.split("/").pop()}`}
-              alt={product?.data?.product?.name}
-              className="w-full h-72 sm:h-96 lg:h-[28rem] object-fill 
-              rounded-lg shadow-md transition-transform duration-300 
-              hover:scale-105"
-            />
-            <HeartIcon
-              product={product?.data?.product}
-              className={" right-2 bottom-2  "}
-            />
-            {product?.data?.product?.discount !== 0 && (
+          <div className="relative">
+            <div className="sticky top-4 ">
               <div
-                className="absolute top-0 left-0 bg-gray-800 text-white
+                className="w-full  flex justify-center items-center
+              rounded-lg  transition-transform duration-300 
+              hover:scale-105 h-72 sm:h-96 lg:h-[28rem] "
+              >
+                {/* <img
+                  src={`/uploads/${product?.data?.product?.img
+                    .split("/")
+                    .pop()}`}
+                  alt={product?.name}
+                  className=" max-h-full  "
+                /> */}
+                <ImageZoom
+                  src={`/uploads/${product?.data?.product?.img
+                    .split("/")
+                    .pop()}`}
+                />
+              </div>
+              <HeartIcon
+                product={product?.data?.product}
+                className={" right-2 bottom-2  "}
+              />
+              {product?.data?.product?.discount !== 0 && (
+                <div
+                  className="absolute top-0 left-0 bg-gray-800 text-white
                 text-base sm:text-lg px-2 py-1 rounded-br-lg rounded-tl-md
                 font-semibold "
-              >
-                {product?.data?.product?.discount}% off
-              </div>
-            )}
-            {product?.data?.product?.sold > 99 && (
-              <div
-                className="absolute top-0 right-0 bg-yellow-500 text-white 
+                >
+                  {product?.data?.product?.discount}% off
+                </div>
+              )}
+              {product?.data?.product?.sold > 99 && (
+                <div
+                  className="absolute top-0 right-0 bg-yellow-500 text-white 
                 text-base sm:text-lg px-2 py-1 rounded-bl-lg rounded-tr-md
                 font-semibold"
-              >
-                Best Seller
-              </div>
-            )}
+                >
+                  Best Seller
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Details Section */}
           <div className="flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between">
+              <div className="flex mb-5 items-center justify-between">
                 <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800">
                   {product?.data?.product?.name}
                 </h2>
                 {userInfo?.isAdmin && (
                   <button
                     onClick={() => navigate(`/admin/product/update/${id}`)}
-                    className="w-full sm:w-auto cursor-pointer bg-gradient-to-r 
+                    className="w-[100px] cursor-pointer bg-gradient-to-r 
                   from-indigo-600 to-purple-600 text-white py-2 px-6 
                   rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 
                   hover:to-purple-700 transition-all duration-300  shadow-md"
@@ -278,6 +301,11 @@ export default function ProductDetails() {
                   <span className="font-medium mr-1">Reviews:</span>{" "}
                   {product?.data?.product?.numRatings}
                 </p>
+                <Ratings
+                  rating={product?.data?.product?.rating}
+                  text={`(${product?.data?.product?.numRatings})`}
+                  className="text-sm sm:text-base text-gray-600"
+                />
               </div>
               <div className="space-y-2">
                 <p className="flex items-center text-gray-700 text-sm sm:text-base">
@@ -298,27 +326,22 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            {/* Ratings and Quantity Selector */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mt-6">
-              <Ratings
-                rating={product?.data?.product?.rating}
-                text={`(${product?.data?.product?.numRatings})`}
-                className="text-sm sm:text-base text-gray-600"
-              />
+            {/* Quantity Selector */}
+            <div className="flex items-center justify-center mt-6">
               {product?.data?.product?.quantity > 0 && (
-                <select
-                  value={quantityBuyed}
-                  onChange={(e) => setQuantityBuyed(Number(e.target.value))}
-                  className="p-2 w-24 rounded-lg border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-sm sm:text-base shadow-sm"
-                >
-                  {[...Array(product?.data?.product?.quantity).keys()].map(
-                    (x) => (
-                      <option key={x + 1} value={x + 1}>
-                        {x + 1}
-                      </option>
+                <QuantitySelector
+                  className={"w-7 h-6 sm:w-8 sm:h-7"}
+                  increase={() =>
+                    setQuantityBuyed(
+                      quantityBuyed >= +product?.data?.product?.quantity
+                        ? quantityBuyed
+                        : quantityBuyed + 1
                     )
-                  )}
-                </select>
+                  }
+                  decrease={() => setQuantityBuyed(quantityBuyed - 1)}
+                  quantityBuyed={quantityBuyed}
+                  maxQuantity={product?.data?.product?.quantity}
+                />
               )}
             </div>
 

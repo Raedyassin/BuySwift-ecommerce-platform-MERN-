@@ -4,44 +4,57 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import { FAIL, SUCCESS } from "../utils/httpStatucText.js";
 import { minMaxConvertFromString } from "../utils/min-max-convertFromString.js";
 import mongoose from "mongoose";
+import fs from "fs/promises";
+import path from "path";
 
 const addProduct = asyncHandler(
   async (req, res, next) => {
-    let { name, discription, price, brand, quantity, category, discount } = req.fields;
-
-    switch (true) {
-      case !name:
-        return res.status(400).json({ status: FAIL, message: "Name is required" })
-      case !discription:
-        return res.status(400).json({ status: FAIL, message: "Discription is required" })
-      case !price:
-        return res.status(400).json({ status: FAIL, message: "Price is required" })
-      case !brand:
-        return res.status(400).json({ status: FAIL, message: "Brand is required" })
-      case !quantity:
-        return res.status(400).json({ status: FAIL, message: "Quantity is required" })
-      case !category:
-        return res.status(400).json({ status: FAIL, message: "Category is required" })
+    let { name, discription, price, brand, quantity, category, discount } = req?.body;
+    const imageUrl = "uploads/" + req.file.filename
+    const error = async(message) => {
+      res.status(400).json({ status: FAIL, message})
+      await fs.unlink(path.join(process.cwd(), imageUrl));
     }
-    if (isNaN(price)) return res.status(400).json({ status: FAIL, message: "Price should be number" });
-    if (isNaN(quantity)) return res.status(400).json({ status: FAIL, message: "Quantity should be number" });
-    if (price <= 0) return res.status(400).json({ status: FAIL, message: "Price should be greater than 0" });
-    if (quantity <= 0) return res.status(400).json({ status: FAIL, message: "Quantity should be greater than 0" });
-    if (discount && isNaN(discount)) return res.status(400).json({ status: FAIL, message: "Discount should be number" });
-    if (discount && (discount > 100 || discount < 0)) return res.status(400).json({ status: FAIL, message: "Discount should be between 0 and 100" });
+    switch (true) {
+      case !req?.file?.filename:
+        return res.status(400).json({ status: FAIL, message: "Image is required" })
+      case !req.body:
+        return error("All fields are required") 
+      case !name:
+        return error("Name is required") 
+      case !discription:
+        return error("Discription is required") 
+      case !price:
+        return error("Price is required") 
+      case !brand:
+        return error("Brand is required") 
+      case !quantity:
+        return error("Quantity is required") 
+      case !category:
+        return error("Category is required") 
+    }
+    if (isNaN(price)) return error("Price should be number") ;
+    if (isNaN(quantity)) return error("Quantity should be number") ;
+    if (price <= 0) return error("Price should be greater than 0") ;
+    if (quantity <= 0) return error("Quantity should be greater than 0") ;
+    if (discount && isNaN(discount)) return error("Discount should be number") ;
+    if (discount && (discount > 100 || discount < 0)) return error("Discount should be between 0 and 100") ;
     // after i add discount and all thing use price so i will add originalPrice 
     // that have price wtihout discount and the price will be the price with discount
     // i name this name becasue i use price in all thing(order and product) so i will add originalPrice
     price = Number(price);
-    let originalPrice = price;
+    let originalPrice = price.toFixed(2);
     if (+discount > 0) {
       price = +(+originalPrice * (1 - discount / 100)).toFixed(2);
     }
 
     const product = new Product({
-      name, discription, originalPrice: originalPrice.toFixed(2), price: price.toFixed(2), brand, quantity, category, discount
+      name, discription,
+      originalPrice,
+      price,
+      brand, quantity, category, discount,
+      img: imageUrl,
     })
-    product.img = "uploads/" + req.fields.img;
     await product.save();
     res.json({ status: SUCCESS, data: { product } })
   }
@@ -54,33 +67,43 @@ const updateProduct = asyncHandler(async (req, res) => {
     return res.status(404).json({ status: "FAIL", message: "Product not found" });
   }
 
+  let imageUrl = "";
+  if (req?.file?.filename) {
+    imageUrl = "uploads/" + req.file.filename
+  }
+  const error = async (message) => {
+    res.status(400).json({ status: FAIL, message })
+    if (imageUrl) {
+      await fs.unlink(path.join(process.cwd(), imageUrl));
+    }
+  }
+
   let { name, discription, price, brand,
-    quantity, category, img, discount } = req.fields;
+    quantity, category, discount } = req.body;
   price = Number(price);
+
   let originalPrice = price;
   switch (true) {
     case !name:
-      return res.status(400).json({ status: FAIL, message: "Name is required" })
+      return error("Name is required") 
     case !discription:
-      return res.status(400).json({ status: FAIL, message: "Discription is required" })
+      return error("Discription is required") 
     case !price:
-      return res.status(400).json({ status: FAIL, message: "Price is required" })
+      return error("Price is required") 
     case !brand:
-      return res.status(400).json({ status: FAIL, message: "Brand is required" })
+      return error("Brand is required") 
     case !quantity:
-      return res.status(400).json({ status: FAIL, message: "Quantity is required" })
+      return error("Quantity is required") 
     case !category:
-      return res.status(400).json({ status: FAIL, message: "Category is required" })
-    case !img:
-      return res.status(400).json({ status: FAIL, message: "Img is required" })
+      return error("Category is required") 
     case !discount:
-      return res.status(400).json({ status: FAIL, message: "Discount is required" })
+      return error("Discount is required") 
   }
 
-  if (isNaN(price)) return res.status(400).json({ status: FAIL, message: "Price should be number" });
-  if (isNaN(quantity)) return res.status(400).json({ status: FAIL, message: "Quantity should be number" });
-  if (isNaN(discount)) return res.status(400).json({ status: FAIL, message: "Discount should be number" });
-  if (discount > 100 || discount < 0) return res.status(400).json({ status: FAIL, message: "Discount should be between 0 and 100" });
+  if (isNaN(price)) return error("Price should be number") ;
+  if (isNaN(quantity)) return error("Quantity should be number") ;
+  if (isNaN(discount)) return error("Discount should be number") ;
+  if (discount > 100 || discount < 0) return error("Discount should be between 0 and 100") ;
   if (+discount > 0) {
     price = +(originalPrice * (1 - discount / 100)).toFixed(2);
   }
@@ -93,13 +116,15 @@ const updateProduct = asyncHandler(async (req, res) => {
   product.quantity = quantity;
   product.category = category;
   product.discount = discount;
-  product.img = "uploads/" + img;
-  // = await Product.findByIdAndUpdate(id, {
-  //   name,discount,originalPrice, discription, price, brand, quantity, category, img: ("uploads/" + img)
-  // });
+  if (imageUrl) {
+    await fs.unlink(path.join(process.cwd(), "uploads/"+product.img.split("/").pop()));
+    product.img = imageUrl;
+  }
+
   await product.save();
-  res.json({ status: "SUCCESS", data: { product } });
+  res.json({ status: SUCCESS, data: { product } });
 });
+
 
 const deleteProduct = asyncHandler(
   async (req, res, next) => {
@@ -142,17 +167,20 @@ const getRelatedProductsByCategory = asyncHandler(
     }).sort({ rating: -1 })
       .limit(pageSize + 1)
       .skip(skip)
-      .select("-__v -updatedAt -createdAt -creatorId -reviews -numReview  -discription -quantity");
+      .select("-__v -updatedAt -createdAt -creatorId -reviews -numRatings  -discription -quantity")
+      .lean();
 
     // this is should delete after testing phase i put it to test only 
     // start{
     if (relatedProducts.length < 6) {
       const plusProducts = await Product.find().sort({ rating: -1 }).
         limit(10).
-        select("-__v -updatedAt -createdAt -creatorId -reviews -numReview  -discription -quantity")
+        select("-__v -updatedAt -createdAt -creatorId -reviews -numRatings  -discription -quantity")
+        .lean();
       relatedProducts = [...relatedProducts, ...plusProducts]
     }
-    // end}
+    
+    relatedProducts = relatedProducts.filter((product) => product._id.toString() !== req.params.id);
 
     const hasNextPage = relatedProducts.length > pageSize;
     if (hasNextPage) {
@@ -462,7 +490,7 @@ const fetchAllProducts = asyncHandler(
 
 const fetchHomeProducts = asyncHandler(
   async (req, res, next) => {
-    const pageSize = req.query.limit ? +req.query.limit : 20;
+    const pageSize = req.query.limit ? +req.query.limit : 12;
     const newProducts = await Product.find().sort({ createdAt: -1 })
       .limit(pageSize)
 
@@ -534,7 +562,7 @@ const searchProduct = asyncHandler(
       .limit(pageSize + 1)
       .skip((page - 1) * pageSize)
       .sort({ createdAt: -1 })
-      .select("-updatedAt -__v -reviews -creatorId -quantity  -category -numReview");
+      .select("-updatedAt -__v -reviews -creatorId -quantity  -category -numRatings");
 
     const hasNextPage = products.length > pageSize;
     if (hasNextPage) {

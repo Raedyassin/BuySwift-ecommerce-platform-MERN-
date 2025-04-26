@@ -162,20 +162,22 @@ export default function RelatedProducts({ relatedProducts }) {
   const navigate = useNavigate();
 
   return (
-    <div className="relative px-4 sm:px-6 lg:px-8">
+    <div className="relative px-8">
       <Slider {...settings} className="w-full">
         {relatedProducts?.data?.data?.products?.map((product) => (
-          <div key={product._id} className=" focus:outline-none ml-2">
+          <div key={product._id} className=" focus:outline-none ml-1">
             <div
-              className="group relative w-40 sm:w-48 md:w-52   h-56 sm:h-64 md:h-72 
+              className="group relative w-42 sm:w-51 md:w-53.5  px-2  h-56 sm:h-64 md:h-72 
               bg-white rounded-xl shadow-md overflow-hidden transition-transform duration-300 
               hover:shadow-lg hover:scale-105 cursor-pointer"
             >
-              <img
-                src={"/uploads/" + product.img.split("/").pop()}
-                alt={product?.name}
-                className="w-full h-full object-cover"
-              />
+              <div className="w-full h-full  flex justify-center items-center">
+                <img
+                  src={"/uploads/" + product.img.split("/").pop()}
+                  alt={product?.name}
+                  className=" max-h-full "
+                />
+              </div>
               <div
                 className="absolute inset-0 bg-gradient-to-t from-black/70
                 via-black/30 to-transparent opacity-0 group-hover:opacity-100 
@@ -196,11 +198,11 @@ export default function RelatedProducts({ relatedProducts }) {
                 </p>
                 {/* <div className="ml-5">
                   </div> */}
-                  <Ratings
-                    rating={product.rating}
-                    text={``}
-                    className="text-yellow-400  text-xs sm:text-sm mt-2"
-                  />
+                <Ratings
+                  rating={product.rating}
+                  text={``}
+                  className="text-yellow-400  text-xs sm:text-sm mt-2"
+                />
               </div>
             </div>
           </div>

@@ -68,7 +68,7 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
                   key={index}
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200"
                 >
-                  <td className="p-4">
+                  <td className="p-4 flex w-16 h-16 items-center justify-center">
                     <img
                       src={
                         item?.product?.img
@@ -78,24 +78,28 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
                           : `/uploads/${item.image.split("/").pop()}`
                       }
                       alt={item?.product?.name || item.name}
-                      className="w-16 h-16 rounded-lg object-cover"
+                      className=" max-h-full max-w-full rounded-lg"
                       onError={(e) => (e.target.src = "")}
                     />
                   </td>
                   <td className="p-4">
                     <Link
                       className="text-black font-medium hover:underline hover:text-purple-600 "
-                      to={`/product/${item?.product?._id||item._id}`}
+                      to={`/product/${item?.product?._id || item._id}`}
                     >
                       {item?.product?.name || item.name}
                     </Link>
                   </td>
                   <td className="p-4 text-gray-600">{item.quantity}</td>
                   <td className="p-4 text-gray-600">
-                    ${item?.product?.price?.toFixed(2) || item.price?.toFixed(2)}
+                    $
+                    {item?.product?.price?.toFixed(2) || item.price?.toFixed(2)}
                   </td>
                   <td className="p-4 text-indigo-600 font-bold">
-                    ${(item.quantity * (item?.product?.price || item.price)).toFixed(2)}
+                    $
+                    {(
+                      item.quantity * (item?.product?.price || item.price)
+                    ).toFixed(2)}
                   </td>
                 </tr>
               ))}

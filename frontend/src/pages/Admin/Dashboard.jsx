@@ -105,6 +105,7 @@ export default function Dashboard() {
     ],
   };
 
+  console.log(topRatedProducts)
   return (
     <div className="flex min-h-screen ">
       {/* Admin Menu */}
@@ -239,7 +240,7 @@ export default function Dashboard() {
                         <img
                           src={"/uploads/" + product.img.split("/").pop()}
                           alt={product.name}
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-fill"
                         />
                         <span
                           className="text-sm sm:text-base text-gray-800 
@@ -277,7 +278,7 @@ export default function Dashboard() {
                         <img
                           src={"/uploads/" + product.img.split("/").pop()}
                           alt={product.name}
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+                          className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-fill"
                         />
                         <span
                           className="text-sm sm:text-base text-gray-800 
@@ -292,7 +293,7 @@ export default function Dashboard() {
                         <span className="font-semibold text-yellow-500">
                           {product.rating.toFixed(2)}
                         </span>{" "}
-                        ({product.numReview})
+                        ({product.numRatings})
                       </span>
                     </li>
                   ))

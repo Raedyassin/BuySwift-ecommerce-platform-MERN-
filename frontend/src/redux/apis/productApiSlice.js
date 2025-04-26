@@ -1,5 +1,5 @@
 import apiSlice from '../services/apiSlice'
-import { PRODUCT_URL, UPLOAD_URL, productTage, productReviewTage } from '../constance'
+import { PRODUCT_URL, productTage, productReviewTage } from '../constance'
 const productApiSlice = apiSlice.injectEndpoints({
   endpoints: (buil) => ({
 
@@ -21,18 +21,6 @@ const productApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: [productTage]
     }),
-
-
-    // ??????????????????????????
-    uploadProductImage: buil.mutation({
-      query: (body) => ({
-        url: UPLOAD_URL,
-        method: "POST",
-        body
-      }),
-      invalidatesTags: [productTage]
-    }),
-
 
 
     // ??????????????????????????
@@ -244,7 +232,6 @@ export const {
   useDeleteProductMutation,
   useGetProductByIdQuery,
   useGetHomeProductsQuery,
-  useUploadProductImageMutation,
   // why i use query wiht post method because i query make auto-fetch and post don't make caching 
   // and mutation don't make caching but i need post to but the data in the body of the reqest
   useGetSearchedProductsQuery,

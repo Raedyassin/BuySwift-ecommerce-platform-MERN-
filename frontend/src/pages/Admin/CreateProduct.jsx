@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   useCreateProductMutation,
-  useUploadProductImageMutation,
 } from "../../redux/apis/productApiSlice";
 import { useGetAllCategoryQuery } from "../../redux/apis/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
-import {motion} from 'motion/react'
+import { motion } from "motion/react";
 
 export default function CreateProduct() {
   const [image, setImage] = useState("");
@@ -18,18 +17,15 @@ export default function CreateProduct() {
   const [category, setCategory] = useState("");
   const [quantity, setQuantity] = useState("");
   const [brand, setBrand] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
   const navigate = useNavigate();
 
-  const [uploadProductImage] = useUploadProductImageMutation();
   const [createProduct] = useCreateProductMutation();
   const { data: categories } = useGetAllCategoryQuery();
 
-    useEffect(() => {
-      window.document.title = "Create Product";
-      window.scrollTo(0, 0);
-    }, []);
-
+  useEffect(() => {
+    window.document.title = "Create Product";
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -41,7 +37,7 @@ export default function CreateProduct() {
     if (!brand) return toast.error("Brand is required");
     if (!discription) return toast.error("discription is required");
     if (!category) return toast.error("Category is required");
-    if (!imageUrl) return toast.error("Choose image is required");
+    if (!image) return toast.error("Choose image is required");
 
     const formData = new FormData();
     formData.append("name", name);
@@ -50,7 +46,7 @@ export default function CreateProduct() {
     formData.append("category", category);
     formData.append("quantity", quantity);
     formData.append("brand", brand);
-    formData.append("img", imageUrl);
+    formData.append("img", image);
     formData.append("discount", discount === "" ? 0 : discount);
 
     try {
@@ -58,6 +54,8 @@ export default function CreateProduct() {
       toast.success("Product created successfully");
       navigate("/admin/allproductslist");
     } catch (err) {
+      console.log("err", err);
+      if(err.status < 500) return toast.error(err.data.message);
       toast.error("Something went wrong. Please try again later.");
       console.error(err);
     }
@@ -65,8 +63,8 @@ export default function CreateProduct() {
 
   const discontHandler = (e) => {
     const dis = +e.target.value;
-    if(dis < 0) {
-      return discount
+    if (dis < 0) {
+      return discount;
     }
     if (dis > 100) {
       return discount;
@@ -76,19 +74,7 @@ export default function CreateProduct() {
 
   const uploadFileHandler = async (e) => {
     e.preventDefault();
-    const fromData = new FormData();
-    fromData.append("img", e.target.files[0]);
-    try {
-      const res = await uploadProductImage(fromData).unwrap();
-      toast.success("Image uploaded successfully");
-      setImageUrl(res.data.image);
-      setImage(e.target.files[0]);
-    } catch (err) {
-      if (err.status === 400) {
-        toast.error("Image must be less than 10 MB");
-      }
-      console.error(err);
-    }
+    setImage(e.target.files[0]);
   };
 
   return (
@@ -110,11 +96,11 @@ export default function CreateProduct() {
           </h1>
 
           {/* Image Upload Section */}
-          {imageUrl && (
+          {image && (
             <div className="flex justify-center mb-6">
               <img
                 src={URL.createObjectURL(image)}
-                alt="product image"
+                alt={image.name}
                 className="max-h-48 rounded-lg shadow-md object-cover"
               />
             </div>
@@ -225,7 +211,11 @@ export default function CreateProduct() {
                     focus:ring-indigo-500 transition-all duration-200 
                     bg-gray-50 hover:bg-white text-sm sm:text-base"
                   value={discount}
-                  onChange={(e) => setDiscount(discontHandler(e)===0?"":discontHandler(e))}
+                  onChange={(e) =>
+                    setDiscount(
+                      discontHandler(e) === 0 ? "" : discontHandler(e)
+                    )
+                  }
                 />
               </div>
             </div>

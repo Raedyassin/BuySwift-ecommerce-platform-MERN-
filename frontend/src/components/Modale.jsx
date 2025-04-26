@@ -6,14 +6,17 @@ export default function Modale({isOpen,isClose,children}) {
   return (
     <AnimatePresence>
       {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          onClick={isClose}
-          className="fixed flex inset-0 items-center justify-center  z-50">
-          <div className="fixed inset-0 bg-gray-200/50"></div>
+          className="fixed flex inset-0 items-center justify-center  z-50"
+        >
+          <div
+            onClick={isClose}
+            className="fixed inset-0 bg-gray-200/50"
+          ></div>
           <div
             className="absolute top-[30%] right-[25%] bg-white
             p-4 rounded-lg z-10 w-[50%] "

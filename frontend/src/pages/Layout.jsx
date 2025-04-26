@@ -10,6 +10,7 @@ import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "motion/react";
 import { chageToFixed, changeToRelative } from "../redux/features/chagneSearchbarPosition";
 import { changeToLightSearchbar } from "../redux/features/hoemSearchbarEffect";
+import {hiddenSearchResult} from '../redux/features/searchResult'
 import Footer from '../components/Footer'
 export default function Layout() {
   const [showSidebarMenu, setShowSidebarMenu] = useState(false);
@@ -27,7 +28,8 @@ export default function Layout() {
     } 
   },[location, dispatch])
 
-  // show the searchbar in home when usr refresh the page in small screen less than 1024
+  // show the searchbar in home when usr refresh the page in small screen 
+  // less than 1024
   useEffect(() => {
     if(window.innerWidth < 1024){
       setShowSearchbarInHome(true);
@@ -44,6 +46,8 @@ export default function Layout() {
           setShowAdminMenu(true);
           dispatch(changeToRelative());
           setShowSearchbarInHome(false);
+          // if showResult is true close it
+          dispatch(hiddenSearchResult());
         }
         if (window.innerWidth < 1024) {
           setShowAdminMenu(false);

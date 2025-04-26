@@ -81,7 +81,7 @@ export default function AllProduct() {
                       <img
                         src={'/uploads/'+ product.img.split("/").pop()}
                         alt={product.name}
-                        className="w-24 h-24 object-cover rounded-lg 
+                        className="w-24 h-24 object-fill rounded-lg 
                         transition-transform duration-300 hover:scale-105"
                       />
                     </div>

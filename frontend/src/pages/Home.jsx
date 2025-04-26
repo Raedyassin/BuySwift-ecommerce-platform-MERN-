@@ -126,22 +126,24 @@ export default function Home() {
                           <ProductLoader />
                         </div>
                       ))
-                  : products.product.slice(0, resizeWindow()).map((product,i) => (
-                      <motion.div
-                        // className="flex justify-center items-center"
-                        key={product._id}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          duration: 0.5,
-                          delay: 0.1 * (i % 10),
-                          ease: "easeOut",
-                        }}
-                      >
+                  : products.product
+                      .slice(0, resizeWindow())
+                      .map((product, i) => (
+                        <motion.div
+                          // className="flex justify-center items-center"
+                          key={product._id}
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{
+                            duration: 0.5,
+                            delay: 0.1 * (i % 10),
+                            ease: "easeOut",
+                          }}
+                        >
                           <ProductCard product={product} sold={index === 1} />
-                      </motion.div>
-                    ))}
+                        </motion.div>
+                      ))}
               </div>
             </div>
           </div>

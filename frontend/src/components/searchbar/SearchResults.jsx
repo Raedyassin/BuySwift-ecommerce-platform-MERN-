@@ -5,12 +5,11 @@ import Loader from "../../components/Loader";
 import { FaTimes } from "react-icons/fa";
 import { motion } from "motion/react";
 import { changeToRelative } from "../../redux/features/chagneSearchbarPosition";
-import {  hiddenSearchResult } from '../../redux/features/searchResult'
+import { hiddenSearchResult } from "../../redux/features/searchResult";
 
 import { useDispatch } from "react-redux";
-export default function SearchResults({
-  searchName,
-}) {
+import PriceDiscont from "../../pages/products/priceDiscont";
+export default function SearchResults({ searchName }) {
   const { data: products, isFetching } = useGetSearchedProductsQuery({
     searchName,
     page: 1,
@@ -25,7 +24,7 @@ export default function SearchResults({
     dispatch(hiddenSearchResult());
     dispatch(changeToRelative());
   };
-  
+
   const closeResults = () => {
     dispatch(hiddenSearchResult());
     dispatch(changeToRelative());
@@ -43,7 +42,7 @@ export default function SearchResults({
     >
       <div className="absolute ">
         {isFetching ? (
-            <Loader />
+          <Loader />
         ) : (
           <FaTimes
             onClick={closeResults}
@@ -67,31 +66,42 @@ export default function SearchResults({
               to={`/product/${product._id}`}
               key={product._id}
               onClick={() => dispatch(hiddenSearchResult())}
-              className="flex  items-center mb-5 shadow-md p-2 rounded-lg 
-            hover:bg-gray-100 hover:shadow-lg gap-2"
+              className="grid grid-cols-8 gap-4 mb-5 shadow-md p-2 rounded-lg 
+                hover:bg-gray-50  hover:shadow-lg "
             >
-              <img
-                src={"/uploads/" + product.img.split("/").pop()}
-                alt={product.name}
-                className="w-23 h-30 md:w-28 md:h-30 object-cover rounded-lg "
-              />
-              <div className="h-full flex flex-col justify-start ">
+              {/* image */}
+              <div
+                className="col-span-2 xl:col-span-1 h-30  md:h-35 flex items-center 
+                  justify-center rounded-lg  bg-white"
+              >
+                <img
+                  src={"/uploads/" + product.img.split("/").pop()}
+                  alt={product.name}
+                  className="max-w-full max-h-full  rounded-lg "
+                />
+              </div>
+              {/* text */}
+              <div className="col-span-6 xl:col-span-7 h-full flex flex-col justify-start ">
                 <span
                   onClick={() => {
                     navigate(`/product/${product._id}`);
                     dispatch(hiddenSearchResult());
                   }}
-                  className="text-sm md:text-xl w-auto font-semibold hover:text-indigo-700 cursor-pointer"
+                  className="text-sm md:text-xl w-auto font-semibold
+                  hover:text-indigo-700 cursor-pointer line-clamp-2"
                 >
                   {product.name}
                 </span>
 
                 <p className="text-gray-500 text-sm md:text-base">
-                  ${product.price}
+                  <PriceDiscont
+                    price={product.price}
+                    originalPrice={product.originalPrice}
+                    discount={product.discount || 0}
+                  />
                 </p>
-                <p className="mb-2 text-sm md:text-base">
-                  {product.discription.substring(0, 99)}
-                  {product.discription.length > 99 ? " ..." : ""}
+                <p className="mb-2 text-xs md:text-sm line-clamp-2">
+                  {product.discription}
                 </p>
                 <div className="text-sm md:text-base">
                   <Ratings rating={product.rating} />
@@ -116,116 +126,3 @@ export default function SearchResults({
     </motion.div>
   );
 }
-
-// <div className="flex items-center mb-5 shadow-md p-2 rounded-lg  gap-2">
-//   <img
-//     src="../../../public/Cloud Dream.png"
-//     alt="line"
-//     className="w-33 h-40 rounded-lg "
-//   />
-//   <div className="h-full flex flex-col justify-start ">
-//     <h1 className="text-xl font-semibold">Search Results</h1>
-//     <p className="text-gray-500">$50</p>
-//     <p className="mb-2">
-//       {test.substring(0, 100)}
-//       {test.length > 199 ? "..." : ""}
-//     </p>
-//     <Ratings rating={5} />
-//   </div>
-// </div>
-// <div className="flex items-center mb-5 shadow-md p-2 rounded-lg  gap-2">
-//   <img
-//     src="../../../public/Cloud Dream.png"
-//     alt="line"
-//     className="w-33 h-40 rounded-lg "
-//   />
-//   <div className="h-full flex flex-col justify-start ">
-//     <h1 className="text-xl font-semibold">Search Results</h1>
-//     <p className="text-gray-500">$50</p>
-//     <p className="mb-2">
-//       {test.substring(0, 50)}
-//       {test.length > 199 ? "..." : ""}
-//     </p>
-//     <Ratings rating={5} />
-//   </div>
-// </div>
-// <div className="flex items-center mb-5 shadow-md p-2 rounded-lg  gap-2">
-//   <img
-//     src="../../../public/Cloud Dream.png"
-//     alt="line"
-//     className="w-33 h-40 rounded-lg "
-//   />
-//   <div className="h-full flex flex-col justify-start ">
-//     <h1 className="text-xl font-semibold">Search Results</h1>
-//     <p className="text-gray-500">$50</p>
-//     <p className="mb-2">
-//       {test.substring(0, 190)}
-//       {test.length > 199 ? "..." : ""}
-//     </p>
-//     <Ratings rating={5} />
-//   </div>
-// </div>
-// <div className="flex items-center mb-5 shadow-md p-2 rounded-lg  gap-2">
-//   <img
-//     src="../../../public/Cloud Dream.png"
-//     alt="line"
-//     className="w-33 h-40 rounded-lg "
-//   />
-//   <div className="h-full flex flex-col justify-start ">
-//     <h1 className="text-xl font-semibold">Search Results</h1>
-//     <p className="text-gray-500">$50</p>
-//     <p className="mb-2">
-//       {test.substring(0, 190)}
-//       {test.length > 199 ? "..." : ""}
-//     </p>
-//     <Ratings rating={5} />
-//   </div>
-// </div>
-// <div className="flex items-center mb-5 shadow-md p-2 rounded-lg  gap-2">
-//   <img
-//     src="../../../public/Cloud Dream.png"
-//     alt="line"
-//     className="w-33 h-40 rounded-lg "
-//   />
-//   <div className="h-full flex flex-col justify-start ">
-//     <h1 className="text-xl font-semibold">Search Results</h1>
-//     <p className="text-gray-500">$50</p>
-//     <p className="mb-2">
-//       {test.substring(0, 190)}
-//       {test.length > 199 ? "..." : ""}
-//     </p>
-//     <Ratings rating={5} />
-//   </div>
-// </div>
-// <div className="flex items-center mb-5 shadow-md p-2 rounded-lg  gap-2">
-//   <img
-//     src="../../../public/Cloud Dream.png"
-//     alt="line"
-//     className="w-33 h-40 rounded-lg "
-//   />
-//   <div className="h-full flex flex-col justify-start ">
-//     <h1 className="text-xl font-semibold">Search Results</h1>
-//     <p className="text-gray-500">$50</p>
-//     <p className="mb-2">
-//       {test.substring(0, 190)}
-//       {test.length > 199 ? "..." : ""}
-//     </p>
-//     <Ratings rating={5} />
-//   </div>
-// </div>
-// <div className="flex items-center mb-5 shadow-md p-2 rounded-lg  gap-2">
-//   <img
-//     src="../../../public/Cloud Dream.png"
-//     alt="line"
-//     className="w-33 h-40 rounded-lg "
-//   />
-//   <div className="h-full flex flex-col justify-start ">
-//     <h1 className="text-xl font-semibold">Search Results</h1>
-//     <p className="text-gray-500">$50</p>
-//     <p className="mb-2">
-//       {test.substring(0, 190)}
-//       {test.length > 199 ? "..." : ""}
-//     </p>
-//     <Ratings rating={5} />
-//   </div>
-// </div>

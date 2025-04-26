@@ -55,11 +55,10 @@ export default function CategoryManagement() {
     e.preventDefault();
     if (!updatingName.trim()) return toast.error("Category name is required");
     try {
-      const res = await updateCategory({
+      await updateCategory({
         id: selectedCategory._id,
         body: { name: updatingName },
       }).unwrap();
-      
       setModalVisible(false);
       setSelectedCategory(null);
       setUpdatingName("");
@@ -181,7 +180,9 @@ export default function CategoryManagement() {
 
           {/* Modal for Update/Delete */}
           <Modale isOpen={modalVisible} isClose={() => setModalVisible(false)}>
-            <div className="p-6 bg-white rounded-xl  ">
+            <div
+              className="p-6 bg-white rounded-xl "
+            >
               {/* <div className="bg-gradient-to-r from-teal-900 to-teal-700 text-white px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4"> */}
               <div className=" px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4">
                 <h2 className="text-lg font-medium  tracking-wider">

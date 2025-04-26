@@ -24,7 +24,7 @@ export default function CategoryForm({
           onChange={(e) => setValue(e.target.value)}
           placeholder="Enter Category"
           className="py-3 border-gray-200 border-1
-            focus:border-gray-400  px-4 rounded 
+          focus:ring-1  focus:ring-indigo-400  px-4 rounded 
           focus:outline-none  border-lg w-full "
         />
         <div className="flex justify-center mt-2 gap-2 ">

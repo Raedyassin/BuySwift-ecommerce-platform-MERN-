@@ -46,7 +46,7 @@ export default function HeartIcon({ product, colorText, className }) {
     <div
       // right-2 top-2
       className={`absolute ${className}
-    cursor-pointer bg-white/25 p-2 rounded-full`}
+    cursor-pointer bg-black/15 p-2 rounded-full`}
     >
       {isFavorite ? (
         <FaHeart

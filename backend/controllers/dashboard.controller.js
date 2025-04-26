@@ -37,7 +37,7 @@ const getDashboardData = asyncHandler(async (req, res) => {
 
 
   const topRatedProducts = await Product.find()
-    .select("name brand price rating img numReview")
+    .select("name brand price rating img numRatings")
     .sort({ rating: -1 })
     .limit(10)
     .lean();

@@ -114,7 +114,7 @@ export default function OrdersList() {
       </Message>
     );
   }
-
+  console.log(orders);
   return (
     <div className={`mx-[3rem] pt-[2rem]  `}>
       <motion.div
@@ -347,7 +347,7 @@ export default function OrdersList() {
               </tr>
             </tbody>
           )}
-          {orders?.data?.products?.length === 0 && (
+          {orders?.data?.orders?.length === 0 && (
             <tbody className="text-gray-500">
               <tr>
                 <td colSpan={6} className="p-4 text-center">
