@@ -208,23 +208,17 @@ export default function ProductDetails() {
         >
           {/* Image Section */}
           <div className="relative">
-            <div className="sticky top-4 ">
+            <div className="sticky top-4 z-10">
               <div
                 className="w-full  flex justify-center items-center
               rounded-lg  transition-transform duration-300 
               hover:scale-105 h-72 sm:h-96 lg:h-[28rem] "
               >
-                {/* <img
-                  src={`/uploads/${product?.data?.product?.img
-                    .split("/")
-                    .pop()}`}
-                  alt={product?.name}
-                  className=" max-h-full  "
-                /> */}
                 <ImageZoom
                   src={`/uploads/${product?.data?.product?.img
                     .split("/")
                     .pop()}`}
+                  name={product?.name}
                 />
               </div>
               <HeartIcon

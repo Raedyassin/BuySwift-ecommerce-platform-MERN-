@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 import { motion } from "motion/react";
 import PageLoader from "../../components/PageLoader";
+import ProductForm from "../../components/ProductForm";
 export default function UpdateProduct() {
   const { id } = useParams();
   const [image, setImage] = useState("");
@@ -54,7 +55,8 @@ export default function UpdateProduct() {
     if (!brand) return toast.error("Brand is required");
     if (!discription) return toast.error("discription is required");
     if (!category) return toast.error("Category is required");
-    if (!discount && discount !== 0) return toast.error("Discount is required  or equal 0");
+    if (!discount && discount !== 0)
+      return toast.error("Discount is required  or equal 0");
 
     const formData = new FormData();
     formData.append("name", name);
@@ -63,7 +65,7 @@ export default function UpdateProduct() {
     formData.append("category", category);
     formData.append("quantity", quantity);
     formData.append("brand", brand);
-    if(newImage!==image) formData.append("img", newImage);
+    if (newImage !== image) formData.append("img", newImage);
     formData.append("discount", discount === "" ? 0 : discount);
 
     try {
@@ -71,20 +73,10 @@ export default function UpdateProduct() {
       toast.success("Product updated successfully");
       navigate("/product/" + id);
     } catch (err) {
-      if(err.status < 500) return toast.error(err.data.message);
+      if (err.status < 500) return toast.error(err.data.message);
       toast.error("Something went wrong. Please try again later.");
       console.error(err);
     }
-  };
-  const discontHandler = (e) => {
-    const dis = +e.target.value;
-    if (dis < 0) {
-      return discount;
-    }
-    if (dis > 100) {
-      return discount;
-    }
-    return dis.toString();
   };
 
   const uploadFileHandler = async (e) => {
@@ -103,7 +95,7 @@ export default function UpdateProduct() {
     try {
       deleteProduct(id).unwrap();
       toast.success("Product deleted successfully");
-      navigate("/");
+      navigate("/admin/allproductslist");
     } catch (err) {
       toast.error("Something went wrong. Please try again later.");
       console.error(err);
@@ -122,8 +114,6 @@ export default function UpdateProduct() {
         transition={{ duration: 1 }}
         className="min-h-screen flex flex-col lg:flex-row"
       >
-        {/* Admin Menu */}
-
         {/* Main Content */}
         <div className="flex-1 flex items-center justify-center p-4">
           <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg p-6">
@@ -141,7 +131,7 @@ export default function UpdateProduct() {
                       : "/uploads/" + image.split("/").pop()
                   }
                   alt={name}
-                  className="max-h-48 rounded-lg shadow-md object-cover"
+                  className="max-h-48 rounded-lg  object-cover"
                 />
               </div>
             )}
@@ -161,179 +151,26 @@ export default function UpdateProduct() {
             </div>
 
             {/* Form Section */}
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="quantatity"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Quantatity
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    name="quantatity"
-                    id="quantatity"
-                    className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                  />
-                </div>
+            <ProductForm
+              name={name}
+              setName={setName}
+              quantity={quantity}
+              setQuantity={setQuantity}
+              price={price}
+              setPrice={setPrice}
+              discount={discount}
+              setDiscount={setDiscount}
+              description={discription}
+              setDescription={setDiscription}
+              brand={brand}
+              setBrand={setBrand}
+              category={category}
+              setCategory={setCategory}
+              categories={categories?.data?.categories}
+              handleSubmit={handleSubmit}
+              handleDelete={handleDelete}
+            />
 
-                <div>
-                  <label
-                    htmlFor="price"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Price
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    name="price"
-                    id="price"
-                    className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="price"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Discount Percentage (%)
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    name="price"
-                    id="price"
-                    placeholder="0% to 100%"
-                    className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                    value={discount}
-                    onChange={(e) =>
-                      setDiscount(
-                        discontHandler(e) === 0 ? "" : discontHandler(e)
-                      )
-                    }
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="discription"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Discription
-                </label>
-                <textarea
-                  type="text"
-                  name="discription"
-                  id="discription"
-                  rows="3"
-                  className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                  value={discription}
-                  onChange={(e) => setDiscription(e.target.value)}
-                ></textarea>
-              </div>
-
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="brand"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Brand
-                  </label>
-                  <input
-                    type="text"
-                    name="brand"
-                    id="brand"
-                    className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                    value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="category"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Category
-                  </label>
-                  <select
-                    name="category"
-                    id="category"
-                    className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="">Select Category</option>
-                    {categories?.data?.categories?.map((category) => (
-                      <option key={category._id} value={category._id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-center gap-4">
-                <button
-                  // className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
-                  className="w-full sm:w-auto cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
-                  onClick={handleSubmit}
-                >
-                  Save Changes
-                </button>
-                <button
-                  className="w-full sm:w-auto cursor-pointer  text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
-                  onClick={handleDelete}
-                >
-                  Delete
-                </button>{" "}
-              </div>
-            </div>
           </div>
         </div>
       </motion.div>

@@ -74,26 +74,26 @@ export default function AllProduct() {
                   to={`/admin/product/update/${product._id}`}
                   className="block bg-white rounded-xl p-4 shadow-lg 
                   hover:shadow-xl transition-all duration-300 border 
-                  border-gray-100  w-full"
+                  border-gray-100  w-full  hover:scale-105"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="relative flex-shrink-0">
+                    <div className="w-24 h-24 rounded-lg flex justify-center items-center">
                       <img
-                        src={'/uploads/'+ product.img.split("/").pop()}
+                        src={"/uploads/" + product.img.split("/").pop()}
                         alt={product.name}
-                        className="w-24 h-24 object-fill rounded-lg 
-                        transition-transform duration-300 hover:scale-105"
+                        className=" max-h-full max-w-full rounded-lg "
                       />
                     </div>
                     <div className="relative flex-1 flex flex-col h-full justify-between">
                       <span
-                        className="absolute top-0 right-1 bg-gray-900/80 
+                        className="absolute top-0 right-0 bg-gray-900/80 
                       text-white text-xs px-1.5 py-0.5 rounded-full"
                       >
                         {moment(product.createdAt).format("MMM YYYY DD")}
                       </span>
                       <div>
-                        <h5 className="text-base font-bold text-gray-900 mb-1 line-clamp-1">
+                        <h5 className="text-base font-bold text-gray-900 mb-1 
+                          line-clamp-2">
                           {product.name}
                         </h5>
                         <p className="text-gray-600 text-xs line-clamp-2">

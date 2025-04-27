@@ -84,7 +84,7 @@ export default function Orders() {
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className=" ">
       <div className=" mx-auto px-4 sm:px-6 lg:pl-8 py-8">
         <div className="lg:flex lg:flex-row relative">
           {/* Left Sidebar  */}
@@ -276,7 +276,7 @@ export default function Orders() {
                                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors duration-200"
                               >
                                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                  <div className="w-full sm:w-24 sm:h-24 rounded-lg">
+                                  <div className="w-full sm:w-24 sm:h-24 rounded-lg bg-white">
                                     <img
                                       className="max-w-full max-h-full"
                                       src={`/uploads/${item.product.img
@@ -294,7 +294,7 @@ export default function Orders() {
                                       onClick={() =>
                                         navigate(`/product/${item.product._id}`)
                                       }
-                                      className="font-semibold text-indigo-700 hover:text-indigo-800 hover:underline cursor-pointer transition-colors duration-200"
+                                      className=" text-gray-700 font-bold hover:text-indigo-800 hover:underline cursor-pointer transition-colors duration-200"
                                     >
                                       {item.product.name}
                                     </h1>

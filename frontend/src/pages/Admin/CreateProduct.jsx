@@ -1,17 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  useCreateProductMutation,
-} from "../../redux/apis/productApiSlice";
+import { useCreateProductMutation } from "../../redux/apis/productApiSlice";
 import { useGetAllCategoryQuery } from "../../redux/apis/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";
 import { motion } from "motion/react";
+import ProductForm from "../../components/ProductForm";
 
 export default function CreateProduct() {
   const [image, setImage] = useState("");
   const [name, setName] = useState("");
-  const [discription, setDiscription] = useState("");
+  const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [category, setCategory] = useState("");
@@ -35,13 +34,13 @@ export default function CreateProduct() {
     if (!quantity) return toast.error("Quantity is required");
     // if (+quantity < 0) return toast.error("Quantity must be greater than or equal 0");
     if (!brand) return toast.error("Brand is required");
-    if (!discription) return toast.error("discription is required");
+    if (!description) return toast.error("description is required");
     if (!category) return toast.error("Category is required");
     if (!image) return toast.error("Choose image is required");
 
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("discription", discription);
+    formData.append("discription", description);
     formData.append("price", price);
     formData.append("category", category);
     formData.append("quantity", quantity);
@@ -55,21 +54,10 @@ export default function CreateProduct() {
       navigate("/admin/allproductslist");
     } catch (err) {
       console.log("err", err);
-      if(err.status < 500) return toast.error(err.data.message);
+      if (err.status < 500) return toast.error(err.data.message);
       toast.error("Something went wrong. Please try again later.");
       console.error(err);
     }
-  };
-
-  const discontHandler = (e) => {
-    const dis = +e.target.value;
-    if (dis < 0) {
-      return discount;
-    }
-    if (dis > 100) {
-      return discount;
-    }
-    return dis.toString();
   };
 
   const uploadFileHandler = async (e) => {
@@ -101,7 +89,7 @@ export default function CreateProduct() {
               <img
                 src={URL.createObjectURL(image)}
                 alt={image.name}
-                className="max-h-48 rounded-lg shadow-md object-cover"
+                className="max-h-48 rounded-lg object-cover"
               />
             </div>
           )}
@@ -121,187 +109,25 @@ export default function CreateProduct() {
           </div>
 
           {/* Form Section */}
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Name
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  id="name"
-                  placeholder="Product Name"
-                  className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="quantatity"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Quantatity
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  placeholder="Product Quantatity"
-                  name="quantatity"
-                  id="quantatity"
-                  className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                  value={quantity}
-                  onChange={(e) =>
-                    setQuantity(
-                      Number(e.target.value) >= 0 ? e.target.value : quantity
-                    )
-                  }
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="price"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Price
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  name="price"
-                  placeholder="Product Price"
-                  id="price"
-                  className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                  value={price}
-                  onChange={(e) =>
-                    setPrice(
-                      Number(e.target.value) >= 0 ? e.target.value : price
-                    )
-                  }
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="price"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Discount Percentage (%)
-                </label>
-                <input
-                  type="number"
-                  min="0"
-                  name="price"
-                  id="price"
-                  placeholder="0% to 100%"
-                  className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                  value={discount}
-                  onChange={(e) =>
-                    setDiscount(
-                      discontHandler(e) === 0 ? "" : discontHandler(e)
-                    )
-                  }
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="discription"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Discription
-              </label>
-              <textarea
-                type="text"
-                name="discription"
-                id="discription"
-                rows="3"
-                placeholder="Product Discription"
-                className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                value={discription}
-                onChange={(e) => setDiscription(e.target.value)}
-              ></textarea>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label
-                  htmlFor="brand"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Brand
-                </label>
-                <input
-                  type="text"
-                  name="brand"
-                  id="brand"
-                  placeholder="Product Brand"
-                  className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                  value={brand}
-                  onChange={(e) => setBrand(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Category
-                </label>
-                <select
-                  name="category"
-                  id="category"
-                  className="w-full p-2 sm:p-3 border border-gray-200 
-                    rounded-lg focus:outline-none focus:ring-2 
-                    focus:ring-indigo-500 transition-all duration-200 
-                    bg-gray-50 hover:bg-white text-sm sm:text-base"
-                  // className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2  focus:ring-blue-500 "
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option value="">Select Category</option>
-                  {categories?.data?.categories?.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <button
-                className=" w-full sm:w-auto cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
-                // className="px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-300 shadow-md"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
+          <ProductForm
+            name={name}
+            setName={setName}
+            quantity={quantity}
+            setQuantity={setQuantity}
+            price={price}
+            setPrice={setPrice}
+            discount={discount}
+            setDiscount={setDiscount}
+            description={description}
+            setDescription={setDescription}
+            brand={brand}
+            setBrand={setBrand}
+            category={category}
+            setCategory={setCategory}
+            categories={categories?.data?.categories}
+            handleSubmit={handleSubmit}
+            handleDelete={false}
+          />
         </div>
       </div>
     </motion.div>
