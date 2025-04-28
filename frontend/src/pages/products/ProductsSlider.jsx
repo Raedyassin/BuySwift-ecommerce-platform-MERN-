@@ -3,8 +3,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Ratings from "./Ratings";
 import { useNavigate } from "react-router";
-import { useEffect, useRef } from "react";
-import Loader from "../../components/Loader";
 
 // Custom Next Arrow
 const NextArrow = (props) => {
@@ -69,12 +67,13 @@ const PrevArrow = (props) => {
 };
 
 export default function RelatedProducts({ relatedProducts }) {
+  const products = relatedProducts?.data?.data?.products || [];
   const baseSlidesToShow = Math.min(
     5,
-    relatedProducts?.data?.data?.products?.length || 1
+    products?.length || 1
   );
   const shouldShowArrows =
-    relatedProducts?.data?.data?.products?.length > baseSlidesToShow;
+    products?.length > baseSlidesToShow;
 
   const settings = {
     dots: false,
@@ -93,14 +92,14 @@ export default function RelatedProducts({ relatedProducts }) {
         settings: {
           slidesToShow: Math.min(
             4,
-            relatedProducts?.data?.data?.products?.length || 1
+            products?.length || 1
           ),
           arrows:
-            relatedProducts?.data?.data?.products?.length >
-            Math.min(4, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length >
+            Math.min(4, products?.length || 1),
           variableWidth:
-            relatedProducts?.data?.data?.products?.length <=
-            Math.min(4, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length <=
+            Math.min(4, products?.length || 1),
         },
       },
       {
@@ -108,14 +107,14 @@ export default function RelatedProducts({ relatedProducts }) {
         settings: {
           slidesToShow: Math.min(
             3,
-            relatedProducts?.data?.data?.products?.length || 1
+            products?.length || 1
           ),
           arrows:
-            relatedProducts?.data?.data?.products?.length >
-            Math.min(3, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length >
+            Math.min(3, products?.length || 1),
           variableWidth:
-            relatedProducts?.data?.data?.products?.length <=
-            Math.min(3, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length <=
+            Math.min(3, products?.length || 1),
         },
       },
       {
@@ -123,14 +122,14 @@ export default function RelatedProducts({ relatedProducts }) {
         settings: {
           slidesToShow: Math.min(
             2,
-            relatedProducts?.data?.data?.products?.length || 1
+            products?.length || 1
           ),
           arrows:
-            relatedProducts?.data?.data?.products?.length >
-            Math.min(2, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length >
+            Math.min(2, products?.length || 1),
           variableWidth:
-            relatedProducts?.data?.data?.products?.length <=
-            Math.min(2, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length <=
+            Math.min(2, products?.length || 1),
         },
       },
       {
@@ -138,22 +137,22 @@ export default function RelatedProducts({ relatedProducts }) {
         settings: {
           slidesToShow: Math.min(
             2,
-            relatedProducts?.data?.data?.products?.length || 1
+            products?.length || 1
           ),
           arrows:
-            relatedProducts?.data?.data?.products?.length >
-            Math.min(2, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length >
+            Math.min(2, products?.length || 1),
           variableWidth:
-            relatedProducts?.data?.data?.products?.length <=
-            Math.min(2, relatedProducts?.data?.data?.products?.length || 1),
+            products?.length <=
+            Math.min(2, products?.length || 1),
         },
       },
       {
         breakpoint: 480, // Below sm
         settings: {
           slidesToShow: 1,
-          arrows: relatedProducts?.data?.data?.products?.length > 1,
-          variableWidth: relatedProducts?.data?.data?.products?.length <= 1,
+          arrows: products?.length > 1,
+          variableWidth: products?.length <= 1,
         },
       },
     ],
@@ -164,7 +163,7 @@ export default function RelatedProducts({ relatedProducts }) {
   return (
     <div className="relative px-8">
       <Slider {...settings} className="w-full">
-        {relatedProducts?.data?.data?.products?.map((product) => (
+        {products?.map((product) => (
           <div key={product._id} className=" focus:outline-none ml-1">
             <div
               className="group relative w-42 sm:w-51 md:w-53.5  px-2  h-56 sm:h-64 md:h-72 
@@ -175,7 +174,7 @@ export default function RelatedProducts({ relatedProducts }) {
                 <img
                   src={"/uploads/" + product.img.split("/").pop()}
                   alt={product?.name}
-                  className=" max-h-full "
+                  className=" max-h-full rounded-lg"
                 />
               </div>
               <div

@@ -173,7 +173,7 @@ export default function ProductDetails() {
       dispatch(
         addToCart({
           ...product?.data?.product,
-          totalQuantity:product?.data?.product?.quantity,
+          totalQuantity: product?.data?.product?.quantity,
           quantity: quantityBuyed,
         })
       );
@@ -249,22 +249,25 @@ export default function ProductDetails() {
           {/* Details Section */}
           <div className="flex flex-col justify-between">
             <div>
-              <div className="flex mb-5 items-center justify-between">
-                <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800">
-                  {product?.data?.product?.name}
-                </h2>
-                {userInfo?.isAdmin && (
+              {/* <div className="flex mb-5 items-center justify-between"> */}
+              {userInfo?.isAdmin && (
+                <div className="flex justify-end">
                   <button
                     onClick={() => navigate(`/admin/product/update/${id}`)}
                     className="w-[100px] cursor-pointer bg-gradient-to-r 
-                  from-indigo-600 to-purple-600 text-white py-2 px-6 
-                  rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 
-                  hover:to-purple-700 transition-all duration-300  shadow-md"
+                    from-indigo-600 to-purple-600 text-white py-2 px-6 
+                    rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 
+                    hover:to-purple-700 transition-all duration-300  shadow-md"
                   >
                     Update
                   </button>
-                )}
-              </div>
+                </div>
+              )}
+              <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800">
+                {product?.data?.product?.name}
+              </h2>
+
+              {/* </div> */}
               <p className="mt-2 text-gray-600 text-sm sm:text-base leading-relaxed">
                 {product?.data?.product?.discription}
               </p>
@@ -343,7 +346,7 @@ export default function ProductDetails() {
             <button
               onClick={addToCartHandler}
               disabled={product?.data?.product?.quantity === 0}
-              className="mt-6 w-full sm:w-auto cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
+              className="mt-6 w-full sm:w-auto cursor-pointer bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 text-white py-3 px-6 rounded-lg font-medium text-sm sm:text-base  disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md"
             >
               Add to Cart
             </button>

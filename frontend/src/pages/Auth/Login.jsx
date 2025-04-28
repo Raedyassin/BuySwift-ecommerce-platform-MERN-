@@ -5,6 +5,7 @@ import { useLoginMutation } from "../../redux/apis/userApiSlice";
 import { setCredientials } from "../../redux/features/auth/authSlice";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
+import WelcommingLogin from "../../components/WelcommingLogin";
 
 export default function Login() {
   const [password, setPassword] = useState("");
@@ -46,7 +47,12 @@ export default function Login() {
 
   return (
     <>
-      <section className="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-start  bg-white lg:bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1964&q=80')] lg:bg-no-repeat lg:bg-right lg:bg-cover">
+      <section
+        className="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-start
+         "
+        //  bg-white lg:bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1964&q=80')]
+        //  lg:bg-no-repeat lg:bg-right lg:bg-cover"
+      >
         {/* Form Section */}
         <div className="w-full lg:w-1/2 flex justify-center items-center p-4 md:p-6 lg:p-8">
           <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-lg p-6 sm:p-8">
@@ -63,6 +69,7 @@ export default function Login() {
                 </label>
                 <input
                   type="email"
+                  placeholder="Enter your email address"
                   id="email"
                   className="mt-1 w-full p-2 sm:p-3 border border-gray-300 rounded-md text-sm md:text-base text-gray-600 focus:border-gray-400 focus:outline-none"
                   onChange={(e) => setEmail(e.target.value)}
@@ -79,6 +86,7 @@ export default function Login() {
                 <input
                   type="password"
                   id="password"
+                  placeholder="Enter your password"
                   className="mt-1 w-full p-2 sm:p-3 border border-gray-300 rounded-md text-sm md:text-base text-gray-600 focus:border-gray-400 focus:outline-none"
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
@@ -87,10 +95,9 @@ export default function Login() {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="w-full cursor-pointer  p-2 sm:p-3 bg-gradient-to-r
-              from-[#0094D4] to-[#00C4B4] text-white font-bold rounded-md
-              hover:from-[#0083d4] hover:to-[#00b3a3] focus:outline-none 
-              focus:ring-2 focus:ring-blue-400 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-md text-sm md:text-base"
+                  className="w-full cursor-pointer  p-2 sm:p-3  text-white font-bold rounded-md
+                    bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 focus:outline-none 
+                shadow-md text-sm md:text-base"
                 >
                   {isLoading ? (
                     <Loader
@@ -108,7 +115,7 @@ export default function Login() {
               <p className="text-sm md:text-base text-gray-600 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-1">
                 <span className="font-semibold italic">New Customer?</span>
                 <Link
-                  className="text-purple-500 font-bold hover:underline"
+                  className="text-indigo-500 font-bold hover:underline"
                   to={redirect ? `/register?redirect=${redirect}` : "/register"}
                 >
                   Register
@@ -119,7 +126,9 @@ export default function Login() {
         </div>
 
         {/* Empty div for background image space on large screens */}
-        <div className="hidden lg:block lg:w-1/2"></div>
+        <div className="hidden lg:block lg:w-1/2">
+          <WelcommingLogin />
+        </div>
       </section>
     </>
   );

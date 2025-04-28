@@ -23,7 +23,7 @@ const UserShema = new Schema({
   },
   img: {
     type: String,
-    default:'../uploads/user/defaultImage.png'
+    default:'uploads/user/defaultImage.png'
   }
 },{timestamps:true})
 

@@ -14,15 +14,15 @@ export default function ZoomImage({ src, name }) {
 
     // client return mouse position in viewport
     // client and bounds return position according to the viewport
-    const x = ((e.clientX - bounds.left) / bounds.width) * 100;
-    const y = ((e.clientY - bounds.top) / bounds.height) * 100;
+    const x = ((e.clientX - bounds.left ) / bounds.width) * 100;
+    const y = ((e.clientY - bounds.top ) / bounds.height) * 100;
 
     const relativeX = e.clientX - bounds.left;
     const relativeY = e.clientY - bounds.top;
 
     setZoomPosition({
-      x: relativeX , // small offset to the right
-      y: relativeY +20 , // small offset below
+      x: relativeX +30, // small offset to the right
+      y: relativeY +20, // small offset below
     });
 
     setZoomData({
@@ -47,13 +47,13 @@ export default function ZoomImage({ src, name }) {
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        <img ref={imgRef} src={src} alt={name} className="max-h-full " />
+        <img ref={imgRef} src={src} alt={name} className="max-h-full rounded-lg" />
       </div>
 
       {/* Zoom Box */}
       {zoomData.visible && (
         <div
-          className={`absolute w-50 h-50 rounded-full sm:w-60 sm:h-60 lg:w-80 lg:h-80 
+          className={`absolute w-50 h-50 rounded-lg sm:w-60 sm:h-60 lg:w-80 lg:h-80 
             shadow-[0_0_10px_rgba(0,0,0,0.3)]  bg-no-repeat bg-cover`}
           style={{
             left: `${zoomPosition.x}px`,

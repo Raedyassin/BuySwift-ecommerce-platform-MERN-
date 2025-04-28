@@ -52,7 +52,7 @@ const addProduct = asyncHandler(
       name, discription,
       originalPrice,
       price,
-      brand, quantity, category, discount,
+      brand: brand.toLowerCase(), quantity, category, discount,
       img: imageUrl,
     })
     await product.save();
@@ -112,7 +112,7 @@ const updateProduct = asyncHandler(async (req, res) => {
   product.discription = discription;
   product.price = price;
   product.originalPrice = originalPrice;
-  product.brand = brand;
+  product.brand = brand.toLowerCase();
   product.quantity = quantity;
   product.category = category;
   product.discount = discount;
@@ -152,9 +152,6 @@ const fetchProductById = asyncHandler(
 const getRelatedProductsByCategory = asyncHandler(
   async (req, res, next) => {
     // get the product id from frontend and send realted products by category
-    const page = 1;
-    const pageSize = 15;
-    const skip = (page - 1) * pageSize;
 
     const product = await Product.findById(req.params.id);
     if (!product) {
@@ -165,36 +162,14 @@ const getRelatedProductsByCategory = asyncHandler(
       category: product.category,
       _id: { $ne: product._id } // Exclude the current product
     }).sort({ rating: -1 })
-      .limit(pageSize + 1)
-      .skip(skip)
+      .limit(10)
       .select("-__v -updatedAt -createdAt -creatorId -reviews -numRatings  -discription -quantity")
       .lean();
 
-    // this is should delete after testing phase i put it to test only 
-    // start{
-    if (relatedProducts.length < 6) {
-      const plusProducts = await Product.find().sort({ rating: -1 }).
-        limit(10).
-        select("-__v -updatedAt -createdAt -creatorId -reviews -numRatings  -discription -quantity")
-        .lean();
-      relatedProducts = [...relatedProducts, ...plusProducts]
-    }
-    
-    relatedProducts = relatedProducts.filter((product) => product._id.toString() !== req.params.id);
-
-    const hasNextPage = relatedProducts.length > pageSize;
-    if (hasNextPage) {
-      relatedProducts.pop();
-    }
 
     res.status(200).json({
       status: SUCCESS,
       data: { products: relatedProducts },
-      currentPage: page,
-      productsLength: relatedProducts.length,
-      pageSize,
-      hasNextPage,
-      hasPrevPage: page > 1
     })
   }
 )
@@ -256,7 +231,7 @@ const fetchProductReviews = asyncHandler(async (req, res, next) => {
 const editProductComment = asyncHandler(async (req, res, next) => {
   const { id, reviewId } = req.params; // id is the product id
   const { comment } = req.body;
-  if (!comment) {
+  if (!comment?.trim()) {
     return res.status(400).json({ status: FAIL, message: "comment is required" });
   }
   let productFound = await Product.findById(id)

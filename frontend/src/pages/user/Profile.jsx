@@ -102,6 +102,7 @@ export default function Profile() {
               </div>
             ) : (
               <div
+                // border-[#00C4B4]
                 className="w-full h-full border-5 border-[#00C4B4] rounded-full 
               relative"
               >

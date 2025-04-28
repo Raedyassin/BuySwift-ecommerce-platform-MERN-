@@ -36,7 +36,7 @@ export default function Searchbar({
   const logoutHandler = async () => {
     try {
       await LogOutApi().unwrap();
-      navigate("/");
+      // navigate("/");
       dispatch(logOut());
       toast.success("You are logged out");
       setShowUserInfo(false);

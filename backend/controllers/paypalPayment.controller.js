@@ -55,7 +55,7 @@ const intializePayPalPayment = asyncHandler(async (req, res, next) => {
               },
             },
             items: dbOrderItems.map((item) => ({
-              name: item.name,
+              name: item.name.slice(0, 127),
               quantity: item.quantity.toString(), // PayPal expects string
               unit_amount: {
                 currency_code: "USD",

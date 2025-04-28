@@ -8,7 +8,7 @@ import { FiFilter } from "react-icons/fi";
 import { motion } from "motion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
-import ProductLoader from "./products/ProductLoader";
+import Loader from "./../components/Loader";
 
 export default function Shope() {
   const location = useLocation();
@@ -42,7 +42,7 @@ export default function Shope() {
     price,
     page,
     // pageLoader make error when loader more product so change it to Loader
-    limit: 50,
+    limit: 25,
   });
   const navigate = useNavigate();
   const clearSearchResult = () => {
@@ -157,7 +157,7 @@ export default function Shope() {
 
   return (
     <>
-      <div className="w-full  px-4 py-4 min-h-screen relative">
+      <div className="w-full  px-4 py-4  relative">
         <div
           className="fixed p-2 z-50 rounded-full shadow-lg bg-gray-50 border 
         border-gray-100 flex items-center justify-center top-25 right-4 md:hidden 
@@ -372,53 +372,51 @@ export default function Shope() {
               className="grid grid-cols-2 md:grid-cols-2 
             lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6 gap-3"
             >
-              {!isFetching &&
-                filterData?.data?.products?.map((prod, index) => {
-                  if (newInputRadio !== 0) {
-                    if (uniqueBrands[newInputRadio - 1] === prod.brand) {
-                      return (
-                        <motion.div
-                          className="flex justify-center items-center"
-                          key={prod._id}
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{
-                            duration: 0.5,
-                            delay: 0.1 * (index % 10),
-                            ease: "easeOut",
-                          }}
-                        >
-                          <ProductCard product={prod} />
-                        </motion.div>
-                      );
-                    }
-                    return;
+              {filterData?.data?.products?.map((prod, index) => {
+                if (newInputRadio !== 0) {
+                  if (uniqueBrands[newInputRadio - 1] === prod.brand) {
+                    return (
+                      <motion.div
+                        className="flex justify-center items-center"
+                        key={prod._id}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: 0.1 * (index % 10),
+                          ease: "easeOut",
+                        }}
+                      >
+                        <ProductCard product={prod} />
+                      </motion.div>
+                    );
                   }
-                  return (
-                    <motion.div
-                      className="flex justify-center items-center"
-                      key={prod._id}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        duration: 0.5,
-                        delay: 0.1 * (index % 10),
-                        ease: "easeOut",
-                      }}
-                    >
-                      <ProductCard product={prod} />
-                    </motion.div>
-                  );
-                })}
+                  return;
+                }
+                return (
+                  <motion.div
+                    className="flex justify-center items-center"
+                    key={prod._id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 0.1 * (index % 10),
+                      ease: "easeOut",
+                    }}
+                  >
+                    <ProductCard product={prod} />
+                  </motion.div>
+                );
+              })}
               <div className=" h-60 " ref={LoaderRef}></div>
-              {isFetching &&
-                [...Array(10)].map((_, index) => (
-                  <div key={index}>
-                    <ProductLoader />
-                  </div>
-                ))}
+              {isFetching && (
+                <div className="col-span-6 flex justify-center items-center">
+                  <Loader />
+                </div>
+              )}
             </div>
           </motion.div>
         </div>

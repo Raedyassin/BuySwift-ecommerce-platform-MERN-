@@ -18,7 +18,7 @@ export default function Review({ review, userInfo, productId  }) {
 
   const EditeReviewtHandler = async (e) => {
     if (editeText.trim() === review.comment.trim()) {
-      toast.info("You Don't Edite The Review ");
+      toast.info("You Don't Edite The Comment");
       setShowEdit(false);
       return;
     }
@@ -50,18 +50,11 @@ export default function Review({ review, userInfo, productId  }) {
       );
     } catch (error) {
       console.error(error);
-      toast.error("Please try Edit your review again later.");
+      toast.error(error?.data?.message || "Please try Edit your review again later.");
     }
   };
   return (
-    <div
-      key={review._id}
-      className={`${
-        userInfo?._id === review?.user?._id
-          ? " bg-gray-100 border-2 border-gray-200"
-          : "  bg-gray-50 "
-      } p-2 rounded-lg  sm:ml-[0rem]`}
-    >
+    <div key={review._id} className={`p-2 rounded-lg  sm:ml-[0rem]`}>
       <div className="flex justify-between">
         <div className="flex justify-start items-center gap-3">
           <img
@@ -71,11 +64,11 @@ export default function Review({ review, userInfo, productId  }) {
                 : "../../../public/userImge.png"
             }
             alt={review?.user?.username}
-            className="w-11 h-11 object-cover rounded-full"
+            className="w-11 h-11 object-cover border-2 border-indigo-200 rounded-full"
           />
-          <div className="text-sm sm:text-base">
-            <strong className="text-[#B0B0B0]">{review?.user?.username}</strong>
-            <p className="text-[#B0B0B0]">
+          <div className="text-sm sm:text-base flex items-center gap-2">
+            <strong className="text-gray-600">{review?.user?.username}</strong>
+            <p className="text-gray-400  text-xs sm:text-sm">
               {review?.updatedAt?.substring(0, 10)}
             </p>
           </div>
@@ -83,9 +76,12 @@ export default function Review({ review, userInfo, productId  }) {
         {review?.user?._id === userInfo?._id && (
           <div>
             <button
-              className="mr-2 p-1 px-2 rounded-2xl hover:bg-gray-200 italic text-gray-500 hover:text-gray-700 
-              cursor-pointer text-sm sm:text-base"
-              onClick={() => setShowEdit(!showEdite)}
+              className="mr-2 p-1 px-2 rounded-2xl bg-gray-200 italic text-gray-500 hover:text-gray-700 
+              cursor-pointer text-xs sm:text-sm"
+              onClick={() => {
+                setShowEdit(!showEdite);
+                setEditeText(review.comment);
+              }}
             >
               Edite
             </button>
@@ -104,7 +100,7 @@ export default function Review({ review, userInfo, productId  }) {
             <textarea
               type="text"
               value={editeText}
-              rows={2}
+              rows={4}
               onChange={(e) => setEditeText(e.target.value)}
               className="py-3 border-gray-200 border-1 focus:border-gray-400 
                 px-4 rounded w-full focus:outline-none border-lg text-sm sm:text-base"
@@ -112,37 +108,35 @@ export default function Review({ review, userInfo, productId  }) {
             <div className="flex justify-end mt-2">
               <button
                 className="text-white py-2 px-4  rounded-full font-bold 
-                      bg-gradient-to-r bg-[#a4c8d7]  
-                    hover:from-[#0083d4] hover:to-[#00b3a3] focus:outline-none 
-                      focus:ring-2 focus:ring-blue-400 cursor-pointer"
+                      bg-gradient-to-r from-indigo-600 to-purple-600  text-sm sm:text-base 
+                      hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 
+                      shadow-md focus:outline-none cursor-pointer"
                 onClick={() => setShowEdit(false)}
               >
-                <IoCloseSharp className="text-lg" />
+                <IoCloseSharp className="text-md md:text-lg" />
               </button>
               <button
-                className="text-white py-2 px-4  
-                      bg-gradient-to-r ml-2
-                    from-[#0094D4] to-[#00C4B4]  font-bold rounded-full
-                    hover:from-[#0083d4] hover:to-[#00b3a3] focus:outline-none 
-                      focus:ring-2 focus:ring-blue-400
-                      cursor-pointer"
+                className="text-white py-2 px-4 ml-2 rounded-full font-bold 
+                      bg-gradient-to-r from-indigo-600 to-purple-600  text-sm sm:text-base 
+                      hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 
+                      shadow-md focus:outline-none cursor-pointer"
                 onClick={(e) => EditeReviewtHandler(e)}
               >
-                <IoMdCheckmark className="text-lg" />
+                <IoMdCheckmark className="text-md md:text-lg" />
               </button>
             </div>
           </div>
         ) : (
-          <p className="my-2 mt-1 text-sm sm:text-base">
+          <p className="my-2 mt-1 text-gray-600 text-sm sm:text-base">
             {!showMoreDescription.includes(review._id) &&
-            review?.comment?.length > 150 ? (
+            review?.comment?.length > 250 ? (
               <>
-                <span>{review.comment.substring(0, 150)}</span>
+                <span>{review.comment.substring(0, 250)}</span>
                 <span
                   onClick={() =>
                     setShowMoreDescription([showMoreDescription, review._id])
                   }
-                  className="text-pink-600 font-bold cursor-pointer"
+                  className="text-indigo-600 italic font-semibold text-xs sm:text-sm cursor-pointer"
                 >
                   {" "}
                   Read more...
@@ -158,7 +152,7 @@ export default function Review({ review, userInfo, productId  }) {
                         showMoreDescription.filter((id) => id !== review._id)
                       )
                     }
-                    className="text-pink-600 font-bold cursor-pointer"
+                    className="text-indigo-600 italic font-semibold text-xs sm:text-sm cursor-pointer"
                   >
                     {" "}
                     Read less...

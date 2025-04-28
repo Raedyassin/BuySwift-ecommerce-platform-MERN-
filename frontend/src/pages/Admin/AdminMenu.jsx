@@ -44,19 +44,6 @@ export default function AdminMenu() {
               <NavLink
                 className="block py-2.5 px-4 rounded-lg text-sm font-medium 
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                to="/admin/categorylist"
-                style={({ isActive }) => ({
-                  color: isActive ? "#615FFF" : "#000",
-                  fontWeight: isActive ? "bold" : "normal",
-                })}
-              >
-                Create Category
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="block py-2.5 px-4 rounded-lg text-sm font-medium 
-                text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/createproduct"
                 style={({ isActive }) => ({
                   color: isActive ? "#615FFF" : "#000",
@@ -83,19 +70,6 @@ export default function AdminMenu() {
               <NavLink
                 className="block py-2.5 px-4 rounded-lg text-sm font-medium 
                 text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                to="/admin/userlist"
-                style={({ isActive }) => ({
-                  color: isActive ? "#615FFF" : "#000",
-                  fontWeight: isActive ? "bold" : "normal",
-                })}
-              >
-                Manage Users
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                className="block py-2.5 px-4 rounded-lg text-sm font-medium 
-                text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                 to="/admin/orderlist"
                 style={({ isActive }) => ({
                   color: isActive ? "#615FFF" : "#000",
@@ -115,7 +89,34 @@ export default function AdminMenu() {
                   fontWeight: isActive ? "bold" : "normal",
                 })}
               >
-                Mange Products
+                Manage Products
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                className="block py-2.5 px-4 rounded-lg text-sm font-medium 
+                text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                to="/admin/userlist"
+                style={({ isActive }) => ({
+                  color: isActive ? "#615FFF" : "#000",
+                  fontWeight: isActive ? "bold" : "normal",
+                })}
+              >
+                Manage Users
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                className="block py-2.5 px-4 rounded-lg text-sm font-medium 
+                text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                to="/admin/categorylist"
+                style={({ isActive }) => ({
+                  color: isActive ? "#615FFF" : "#000",
+                  fontWeight: isActive ? "bold" : "normal",
+                })}
+              >
+                Manage Category
               </NavLink>
             </li>
           </ul>

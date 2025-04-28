@@ -22,12 +22,12 @@ export default function ProductCard({ product, sold }) {
           >
             <div
               className="w-full h-full flex justify-center items-center 
-              rounded-lg "
+              "
             >
               <img
                 src={"/uploads/" + product.img.split("/").pop()}
                 alt={product?.name}
-                className=" max-h-full max-w-full  "
+                className=" max-h-full max-w-full rounded-lg "
               />
             </div>
             {+product.discount !== 0 && (
@@ -90,7 +90,13 @@ export default function ProductCard({ product, sold }) {
           </span>
           <AiOutlineShoppingCart
             onClick={() =>
-              dispatch(addToCart({ ...product, totalQuantity: product.quantity , quantity: 1 }))
+              dispatch(
+                addToCart({
+                  ...product,
+                  totalQuantity: product.quantity,
+                  quantity: 1,
+                })
+              )
             }
             className="text-indigo-600 cursor-pointer hover:text-indigo-900 
             transition-colors duration-200 text-2xl sm:text-3xl  

@@ -16,7 +16,7 @@ export default function Product({ product }) {
           <img
             src={product.img}
             alt={product.name}
-            className=" max-h-full max-w-full "
+            className=" max-h-full max-w-full rounded-lg"
           />
         </Link>
         <HeartIcon product={product} className={" right-5  bottom-5 "} />

@@ -276,9 +276,9 @@ export default function Orders() {
                                 className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors duration-200"
                               >
                                 <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                  <div className="w-full sm:w-24 sm:h-24 rounded-lg bg-white">
+                                  <div className="flex items-center justify-center w-full sm:w-24 sm:h-24 rounded-lg bg-white">
                                     <img
-                                      className="max-w-full max-h-full"
+                                      className="max-w-full max-h-full rounded-lg"
                                       src={`/uploads/${item.product.img
                                         .split("/")
                                         .pop()}`}
