@@ -48,22 +48,43 @@ export default function Login() {
   return (
     <>
       <section
-        className="min-h-screen flex flex-col lg:flex-row items-center justify-center lg:justify-start
-         "
-        //  bg-white lg:bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1964&q=80')]
+        className="min-h-screen flex flex-col lg:flex-row items-center 
+    justify-center bg-gradient-to-br from-white via-cream-50 to-gray-200
+    relative overflow-hidden" //  bg-white lg:bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1964&q=80')]
         //  lg:bg-no-repeat lg:bg-right lg:bg-cover"
       >
+        {/* Abstract Shapes */}
+        <div
+          className="absolute top-0 left-0 w-64 h-64 bg-gray-300/50 rounded-full 
+      opacity-30 transform -translate-x-1/2 -translate-y-1/2 animate-pulse"
+        ></div>
+        <div
+          className="absolute bottom-0 right-0 w-96 h-96 bg-gray-400/50 
+      rounded-full opacity-20 transform translate-x-1/4 translate-y-1/4
+      animate-pulse"
+        ></div>
+
         {/* Form Section */}
-        <div className="w-full lg:w-1/2 flex justify-center items-center p-4 md:p-6 lg:p-8">
-          <div className="w-full max-w-sm sm:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 text-center  ">
+        <div
+          className="w-full lg:w-1/2 flex justify-center items-center p-6 lg:p-12 
+          z-10"
+        >
+          <div
+            className="w-full max-w-sm sm:max-w-md bg-cream-50 rounded-2xl 
+        shadow-xl p-6 sm:p-8  border border-gray-200 transform transition-all
+        duration-300 hover:shadow-2xl"
+          >
+            <h1
+              className="text-indigo-500 mb-6 text-center text-2xl sm:text-3xl 
+          font-bold"
+            >
               Sign In
             </h1>
             <form onSubmit={handleLogin} className="w-full">
               <div className="mb-4">
                 <label
                   htmlFor="email"
-                  className="block text-sm md:text-base font-medium text-gray-600 italic"
+                  className="block text-sm md:text-base font-medium text-gray-800 italic"
                 >
                   Email Address
                 </label>
@@ -71,7 +92,7 @@ export default function Login() {
                   type="email"
                   placeholder="Enter your email address"
                   id="email"
-                  className="mt-1 w-full p-2 sm:p-3 border border-gray-300 rounded-md text-sm md:text-base text-gray-600 focus:border-gray-400 focus:outline-none"
+                  className="mt-1 w-full p-2 sm:p-3 border border-gray-300 rounded-md text-sm md:text-base text-gray-900 focus:border-gray-400 focus:outline-none"
                   onChange={(e) => setEmail(e.target.value)}
                   value={email}
                 />
@@ -79,7 +100,7 @@ export default function Login() {
               <div className="mb-6">
                 <label
                   htmlFor="password"
-                  className="block text-sm md:text-base font-medium text-gray-600 italic"
+                  className="block text-sm md:text-base font-medium text-gray-800 italic"
                 >
                   Password
                 </label>
@@ -87,7 +108,7 @@ export default function Login() {
                   type="password"
                   id="password"
                   placeholder="Enter your password"
-                  className="mt-1 w-full p-2 sm:p-3 border border-gray-300 rounded-md text-sm md:text-base text-gray-600 focus:border-gray-400 focus:outline-none"
+                  className="mt-1 w-full p-2 sm:p-3 border border-gray-300 rounded-md text-sm md:text-base text-gray-900 focus:border-gray-400 focus:outline-none"
                   onChange={(e) => setPassword(e.target.value)}
                   value={password}
                 />
