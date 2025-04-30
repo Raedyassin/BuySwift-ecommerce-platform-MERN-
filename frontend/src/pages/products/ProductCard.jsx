@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings";
-import {numberReviewsHandler} from '../../utils/numberReviews'
+import { numberReviewsHandler } from "../../utils/numberReviews";
 import PriceDiscont from "./priceDiscont";
 export default function ProductCard({ product, sold }) {
   const dispatch = useDispatch();
@@ -47,8 +47,8 @@ export default function ProductCard({ product, sold }) {
               </div>
             )}
           </div>
-          <HeartIcon product={product} className={" bottom-3 right-3 "} />
         </Link>
+        <HeartIcon product={product} className={" bottom-3 right-3 "} />
       </section>
       <div className="p-3 py-0 pb-2 flex-1 flex flex-col justify-between">
         <div>

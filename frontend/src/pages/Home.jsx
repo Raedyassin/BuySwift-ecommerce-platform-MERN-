@@ -125,7 +125,7 @@ export default function Home() {
                         <div key={index}>
                           <ProductLoader />
                         </div>
-                      ))
+                        ))
                   : products.product
                       .slice(0, resizeWindow())
                       .map((product, i) => (

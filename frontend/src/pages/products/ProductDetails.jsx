@@ -99,11 +99,16 @@ export default function ProductDetails() {
     setShouldFetchReviews(false);
     setComment("");
     setHoveredStar(-1);
+    setQuantityBuyed(1);
   }, [id]);
 
   useEffect(() => {
+    // console.log(reviews?.data?.reviews[0]?.user._id);
+    // console.log(userInfo?._id);
     if (reviews?.data?.reviews[0]?.user._id === userInfo?._id) {
       setHoveredStar(reviews?.data?.reviews[0]?.rating);
+    }else{
+      setHoveredStar(-1);
     }
   }, [userInfo, id, reviews]);
 

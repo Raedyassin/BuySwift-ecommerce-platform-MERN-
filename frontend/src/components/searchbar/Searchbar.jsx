@@ -133,7 +133,7 @@ export default function Searchbar({
                     className={`px-4 py-2 pt-4 font-semibold rounded text-[12px] sm:text-sm `}
                   >
                     {userInfo.username.length > 13
-                      ? userInfo.username.subString(0, 13) + " ..."
+                      ? userInfo.username.slice(0, 13) + " ..."
                       : userInfo.username}
                   </li>
                   <li

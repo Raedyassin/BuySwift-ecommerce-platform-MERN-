@@ -40,7 +40,7 @@ export default function Register() {
       const res = await createUserFech({ username, password, email }).unwrap();
       dispatch(setCredientials(res.data.user));
       toast.success(`${res.data.user.username} registered successfully`);
-      navigate(redirect);
+      navigate('/');
     } catch (err) {
       if (err.status === 409 || err.status === 400) {
         toast.error(err.data.message);

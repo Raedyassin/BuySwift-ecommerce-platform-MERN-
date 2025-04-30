@@ -162,9 +162,7 @@ export default function Review({ review, userInfo, productId  }) {
             )}
           </p>
         )}
-        {review.rating === -1 ? (
-          <p className="text-sm sm:text-base italic text-gray-600">No rating</p>
-        ) : (
+        {review.rating !== -1 && (
           <Ratings rating={review.rating} text={``} />
         )}
       </div>

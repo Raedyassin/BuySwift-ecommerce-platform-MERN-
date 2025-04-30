@@ -219,7 +219,8 @@ export default function Sidebar({
             <Link
               to="/profile"
               onClick={() => setShowSidebarMenu(false)}
-              className={`flex items-center  gap-2 transition-transform transform 
+              className={`lg:hidden group-hover:flex 
+                items-center  gap-2 transition-transform transform 
               hover:translate-x-2  hover:text-indigo-800 ${
                 window.location.pathname === "/profile" ? "text-indigo-600" : ""
               } `}
@@ -233,7 +234,8 @@ export default function Sidebar({
             </Link>
             <div
               onClick={logoutHandler}
-              className={`flex items-center  gap-2 transition-transform transform 
+              className={`lg:hidden group-hover:flex items-center  gap-2 
+                transition-transform transform 
               hover:translate-x-2 cursor-pointer hover:text-indigo-800 `}
             >
               <div>

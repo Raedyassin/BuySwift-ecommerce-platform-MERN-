@@ -8,7 +8,7 @@ import { FiFilter } from "react-icons/fi";
 import { motion } from "motion/react";
 import { useLocation, useNavigate } from "react-router-dom";
 import PageHeader from "../components/PageHeader";
-import Loader from "./../components/Loader";
+ import ProductLoader from "./products/ProductLoader";
 
 export default function Shope() {
   const location = useLocation();
@@ -412,11 +412,13 @@ export default function Shope() {
                 );
               })}
               <div className=" h-60 " ref={LoaderRef}></div>
-              {isFetching && (
-                <div className="col-span-6 flex justify-center items-center">
-                  <Loader />
-                </div>
-              )}
+              {isFetching &&
+                [...Array(6 + 6)].map((_, index) => (
+                  <div key={index}>
+                    <ProductLoader />
+                  </div>
+                ))
+              }
             </div>
           </motion.div>
         </div>

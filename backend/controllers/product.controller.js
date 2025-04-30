@@ -537,7 +537,7 @@ const searchProduct = asyncHandler(
       .limit(pageSize + 1)
       .skip((page - 1) * pageSize)
       .sort({ createdAt: -1 })
-      .select("-updatedAt -__v -reviews -creatorId -quantity  -category -numRatings");
+      .select("-updatedAt -__v -reviews -creatorId -quantity  -category ");
 
     const hasNextPage = products.length > pageSize;
     if (hasNextPage) {
