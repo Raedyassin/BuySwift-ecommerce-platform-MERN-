@@ -50,7 +50,7 @@ app.use((err, req, res, next) => {
   if (err instanceof AppError) {
     return res.status(err.status).json({ status: err.statusText, message: err.message });
   }
-  // image error (by multer)
+  // image error by multer
   else if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({

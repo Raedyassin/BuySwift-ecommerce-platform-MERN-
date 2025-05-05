@@ -119,7 +119,7 @@ export default function Sidebar({
         />
       )}
 
-      {/* Links */}
+      {/* Links for user */}
       <div className="flex flex-col justify-center lg:space-y-2">
         <Link
           to="/"
