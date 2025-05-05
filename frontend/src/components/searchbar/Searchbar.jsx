@@ -14,6 +14,7 @@ import {
 } from "react-icons/ai";
 import SelectedCounteSidebar from "../../pages/products/SelectedCounteSidebar";
 import { changeToRelative } from "../../redux/features/chagneSearchbarPosition";
+import {prefixImageUrl} from '../../utils/constance'
 export default function Searchbar({
   setShowSidebarMenu,
   setSearchName,
@@ -49,7 +50,9 @@ export default function Searchbar({
     <div
       // transition-all duration-300
       className={`flex items-center flex-wrap w-full justify-between gap-2 
-        px-4 py-2 sm:px-6  ${homeSearchbarEffect === "dark" ? "bg-gray-900" : ""} `}
+        px-4 py-2 sm:px-6  ${
+          homeSearchbarEffect === "dark" ? "bg-gray-900" : ""
+        } `}
     >
       {/* Left side (Logo) */}
       <div
@@ -58,7 +61,7 @@ export default function Searchbar({
       >
         <PiRainbowCloudFill className="text-3xl sm:text-4xl md:text-5xl font-bold group-hover:text-indigo-700" />
         <span className="text-xl sm:text-2xl font-bold italic group-hover:text-indigo-700">
-          Cloud Dream
+          BuySwift
         </span>
       </div>
 
@@ -71,7 +74,7 @@ export default function Searchbar({
       </div>
 
       {/* Right side (Notifications, User, Menu) */}
-      <div className="flex order-2 md:order-3 items-center gap-4 sm:gap-3">
+      <div className="flex order-2 md:order-3 items-center gap-2 sm:gap-3">
         <Link
           to="/cart"
           onClick={() => setShowSidebarMenu(false)}
@@ -114,8 +117,8 @@ export default function Searchbar({
               // src={userInfo?.img}
               src={
                 userInfo?.img
-                  ? "/uploads/user/" + userInfo?.img?.split("/").pop()
-                  : "../../../public/userImge.png"
+                  ? prefixImageUrl + "user/" + userInfo?.img?.split("/").pop()
+                  : prefixImageUrl + "user/" + "userImge.png"
               }
               alt={userInfo?.username}
               className="w-8 h-8 z-10 object-cover sm:w-10 sm:h-10 border-2 border-indigo-500 rounded-full cursor-pointer"
@@ -133,7 +136,7 @@ export default function Searchbar({
                     className={`px-4 py-2 pt-4 font-semibold rounded text-[12px] sm:text-sm `}
                   >
                     {userInfo.username.length > 13
-                      ? userInfo.username.slice(0, 13) + " ..."
+                      ? userInfo.username?.slice(0, 13) + " ..."
                       : userInfo.username}
                   </li>
                   <li
@@ -162,7 +165,7 @@ export default function Searchbar({
             )}
           </div>
         ) : (
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="flex items-center gap-0.5 sm:gap-2">
             <button
               onClick={() => {
                 navigate("/login");

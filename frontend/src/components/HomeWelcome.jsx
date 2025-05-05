@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function HomeWelcome() {
   const navigate = useNavigate();
-  const ecommerceNameWords = "Welcome to\nCloud Dream\n Store"
+  const ecommerceNameWords = "Welcome to\nBuy Swift"
     .split("\n")
     .map((line) => line.trim().split(" "));
   const ecommerceDescriptionWords =
@@ -24,7 +24,7 @@ export default function HomeWelcome() {
     visible: (i) => ({
       opacity: 1,
       transition: {
-        delay: i * 0.3 ,
+        delay: i * 0.3,
         ease: "easeOut",
       },
     }),
@@ -32,10 +32,12 @@ export default function HomeWelcome() {
 
   return (
     <div
-      className="bg-gray-900 min-h-[calc(100vh-64px)] 
-        lg:min-h-screen text-gray-300 flex flex-col items-center 
+      className="bg-gray-900 min-h-[calc(100vh-112px)] md:min-h-screen 
+      text-gray-300 flex flex-col items-center 
         px-4  sm:px-6 md:px-10 lg:pt-15 lg:px-30"
     >
+      <div className="relative">
+      </div>
       {/* Top */}
       <div className="flex flex-col lg:flex-row items-center justify-between md:justify-around w-full">
         <div className="w-full lg:w-2/4 text-center lg:text-left">

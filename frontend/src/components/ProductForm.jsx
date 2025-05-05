@@ -1,3 +1,4 @@
+import Loader from "./Loader";
 export default function ProductForm({
   name,
   setName,
@@ -16,8 +17,9 @@ export default function ProductForm({
   categories,
   handleSubmit,
   handleDelete,
+  isLoadingDelete,
+  isLoading,
 }) {
-  
   const discontHandler = (e) => {
     const dis = +e.target.value;
     if (dis < 0) {
@@ -208,18 +210,33 @@ export default function ProductForm({
           disabled:cursor-not-allowed shadow-md"
           onClick={handleSubmit}
         >
-          Save Changes
+          {isLoading ? (
+            <div className="flex items-center gap-2">
+              <span>Submiting...</span>
+              <Loader loaderColor="border-white" />
+            </div>
+          ) : (
+            "Submit"
+          )}
         </button>
-        <button
-          className="w-full sm:w-auto cursor-pointer  text-white py-3 px-6 
+        {handleDelete && (
+          <button
+            className="w-full sm:w-auto cursor-pointer  text-white py-3 px-6 
           rounded-lg font-medium text-sm sm:text-base bg-gradient-to-r 
           from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 
           transition-all duration-300 disabled:bg-gray-400 
           disabled:cursor-not-allowed shadow-md"
-          onClick={handleDelete}
-        >
-          Delete
-        </button>{" "}
+            onClick={handleDelete}
+          >
+            {isLoadingDelete ? (
+              <div className="flex items-center gap-2">
+                <span>Deleting...</span> <Loader loaderColor="border-white" />
+              </div>
+            ) : (
+              "Delete"
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

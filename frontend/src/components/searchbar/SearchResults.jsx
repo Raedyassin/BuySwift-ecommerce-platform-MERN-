@@ -6,9 +6,9 @@ import { FaTimes } from "react-icons/fa";
 import { motion } from "motion/react";
 import { changeToRelative } from "../../redux/features/chagneSearchbarPosition";
 import { hiddenSearchResult } from "../../redux/features/searchResult";
-
+import {prefixImageUrl} from '../../utils/constance'
 import { useDispatch } from "react-redux";
-import PriceDiscont from "../../pages/products/priceDiscont";
+import PriceDiscont from "../../pages/products/PriceDiscont";
 export default function SearchResults({ searchName }) {
   const { data: products, isFetching } = useGetSearchedProductsQuery({
     searchName,
@@ -75,7 +75,7 @@ export default function SearchResults({ searchName }) {
                   justify-center rounded-lg  bg-white"
               >
                 <img
-                  src={"/uploads/" + product.img.split("/").pop()}
+                  src={prefixImageUrl + product.img.split("/").pop()}
                   alt={product.name}
                   className="max-w-full max-h-full  rounded-lg "
                 />

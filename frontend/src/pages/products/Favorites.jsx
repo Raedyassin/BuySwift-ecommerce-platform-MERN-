@@ -22,26 +22,29 @@ export default function Favorites() {
   return (
     <>
       <div className="px-4  md:px-15 lg:px-25 py-[2rem] ">
-        <motion.div
-          initial={{ opacity: 0, y: -100 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-          className="flex justify-between items-center"
-        >
-          <PageHeader>Favorite Products ({favoriteProducts.length})</PageHeader>
-          <button
-            onClick={clearFavoriteProducts}
-            className="mt-4 sm:mt-0 text-white font-bold    py-2 px-4 sm:px-6 
+        {favoriteProducts.length > 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="flex justify-between items-center"
+          >
+            <PageHeader>
+              Favorite Products ({favoriteProducts.length})
+            </PageHeader>
+            <button
+              onClick={clearFavoriteProducts}
+              className="mt-4 sm:mt-0 text-white font-bold    py-2 px-4 sm:px-6 
                 rounded-xl  bg-gradient-to-r from-red-600 to-pink-600 
                 hover:from-red-700 hover:to-pink-700 transition-all duration-300 
                 shadow-md cursor-pointer
                 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-50 
                 text-sm sm:text-base "
-          >
-            Clear
-          </button>
-        </motion.div>
-        {favoriteProducts.length === 0 && (
+            >
+              Clear
+            </button>
+          </motion.div>
+        ) : (
           <motion.div
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}

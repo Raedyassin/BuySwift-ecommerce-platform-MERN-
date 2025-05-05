@@ -10,14 +10,11 @@ export default defineConfig({
     react(),
     // flowbite.plugin(),
   ],
+  // this is only work on development not on production
   server: {
     proxy: {
       '/api/': 'http://localhost:5222',
       "/uploads/": "http://localhost:5222", 
     },
   }
-  // content: [
-  //   flowbite.content(),
-  // ],
-
 })

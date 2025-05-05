@@ -19,7 +19,7 @@ const addProduct = asyncHandler(
       case !req?.file?.filename:
         return res.status(400).json({ status: FAIL, message: "Image is required" })
       case !req.body:
-        return error("All fields are required") 
+        return error("Product Information are required") 
       case !name:
         return error("Name is required") 
       case !discription:
@@ -124,7 +124,6 @@ const updateProduct = asyncHandler(async (req, res) => {
   await product.save();
   res.json({ status: SUCCESS, data: { product } });
 });
-
 
 const deleteProduct = asyncHandler(
   async (req, res, next) => {
@@ -466,16 +465,16 @@ const fetchAllProducts = asyncHandler(
 const fetchHomeProducts = asyncHandler(
   async (req, res, next) => {
     const pageSize = req.query.limit ? +req.query.limit : 12;
-    const newProducts = await Product.find().sort({ createdAt: -1 })
+    const newProducts = await Product.find().select("-updatedAt -__v -reviews").sort({ createdAt: -1 })
       .limit(pageSize)
 
-    const topRatingProducts = await Product.find().sort({ rating: -1 })
+    const topRatingProducts = await Product.find().select("-updatedAt -__v -reviews").sort({ rating: -1 })
       .limit(pageSize)
 
-    const topSoldProducts = await Product.find().sort({ sold: -1 })
+    const topSoldProducts = await Product.find().select("-updatedAt -__v -reviews").sort({ sold: -1 })
       .limit(pageSize)
 
-    const topDiscountProducts = await Product.find().sort({ discount: -1 })
+    const topDiscountProducts = await Product.find().select("-updatedAt -__v -reviews").sort({ discount: -1 })
       .limit(pageSize)
 
     res.json({

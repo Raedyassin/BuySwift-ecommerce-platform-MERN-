@@ -119,7 +119,7 @@ export default function Sidebar({
         />
       )}
 
-      {/* Links for user */}
+      {/* Links */}
       <div className="flex flex-col justify-center lg:space-y-2">
         <Link
           to="/"
@@ -131,7 +131,7 @@ export default function Sidebar({
           <div>
             <AiOutlineHome className="  my-[1rem] mt-[0.65rem]" size={26} />
           </div>
-          <span className=" lg:hidden group-hover:block my-[1rem] mt-[0.65rem ">
+          <span className=" lg:hidden group-hover:block my-[1rem] mt-[0.65rem] ">
             Home
           </span>
         </Link>
@@ -219,7 +219,7 @@ export default function Sidebar({
             <Link
               to="/profile"
               onClick={() => setShowSidebarMenu(false)}
-              className={`lg:hidden group-hover:flex 
+              className={`flex 
                 items-center  gap-2 transition-transform transform 
               hover:translate-x-2  hover:text-indigo-800 ${
                 window.location.pathname === "/profile" ? "text-indigo-600" : ""
@@ -234,7 +234,7 @@ export default function Sidebar({
             </Link>
             <div
               onClick={logoutHandler}
-              className={`lg:hidden group-hover:flex items-center  gap-2 
+              className={`flex items-center  gap-2 
                 transition-transform transform 
               hover:translate-x-2 cursor-pointer hover:text-indigo-800 `}
             >
@@ -284,7 +284,6 @@ export default function Sidebar({
           </button>
         )}
 
-        {/* Links for admin */}
         {((dropDownOpen && userInfo) || (showSidebarMenu && userInfo)) && (
           <ul
             className={`relative lg:absolute lg:left-0 lg:top-0 mt-22 lg:mt-0 lg:space-y-0  lg:w-48
@@ -299,7 +298,7 @@ export default function Sidebar({
           >
             {userInfo.isAdmin && (
               <>
-                <li
+                {/* <li
                   className={`px-1 lg:px-4 my-1 mt-4 ${
                     ["/admin/dashboard", "/admin/allproductslist"].includes(
                       window.location.pathname
@@ -309,13 +308,13 @@ export default function Sidebar({
                   } `}
                 >
                   SHOW
-                </li>
+                </li> */}
                 <li>
                   <Link
                     to="/admin/dashboard"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 
-                      rounded my-1 
+                    className={`flex items-center gap-2 lg:px-4  py-2 lg:py-4 
+                      rounded   mt-1
                       hover:text-indigo-800
                       transition-transform transform hover:translate-x-2
                       ${
@@ -324,7 +323,7 @@ export default function Sidebar({
                           : ""
                       } `}
                   >
-                    <LuLayoutDashboard />
+                    <LuLayoutDashboard size={26} />
                     <span>Dashboard</span>
                   </Link>
                 </li>
@@ -332,8 +331,8 @@ export default function Sidebar({
                   <Link
                     to="/admin/allproductslist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 
-                      rounded my-1 
+                    className={`flex items-center gap-2 lg:px-4   py-2 lg:py-4 
+                      rounded my-[1.2rem] lg:my-[0.55rem]
                       hover:text-indigo-800
                       transition-transform transform hover:translate-x-2
                       ${
@@ -342,11 +341,11 @@ export default function Sidebar({
                           : ""
                       } `}
                   >
-                    <LiaWalletSolid />
+                    <LiaWalletSolid size={26} />
                     <span>All Products</span>
                   </Link>
                 </li>
-                <li
+                {/* <li
                   className={`px-1 lg:px-4 my-1 mt-4 ${
                     [
                       "/admin/createproduct",
@@ -360,36 +359,36 @@ export default function Sidebar({
                   } `}
                 >
                   MANGEMENT
-                </li>
+                </li> */}
                 <li>
                   <Link
                     to="/admin/createproduct"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4  rounded my-1 
+                    className={`flex items-center gap-2 lg:px-4  py-2 lg:py-4  rounded  
                       transition-transform transform hover:translate-x-2
-                      hover:text-indigo-800 ${
+                      hover:text-indigo-800 my-[1.2rem] lg:my-[0.55rem] ${
                         window.location.pathname === "/admin/createproduct"
                           ? "text-indigo-600"
                           : ""
                       } `}
                   >
-                    <FaRegPlusSquare />
-                    <span>Create Product</span>
+                    <FaRegPlusSquare size={26} />
+                    <span>Add Product</span>
                   </Link>
                 </li>
                 <li>
                   <Link
                     to="/admin/productlist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4  rounded my-1 
+                    className={`flex items-center gap-2 lg:px-4  py-2 lg:py-4  rounded   
                       transition-transform transform hover:translate-x-2
-                      hover:text-indigo-800 ${
+                      hover:text-indigo-800 my-[1.2rem] lg:my-[0.55rem] ${
                         window.location.pathname === "/admin/productlist"
                           ? "text-indigo-600"
                           : ""
                       } `}
                   >
-                    <RiProductHuntLine />
+                    <RiProductHuntLine size={26} />
                     <span>Products</span>
                   </Link>
                 </li>
@@ -397,15 +396,15 @@ export default function Sidebar({
                   <Link
                     to="/admin/categorylist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4  rounded my-1 
+                    className={`flex items-center gap-2 lg:px-4  py-2 lg:py-4  rounded  
                       transition-transform transform hover:translate-x-2
-                      hover:text-indigo-800 ${
+                      hover:text-indigo-800 my-[1.2rem] lg:my-[0.55rem] ${
                         window.location.pathname === "/admin/categorylist"
                           ? "text-indigo-600"
                           : ""
                       } `}
                   >
-                    <MdOutlineCategory />
+                    <MdOutlineCategory size={26} />
                     <span>Category</span>
                   </Link>
                 </li>
@@ -413,15 +412,15 @@ export default function Sidebar({
                   <Link
                     to="/admin/orderlist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 rounded my-1 
+                    className={`flex items-center gap-2 lg:px-4  py-2 lg:py-4 rounded  
                       transition-transform transform hover:translate-x-2
-                      hover:text-indigo-800 ${
+                      hover:text-indigo-800 my-[1.2rem] lg:my-[0.55rem] ${
                         window.location.pathname === "/admin/orderlist"
                           ? "text-indigo-600"
                           : ""
                       } `}
                   >
-                    <FaKeyboard />
+                    <FaKeyboard size={26} />
                     <span>Orders</span>
                   </Link>
                 </li>
@@ -429,15 +428,15 @@ export default function Sidebar({
                   <Link
                     to="/admin/userlist"
                     onClick={() => setShowSidebarMenu(false)}
-                    className={`flex items-center gap-1 px-4 lg:px-6 py-2 lg:py-4 rounded my-1 
+                    className={`flex items-center gap-2 lg:px-4  py-2 lg:py-4 rounded  
                       transition-transform transform hover:translate-x-2
-                      hover:text-indigo-800 ${
+                      hover:text-indigo-800 my-[1.2rem] lg:my-[0.55rem] ${
                         window.location.pathname === "/admin/userlist"
                           ? "text-indigo-600"
                           : ""
                       } `}
                   >
-                    <FaUsersLine />
+                    <FaUsersLine size={26} />
                     <span>Users</span>
                   </Link>
                 </li>
@@ -457,7 +456,7 @@ export default function Sidebar({
                 hover:translate-x-2 hover:text-indigo-800"
             >
               <RiLoginCircleLine className=" mr-2 mt-[2rem]" size={26} />
-              <span className=" hidden group-hover:block mt-[2rem] ">
+              <span className=" lg:hidden group-hover:block mt-[2rem] ">
                 Login
               </span>
             </Link>
@@ -470,7 +469,7 @@ export default function Sidebar({
                   hover:translate-x-2 hover:text-indigo-800"
             >
               <AiOutlineUserAdd className=" mr-2 mt-[2rem]" size={26} />
-              <span className=" hidden group-hover:block mt-[2rem] ">
+              <span className=" lg:hidden group-hover:block mt-[2rem] ">
                 Register
               </span>
             </Link>

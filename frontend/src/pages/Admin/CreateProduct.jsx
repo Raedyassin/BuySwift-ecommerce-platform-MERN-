@@ -18,7 +18,7 @@ export default function CreateProduct() {
   const [brand, setBrand] = useState("");
   const navigate = useNavigate();
 
-  const [createProduct] = useCreateProductMutation();
+  const [createProduct, { isLoading }] = useCreateProductMutation();
   const { data: categories } = useGetAllCategoryQuery();
 
   useEffect(() => {
@@ -127,6 +127,7 @@ export default function CreateProduct() {
             categories={categories?.data?.categories}
             handleSubmit={handleSubmit}
             handleDelete={false}
+            isLoading = {isLoading}
           />
         </div>
       </div>

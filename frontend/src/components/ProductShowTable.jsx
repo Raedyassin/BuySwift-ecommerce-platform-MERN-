@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MdKeyboardArrowUp, MdKeyboardArrowDown } from "react-icons/md";
 import { FaSitemap } from "react-icons/fa";
+import { prefixImageUrl } from "../utils/constance";
 
 export default function ProductShowTable({ orderItems, px, showColor, className }) {
   const [showDetails, setShowDetails] = useState(true);
@@ -45,19 +46,19 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
           <table className="w-full border-collapse ">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700">
                   Image
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700">
                   Product
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700">
                   Quantity
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700">
                   Price
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                <th className="px-4 py-3 text-left text-xs sm:text-sm font-semibold text-gray-700">
                   Total
                 </th>
               </tr>
@@ -72,10 +73,12 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
                     <img
                       src={
                         item?.product?.img
-                          ? `/uploads/${item.product.img.split("/").pop()}`
+                          ? `${prefixImageUrl}${item.product.img
+                              .split("/")
+                              .pop()}`
                           : item.img
-                          ? `/uploads/${item.img.split("/").pop()}`
-                          : `/uploads/${item.image.split("/").pop()}`
+                          ? `${prefixImageUrl}${item.img.split("/").pop()}`
+                          : `${prefixImageUrl}${item.image.split("/").pop()}`
                       }
                       alt={item?.product?.name || item.name}
                       className=" max-h-full max-w-full rounded-lg"
@@ -84,18 +87,21 @@ export default function ProductShowTable({ orderItems, px, showColor, className 
                   </td>
                   <td className="p-4">
                     <Link
-                      className="text-black font-medium hover:underline hover:text-purple-600 "
+                      className="text-black font-medium text-xs sm:text-sm hover:underline 
+                      hover:text-purple-600 line-clamp-3 md:line-clamp-2"
                       to={`/product/${item?.product?._id || item._id}`}
                     >
                       {item?.product?.name || item.name}
                     </Link>
                   </td>
-                  <td className="p-4 text-gray-600">{item.quantity}</td>
-                  <td className="p-4 text-gray-600">
+                  <td className="p-4 text-gray-600 text-xs sm:text-sm">
+                    {item.quantity}
+                  </td>
+                  <td className="p-4 text-gray-600 text-xs sm:text-sm">
                     $
                     {item?.product?.price?.toFixed(2) || item.price?.toFixed(2)}
                   </td>
-                  <td className="p-4 text-indigo-600 font-bold">
+                  <td className="p-4 text-indigo-600 font-bold text-xs sm:text-sm">
                     $
                     {(
                       item.quantity * (item?.product?.price || item.price)

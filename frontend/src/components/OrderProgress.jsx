@@ -11,7 +11,7 @@ export default function OrderProgress({ progress, createAt, isPaid }) {
   const [showDetails, setShowDetails] = useState(true);
   return (
     <div>
-      <div className="flex items-center justify-between  px-5 py-2   gap-2">
+      <div className="flex items-center justify-between px-3 sm:px-5 py-2   gap-2">
         <div className={`flex  items-center     gap-2`}>
           <FaBoxArchive size={20} />
           <h1 className="font-bold text-xl  italic">Order Progress</h1>

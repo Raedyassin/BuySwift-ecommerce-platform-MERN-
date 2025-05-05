@@ -181,7 +181,7 @@ export default function UserList() {
     );
   }
   return (
-    <div className="mx-[2rem] pt-[2rem]">
+    <div className="mx-[1rem] sm:mx-[2rem] pt-[2rem]">
       <AdminMenu />
       <motion.div
         initial={{ opacity: 0, y: -100 }}
@@ -199,7 +199,7 @@ export default function UserList() {
         <div className="flex items-center mt-6 mb-3  flex-wrap justify-between">
           <div
             className="flex items-center mt-2 order-2 lg:order-1 border-2 border-gray-100 rounded-2xl 
-                  p-1 focus-within:border-gray-200"
+                  p-1 focus-within:border-gray-200 text-sm sm:text-base"
           >
             <CiFilter className=" text-gray-500 w-7 h-7  " />
             <select
@@ -247,10 +247,11 @@ export default function UserList() {
           <div
             className="border-2 mt-2 w-full justify-around lg:w-[30rem] lg:order-2 
           order-1 border-gray-100 rounded-2xl p-1 focus-within:border-gray-200 flex
-          items-center gap-2"
+          items-center gap-2 text-sm sm:text-base"
           >
             <select
-              className="w-[8rem] p-2 focus:outline-none placeholder:italic rounded-xl "
+              className="w-[8rem] p-2  focus:outline-none placeholder:italic 
+              rounded-xl  "
               onChange={(e) => setSearchBy(e.target.value)}
             >
               <option value="id"> Id</option>
@@ -320,7 +321,7 @@ export default function UserList() {
         transition={{ duration: 1 }}
       >
         <div className="mb-[1rem] pb-5 mt-[1rem]  w-full overflow-x-auto  rounded shadow-[0px_2px_10px_rgba(0,0,0,0.1)]">
-          <table className="w-full  ">
+          <table className="w-full text-sm sm:text-base ">
             <thead>
               <tr>
                 <th className="p-4 pl-6 text-start bg-[#FAFAFC] ">ID</th>
@@ -358,8 +359,9 @@ export default function UserList() {
                       className={`${selectedUser === user._id && "bg-sky-50"}`}
                     >
                       <td
-                        className={`flex items-center gap-2 justify-start  p-4 pl-6 min-w-50 `}
+                        className={`p-4 pl-6 min-w-50 `}
                       >
+                        <div className="flex items-center gap-2">
                         <input
                           type="checkbox"
                           checked={selectedUser === user._id}
@@ -367,11 +369,12 @@ export default function UserList() {
                           className="cursor-pointer w-4 h-4"
                         />
                         <span className="py-2">{user._id}</span>
+                        </div>
                       </td>
-                      <td className=" p-4   min-w-50 ">
+                      <td className=" p-4  min-w-30  max-w-55 ">
                         {user.createdAt?.substring(0, 10)}
                       </td>
-                      <td className=" p-4 min-w-50 ">
+                      <td className=" p-4 min-w-50  max-w-55 ">
                         {editableuserId === user._id ? (
                           <div className="flext items-center">
                             <input

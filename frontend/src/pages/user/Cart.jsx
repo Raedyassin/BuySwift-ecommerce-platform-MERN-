@@ -10,7 +10,7 @@ import { motion } from "motion/react";
 import EmptyCart from "../../components/EmptyCart";
 import { useEffect } from "react";
 import QuantitySelector from "../products/QuantitySelector";
-
+import {prefixImageUrl} from '../../utils/constance'
 export default function Cart() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -88,7 +88,7 @@ export default function Cart() {
                       <img
                         src={
                           item.img
-                            ? `/uploads/${
+                            ? `${prefixImageUrl}${
                                 item?.img?.split("/").pop() ||
                                 "defaultImage.png"
                               }`
@@ -102,7 +102,7 @@ export default function Cart() {
                     <div className="flex-1 mt-4 sm:mt-0 ml-4">
                       <Link
                         to={`/product/${item._id}`}
-                        className="text-base sm:text-lg md:text-xl font-semibold 
+                        className="text-sm sm:text-base md:text-lg font-semibold 
                       text-black hover:underline hover:text-purple-600 transition-colors 
                       duration-300 sm:line-clamp-1 line-clamp-2 "
                       >

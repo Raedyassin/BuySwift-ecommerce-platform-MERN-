@@ -7,7 +7,7 @@ import {
   useDeleteProductMutation,
 } from "../../redux/apis/productApiSlice";
 import { motion } from "motion/react";
-// import Message from "../../components/Message";
+import {prefixImageUrl} from '../../utils/constance'
 import AdminMenu from "./AdminMenu";
 import PageLoader from "../../components/PageLoader";
 import PageHeader from "../../components/PageHeader";
@@ -139,7 +139,7 @@ export default function UserList() {
   }
 
   return (
-    <div className="mx-[2rem] pt-[2rem]">
+    <div className="mx-[1rem] sm:mx-[2rem] pt-[2rem]">
       <AdminMenu />
       <motion.div
         initial={{ opacity: 0, y: -100 }}
@@ -153,6 +153,7 @@ export default function UserList() {
         initial={{ opacity: 0, x: 100 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 1 }}
+        className="text-sm sm:text-base"
       >
         <div className="flex items-center mt-6 mb-3  flex-wrap justify-between">
           <div
@@ -268,7 +269,7 @@ export default function UserList() {
           {/*  */}
 
           <div
-            className="border-2 mt-2 w-full justify-around lg:w-[30rem] lg:order-2 
+            className="border-2  mt-2 w-full justify-around lg:w-[30rem] lg:order-2 
           order-1 border-gray-100 rounded-2xl p-1 focus-within:border-gray-200 flex
           items-center gap-2"
           >
@@ -361,8 +362,11 @@ export default function UserList() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <div className="mb-[1rem] pb-5 mt-[1rem]  w-full overflow-x-auto  rounded shadow-[0px_2px_10px_rgba(0,0,0,0.1)]">
-          <table className="w-full  ">
+        <div
+          className="mb-[1rem] pb-5 mt-[1rem]  w-full overflow-x-auto  
+          rounded shadow-[0px_2px_10px_rgba(0,0,0,0.1)]"
+        >
+          <table className="w-full text-sm sm:text-base  ">
             <thead>
               <tr>
                 <th className="p-4 pl-6 text-start bg-[#FAFAFC] ">ID</th>
@@ -399,33 +403,35 @@ export default function UserList() {
                 {products?.data?.products?.map((product) => (
                   <tr
                     key={product._id}
-                    className={`${
+                    className={`hover:bg-sky-50 ${
                       selectedProduct === product._id && "bg-sky-50"
                     }`}
                   >
                     <td
-                      className={`flex items-center gap-2 justify-start  
-                          p-4 pl-6 min-w-40 `}
+                      className={`p-4 pl-6 min-w-40 h-full  `}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selectedProduct === product._id}
-                        onChange={() => slectedUserHandler(product._id)}
-                        className="cursor-pointer w-4 h-4"
-                      />
-                      <Link
-                        to={`/product/${product._id}`}
-                        className="py-2 cursor-pointer  hover:text-indigo-600 hover:underline"
-                      >
-                        {product._id}
-                      </Link>
+                      <div className="flex items-center gap-2 h-full">
+                        <input
+                          type="checkbox"
+                          checked={selectedProduct === product._id}
+                          onChange={() => slectedUserHandler(product._id)}
+                          className="cursor-pointer w-4 h-4"
+                        />
+                        <Link
+                          to={`/product/${product._id}`}
+                          className="  cursor-pointer  hover:text-indigo-600 
+                          hover:underline"
+                        >
+                          {product._id}
+                        </Link>
+                      </div>
                     </td>
-                    <td className=" p-4   min-w-35 ">
+                    <td className=" p-4  not-only-of-type:  min-w-30 ">
                       {product.createdAt?.substring(0, 10)}
                     </td>
-                    <td className=" flex items-center p-4 min-w-60 ">
+                    <td className=" flex items-center   p-4 min-w-60 ">
                       <img
-                        src={"/uploads/" + product.img.split("/").pop()}
+                        src={prefixImageUrl + product.img.split("/").pop()}
                         alt={product.name}
                         className="h-10 w-10 mr-3 block object-cover rounded-full"
                       />
@@ -435,26 +441,26 @@ export default function UserList() {
                           : product.name}
                       </p>
                     </td>
-                    <td className=" p-4 min-w-30 ">
+                    <td className=" p-4 min-w-30  ">
                       {product.price?.toLocaleString("en-US", {
                         style: "currency",
                         currency: "USD",
                       })}
                     </td>
-                    <td className=" p-4 min-w-30 ">
+                    <td className=" p-4 min-w-20  ">
                       {product.rating.toFixed(2)}
                     </td>
-                    <td className=" p-2 min-w-30 ">
+                    <td className=" p-2 pl-4 min-w-25  ">
                       {product.brand?.toUpperCase()}
                     </td>
-                    <td className=" p-2 min-w-35 ">
+                    <td className=" p-2 pl-4 min-w-30  ">
                       {product?.category?.name}
                     </td>
-                    <td className=" p-2 min-w-30 ">
+                    <td className=" p-2 min-w-30  ">
                       {product?.quantity} Piece
                     </td>
-                    <td className="flex min-w-30 justify-center p-4 items-center">
-                      <div className="flex gap-2">
+                    <td className=" min-w-20  p-4   ">
+                      <div className="flex  gap-2">
                         <button
                           onClick={() =>
                             navigate(`/admin/product/update/${product._id}`)

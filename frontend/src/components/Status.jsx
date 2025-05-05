@@ -2,7 +2,7 @@ import { GoDotFill } from "react-icons/go";
 
 export default function Status({ status,border }) {
   return (
-    <div>
+    <div className="text-sm sm:text-base">
       {status === "pending" ? (
         <div
           className={`flex items-center gap-1 text-[#FFB302] px-3 py-1

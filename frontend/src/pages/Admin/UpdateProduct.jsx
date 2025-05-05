@@ -11,6 +11,7 @@ import AdminMenu from "./AdminMenu";
 import { motion } from "motion/react";
 import PageLoader from "../../components/PageLoader";
 import ProductForm from "../../components/ProductForm";
+import {prefixImageUrl} from '../../utils/constance'
 export default function UpdateProduct() {
   const { id } = useParams();
   const [image, setImage] = useState("");
@@ -26,8 +27,8 @@ export default function UpdateProduct() {
   const navigate = useNavigate();
 
   const { data: product, isLoading } = useGetProductByIdQuery(id);
-  const [deleteProduct] = useDeleteProductMutation();
-  const [updateProduct] = useUpdateProductMutation();
+  const [deleteProduct, { isLoading: deleteLoading }] = useDeleteProductMutation();
+  const [updateProduct,{isLoading:updateLoading}] = useUpdateProductMutation();
   const { data: categories } = useGetAllCategoryQuery();
 
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function UpdateProduct() {
                   src={
                     newImage !== image
                       ? URL.createObjectURL(newImage)
-                      : "/uploads/" + image.split("/").pop()
+                      : prefixImageUrl + image.split("/").pop()
                   }
                   alt={name}
                   className="max-h-48 rounded-lg  object-cover"
@@ -169,8 +170,9 @@ export default function UpdateProduct() {
               categories={categories?.data?.categories}
               handleSubmit={handleSubmit}
               handleDelete={handleDelete}
+              isLoadingDelete={deleteLoading}
+              isLoading={updateLoading}
             />
-
           </div>
         </div>
       </motion.div>

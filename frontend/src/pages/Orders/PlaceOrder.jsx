@@ -66,7 +66,7 @@ const PlaceOrder = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="mb-8">
+      <div className="mb-8 sm:mt-5 md:mt-0">
         <ProgressSteps step1 step2 step3 />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

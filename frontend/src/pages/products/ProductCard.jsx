@@ -5,7 +5,8 @@ import { addToCart } from "../../redux/features/cart/cartSlice";
 import HeartIcon from "./HeartIcon";
 import Ratings from "./Ratings";
 import { numberReviewsHandler } from "../../utils/numberReviews";
-import PriceDiscont from "./priceDiscont";
+import PriceDiscont from "./PriceDiscont";
+import { prefixImageUrl } from "../../utils/constance";
 export default function ProductCard({ product, sold }) {
   const dispatch = useDispatch();
   return (
@@ -25,7 +26,7 @@ export default function ProductCard({ product, sold }) {
               "
             >
               <img
-                src={"/uploads/" + product.img.split("/").pop()}
+                src={prefixImageUrl + product.img.split("/").pop()}
                 alt={product?.name}
                 className=" max-h-full max-w-full rounded-lg "
               />
@@ -38,7 +39,6 @@ export default function ProductCard({ product, sold }) {
                 {product.discount}% off
               </div>
             )}
-            
             {(+product.sold > 99 || sold) && (
               <div
                 className="absolute top-0 right-0 bg-yellow-500 text-white text-xs

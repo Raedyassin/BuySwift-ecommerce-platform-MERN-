@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import HeartIcon from "./HeartIcon";
-import PriceDiscont from "./priceDiscont";
+import PriceDiscont from "./PriceDiscont";
+import { prefixImageUrl } from "../../utils/constance";
 export default function Product({ product }) {
   return (
     <div
@@ -14,7 +15,7 @@ export default function Product({ product }) {
           className="w-full h-[10rem] rounded-xl flex justify-center items-center"
         >
           <img
-            src={product.img}
+            src={prefixImageUrl + product.img?.split("/")?.pop()}
             alt={product.name}
             className=" max-h-full max-w-full rounded-lg"
           />

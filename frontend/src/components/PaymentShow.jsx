@@ -5,7 +5,7 @@ export default function PaymentShow({ paymentMethod }) {
     <div>
       {paymentMethod === "VodafoneCash" ? (
         <div className="flex items-center gap-1">
-          <SiVodafone className="w-5 h-5 ml-3 text-[#cc2131]" />
+          <SiVodafone className="w-5 h-5  sm:ml-3 text-[#cc2131]" />
           <span className="text-sm font-medium text-[#cc2131] italic">
             Vodafone Cash
           </span>

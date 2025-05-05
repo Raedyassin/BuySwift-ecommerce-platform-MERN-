@@ -203,7 +203,9 @@ export default function Shipping() {
                 {/* VodafoneCash */}
                 <label
                   htmlFor="VodafoneCash"
-                  className="flex items-center space-x-2 sm:space-x-1 cursor-pointer p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 flex-wrap gap-1"
+                    className="flex items-center space-x-2 sm:space-x-1 cursor-pointer 
+                  p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 
+                  flex-wrap gap-1"
                 >
                   <input
                     type="radio"

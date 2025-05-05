@@ -43,8 +43,9 @@ export default function SearchForm({
   return (
     <div
       className="flex items-center w-full gap-1 sm:gap-2 px-2 py-1
-      rounded-full border border-gray-50 hover:border-gray-200 focus-within:border-gray-200
-      bg-gray-50  focus-within:ring-2 focus-within:ring-gray-50"
+      rounded-full border border-gray-200 hover:border-gray-200 
+      focus-within:border-gray-200 bg-gray-50  
+      focus-within:ring-2 focus-within:ring-gray-50"
     >
       <FiSearch
         onClick={goToResult}

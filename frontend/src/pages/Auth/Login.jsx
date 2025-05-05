@@ -48,7 +48,7 @@ export default function Login() {
   return (
     <>
       <section
-        className="min-h-screen flex flex-col lg:flex-row items-center 
+        className="min-h-[calc(100vh-112px)] md:min-h-screen flex flex-col lg:flex-row items-center 
     justify-center bg-gradient-to-br from-white via-cream-50 to-gray-200
     relative overflow-hidden" //  bg-white lg:bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-4.0.3&auto=format&fit=crop&w=1964&q=80')]
         //  lg:bg-no-repeat lg:bg-right lg:bg-cover"

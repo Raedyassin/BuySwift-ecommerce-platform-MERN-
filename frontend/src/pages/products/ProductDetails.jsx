@@ -24,9 +24,10 @@ import PageLoader from "../../components/PageLoader";
 import DontHave from "../../components/DontHave";
 import Review from "./Review";
 import apiSlice from "../../redux/services/apiSlice";
-import PriceDiscont from "./priceDiscont";
+import PriceDiscont from "./PriceDiscont";
 import QuantitySelector from "./QuantitySelector";
 import ImageZoom from "./ImageZoom";
+import { prefixImageUrl } from "../../utils/constance";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -131,7 +132,7 @@ export default function ProductDetails() {
           }
         )
       );
-      toast.success("Rating submitted successfully");
+      // toast.success("Rating submitted successfully");
     } catch (error) {
       if (error.status < 500) {
         toast.error(error?.data?.message || "Please try again later.");
@@ -159,7 +160,7 @@ export default function ProductDetails() {
           }
         )
       );
-      toast.success("Review submitted successfully");
+      // toast.success("Review submitted successfully");
     } catch (error) {
       if (error.status < 500) {
         toast.error(error?.data?.message || "Please try again later.");
@@ -182,7 +183,7 @@ export default function ProductDetails() {
           quantity: quantityBuyed,
         })
       );
-      toast.success("Product added to cart");
+      // toast.success("Product added to cart");
     } else {
       toast.error("Please login first");
       navigate(`/login?redirect=/product/${product?.data?.product?._id}`);
@@ -220,7 +221,7 @@ export default function ProductDetails() {
               hover:scale-105 h-72 sm:h-96 lg:h-[28rem] "
               >
                 <ImageZoom
-                  src={`/uploads/${product?.data?.product?.img
+                  src={`${prefixImageUrl}${product?.data?.product?.img
                     .split("/")
                     .pop()}`}
                   name={product?.name}

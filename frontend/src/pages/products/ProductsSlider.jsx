@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Ratings from "./Ratings";
 import { useNavigate } from "react-router";
-
+import {prefixImageUrl} from '../../utils/constance'
 // Custom Next Arrow
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -172,7 +172,7 @@ export default function RelatedProducts({ relatedProducts }) {
             >
               <div className="w-full h-full  flex justify-center items-center">
                 <img
-                  src={"/uploads/" + product.img.split("/").pop()}
+                  src={prefixImageUrl + product.img.split("/").pop()}
                   alt={product?.name}
                   className=" max-h-full rounded-lg"
                 />
@@ -186,7 +186,7 @@ export default function RelatedProducts({ relatedProducts }) {
               >
                 <h3 className="text-white text-sm sm:text-base md:text-lg font-semibold text-center">
                   {product.name.length > 15
-                    ? product.name.slice(0, 15) + "..."
+                    ? product.name?.slice(0, 15) + "..."
                     : product.name}
                 </h3>
                 <p className="text-white text-sm sm:text-base font-medium mt-1">

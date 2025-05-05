@@ -1,10 +1,11 @@
 import { Discuss } from "react-loader-spinner";
 
-export default function PageLoader({height}) {
-  
+export default function PageLoader({ height, className }) {
   return (
     <div
-      className={`flex justify-center items-center ${height || "h-[70vh]"} `}
+      className={`flex justify-center  items-center ${
+        height || "h-[70vh]"
+      } ${className}`}
     >
       <Discuss
         className="w-full h-full "

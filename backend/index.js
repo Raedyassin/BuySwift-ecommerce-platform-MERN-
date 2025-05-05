@@ -4,7 +4,7 @@ import 'dotenv/config'
 import path from 'path'
 import cookieParser from 'cookie-parser'
 import multer from "multer";
-
+import cors from 'cors'
 // import cors from 'cors'
 
 // routes
@@ -26,6 +26,17 @@ const PORT = process.env.PORT || 5222
 
 connectDB();
 const app = express()
+
+// app.use(cors())
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl) or any origin
+    if (!origin) return callback(null, true);
+    return callback(null, true);
+  },
+  credentials: true
+}));
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser());
@@ -50,7 +61,7 @@ app.use((err, req, res, next) => {
   if (err instanceof AppError) {
     return res.status(err.status).json({ status: err.statusText, message: err.message });
   }
-  // image error by multer middleware
+  // image error (by multer)
   else if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
@@ -58,13 +69,12 @@ app.use((err, req, res, next) => {
         message: 'Image size should not exceed 10MB',
       });
     }
-    // image error by multer middleware
     return res.status(400).json({
       status: FAIL,
       message: err.message,
     });
   }
-  return res.status(500).json({ status: ERROR, message: "Internal Server Error" });
+  return res.status(500).json({ status: ERROR, message: "Internal server error" });
 })
 
 app.listen(PORT, () => {

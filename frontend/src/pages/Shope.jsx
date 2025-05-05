@@ -54,7 +54,8 @@ export default function Shope() {
   }, [searchParams]);
 
   useEffect(() => {
-    window.document.title = "🛒 Shop";
+    // window.document.title = "🛒 Shop";
+    window.document.title = "Shop";
     window.scrollTo(0, 0);
   }, []);
 
@@ -102,8 +103,8 @@ export default function Shope() {
     ...Array.from(
       new Set(
         filterData?.data?.products
-          ?.map((product) => product.brand)
-          .filter((brand) => brand !== undefined)
+          ?.map((product) => product.brand?.trim()?.toLowerCase())
+          .filter((brand) => brand !== undefined && brand !== null)
       )
     ),
   ];
@@ -237,10 +238,11 @@ export default function Shope() {
                   >
                     Filter by Brands
                   </h2>
+                  
                   <div className="space-y-3 px-4">
                     {uniqueBrands
-                      .slice(0, showMoreBrand ? uniqueBrands.length : 5)
-                      .map((brand, index) => (
+                      ?.slice(0, showMoreBrand ? uniqueBrands.length : 5)
+                      ?.map((brand, index) => (
                         <div key={index} className="flex items-center">
                           <input
                             type="radio"
@@ -374,7 +376,10 @@ export default function Shope() {
             >
               {filterData?.data?.products?.map((prod, index) => {
                 if (newInputRadio !== 0) {
-                  if (uniqueBrands[newInputRadio - 1] === prod.brand) {
+                  if (
+                    uniqueBrands[newInputRadio - 1] ===
+                    prod.brand?.trim()?.toLowerCase()
+                  ) {
                     return (
                       <motion.div
                         className="flex justify-center items-center"
@@ -413,7 +418,7 @@ export default function Shope() {
               })}
               <div className=" h-60 " ref={LoaderRef}></div>
               {isFetching &&
-                [...Array(6 + 6)].map((_, index) => (
+                [...Array(12)].map((_, index) => (
                   <div key={index}>
                     <ProductLoader />
                   </div>

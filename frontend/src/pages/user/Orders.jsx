@@ -16,6 +16,7 @@ import Loader from "../../components/Loader";
 import PageLoader from "../../components/PageLoader";
 import OrderDetails from "../../components/OrderDetails";
 import { Link } from "react-router-dom";
+import { prefixImageUrl } from "../../utils/constance";
 export default function Orders() {
   const [page, setPage] = useState(1);
   const [selectedItem, setSelectedItem] = useState(0);
@@ -32,8 +33,7 @@ export default function Orders() {
 
   useEffect(() => {
     window.document.title = "Orders";
-        window.scrollTo(0, 0);
-
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function Orders() {
   return (
     <div className=" ">
       <div className=" mx-auto px-4 sm:px-6 lg:pl-8 py-8">
-        <div className="lg:flex lg:flex-row relative">
+        <div className="lg:flex text-sm sm:text-base lg:flex-row relative">
           {/* Left Sidebar  */}
           {data?.ordersLength > 0 && (
             <motion.div
@@ -96,7 +96,7 @@ export default function Orders() {
               style={{ zIndex: 1000 }}
               className={`fixed  left-0 lg:left-[70px] top-22 sm:top-24 
                 md:top-14  lg:top-0 w-[50%] bg-white  overflow-auto shadow-[0px_10px_10px_rgba(0,0,0,0.1)]
-                  h-[87.5%] sm:h-[86%] lg:h-screen lg:ml-2 lg:w-[15rem] lg:block  pb-20 lg:pb-0 ${
+                    h-[95%] lg:h-screen lg:ml-2 lg:w-[15rem] lg:block  pb-20 lg:pb-0 ${
                     openOrders ? "block" : "hidden"
                   }`}
             >
@@ -200,10 +200,10 @@ export default function Orders() {
                   shadow-[0px_0px_10px_rgba(0,0,0,0.1)] "
                 >
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
                       <FaOrcid className="text-indigo-600" size={28} />
-                      <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
-                        Order #{data?.data?.orders[selectedItem]?._id}
+                      <h1 className="text-lg sm:text-2xl font-bold text-gray-900">
+                        {data?.data?.orders[selectedItem]?._id}
                       </h1>
                     </div>
                     <GoListOrdered
@@ -211,7 +211,7 @@ export default function Orders() {
                       className="lg:hidden h-10 w-10 p-2 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 cursor-pointer transition-colors duration-200"
                     />
                   </div>
-                  <div className="flex items-center gap-3 mt-4">
+                  <div className="flex items-center gap-2 mt-4">
                     <IoTime className="text-emerald-500" size={22} />
                     <h3 className="text-sm sm:text-base font-medium text-gray-600">
                       Created At:{" "}
@@ -241,13 +241,13 @@ export default function Orders() {
                     className="lg:col-span-2 space-y-6"
                   >
                     {/* Order Details */}
-                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-4 sm:p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
                       <OrderDetails order={data?.data?.orders[selectedItem]} />
                     </div>
 
                     {/* Order Items */}
-                    <div className="bg-white rounded-xl py-1 px-4 shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
-                      <div className="flex items-center justify-between p-6 border-b border-gray-100">
+                    <div className="bg-white rounded-xl p-4 sm:px-6 py-1  shadow-[0px_0px_10px_rgba(0,0,0,0.1)]  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                      <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-100">
                         <div className="flex items-center gap-3">
                           <FaSitemap size={24} />
                           <h1 className="text-xl font-bold italic text-gray-900">
@@ -273,13 +273,19 @@ export default function Orders() {
                             (item) => (
                               <div
                                 key={item.product._id}
-                                className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 border-b border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors duration-200"
+                                className="flex flex-col sm:flex-row justify-between items-start 
+                                sm:items-center p-4 border-b border-gray-100 rounded-2xl gap-1
+                                hover:bg-gray-50 transition-colors duration-200"
                               >
-                                <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                                  <div className="flex items-center justify-center w-full sm:w-24 sm:h-24 rounded-lg bg-white">
+                                <div className="grid grid-cols-1 sm:grid-cols-4 sm:gap-4 gap-2 
+                                w-full ">
+                                  {/* Image */}
+                                  <div className="sm:col-span-1 flex items-center justify-center w-full 
+                                      sm:w-24 h-35 sm:h-24 rounded-lg bg-white"
+                                  >
                                     <img
                                       className="max-w-full max-h-full rounded-lg"
-                                      src={`/uploads/${item.product.img
+                                      src={`${prefixImageUrl}${item.product.img
                                         .split("/")
                                         .pop()}`}
                                       onError={(e) =>
@@ -289,12 +295,15 @@ export default function Orders() {
                                       alt={item.product.name}
                                     />
                                   </div>
-                                  <div className="flex flex-col text-gray-600 space-y-1">
+                                  {/* Details */}
+                                  <div className="sm:col-span-3 text-gray-600 space-y-1">
                                     <h1
                                       onClick={() =>
                                         navigate(`/product/${item.product._id}`)
                                       }
-                                      className=" text-gray-700 font-bold hover:text-indigo-800 hover:underline cursor-pointer transition-colors duration-200"
+                                      className=" text-gray-700 font-bold hover:text-indigo-800 
+                                      hover:underline cursor-pointer transition-colors duration-200
+                                      line-clamp-3 md:line-clamp-2"
                                     >
                                       {item.product.name}
                                     </h1>
@@ -312,7 +321,8 @@ export default function Orders() {
                                     </p>
                                   </div>
                                 </div>
-                                <div className="flex items-center mt-4 sm:mt-0">
+                                {/* Price */}
+                                <div className=" flex items-center mt-4 sm:mt-0">
                                   <h1 className="font-bold text-indigo-700">
                                     ${item.product.price.toFixed(2)}
                                   </h1>
@@ -333,7 +343,7 @@ export default function Orders() {
                     className="space-y-6"
                   >
                     {/* Order Progress */}
-                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-4 sm:p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
                       <OrderProgress
                         progress={
                           data?.data?.orders[selectedItem]?.orderProgress
@@ -343,7 +353,7 @@ export default function Orders() {
                     </div>
 
                     {/* Shipping Address */}
-                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
+                    <div className="bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] p-4 sm:p-6  transition-all duration-300 hover:shadow-[0px_0px_20px_rgba(0,0,0,0.1)]">
                       <ShippingAdress
                         shippingAddress={
                           data?.data?.orders[selectedItem]?.shippingAddress

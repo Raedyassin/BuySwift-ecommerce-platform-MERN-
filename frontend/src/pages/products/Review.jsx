@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import { useDispatch } from "react-redux";
 import apiSlice from "../../redux/services/apiSlice";
+import { prefixImageUrl } from "../../utils/constance";
 
 export default function Review({ review, userInfo, productId  }) {
   const [showMoreDescription, setShowMoreDescription] = useState([]);
@@ -60,8 +61,8 @@ export default function Review({ review, userInfo, productId  }) {
           <img
             src={
               review?.user?.img
-                ? "/uploads/user/" + review?.user?.img?.split("/").pop()
-                : "../../../public/userImge.png"
+                ? prefixImageUrl + "user/" + review?.user?.img?.split("/").pop()
+                : prefixImageUrl + "user/" + "userImge.png"
             }
             alt={review?.user?.username}
             className="w-11 h-11 object-cover border-2 border-indigo-200 rounded-full"
@@ -162,9 +163,7 @@ export default function Review({ review, userInfo, productId  }) {
             )}
           </p>
         )}
-        {review.rating !== -1 && (
-          <Ratings rating={review.rating} text={``} />
-        )}
+        {review.rating !== -1 && <Ratings rating={review.rating} text={``} />}
       </div>
     </div>
   );

@@ -4,16 +4,16 @@ import {
   useGetAllCategoryQuery,
   useDeleteCategoryMutation,
 } from "../../redux/apis/categoryApiSlice";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { toast } from "react-toastify";
 import CategoryForm from "../../components/CategoryForm";
-import Modale from "../../components/Modale";
 import AdminMenu from "./AdminMenu";
 import PageLoader from "../../components/PageLoader";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import PageHeader from "../../components/PageHeader";
+const Modale = lazy(() => import("../../components/Modale"));
 
 export default function CategoryManagement() {
   const {
@@ -28,9 +28,9 @@ export default function CategoryManagement() {
   const [updatingName, setUpdatingName] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [createCategory] = useCreateCategoryMutation();
-  const [updateCategory] = useUpdateCategoryMutation();
-  const [deleteCategory] = useDeleteCategoryMutation();
+  const [createCategory, { isLoading: isCreatingLoading }] = useCreateCategoryMutation();
+  const [updateCategory, { isLoading: isUpdatingLoading }] = useUpdateCategoryMutation();
+  const [deleteCategory, { isLoading: isDeletingLoading }] = useDeleteCategoryMutation();
 
     useEffect(() => {
       window.document.title = "Category Table";
@@ -130,6 +130,7 @@ export default function CategoryManagement() {
               value={name}
               setValue={setName}
               handleSubmit={handleCreateCategory}
+              isLoadingSubmit={isCreatingLoading}
               button="Create"
               className="space-y-4"
             />
@@ -140,7 +141,7 @@ export default function CategoryManagement() {
             animate={{ opacity: 1, y: 0 }}
             initial={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="mt-8 bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] overflow-hidden "
+            className="mt-8 text-sm sm:text-base bg-white rounded-xl shadow-[0px_0px_10px_rgba(0,0,0,0.1)] overflow-hidden "
           >
             {/* <div className="bg-gradient-to-r from-fuchsia-500 to-slate-200 text-white px-6 py-4"> */}
             <div className="  px-6 py-4">
@@ -179,27 +180,32 @@ export default function CategoryManagement() {
           </motion.div>
 
           {/* Modal for Update/Delete */}
-          <Modale isOpen={modalVisible} isClose={() => setModalVisible(false)}>
-            <div
-              className="p-6 bg-white rounded-xl "
-            >
-              {/* <div className="bg-gradient-to-r from-teal-900 to-teal-700 text-white px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4"> */}
-              <div className=" px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4">
-                <h2 className="text-lg font-medium  tracking-wider">
-                  Edit Category
-                </h2>
-              </div>
-              <CategoryForm
-                id="private"
-                value={updatingName}
-                setValue={setUpdatingName}
-                handleDelete={deleteCategoryHandler}
-                handleSubmit={updateCategoryHandler}
-                button="Update"
-                className="space-y-4"
-              />
-            </div>
-          </Modale>
+          <Suspense fallback={<Loader />}>
+            <AnimatePresence>
+              {modalVisible && (
+                <Modale
+                  isClose={() => setModalVisible(false)}
+                >
+                  <div className="p-6 bg-white rounded-xl ">
+                    <div className=" px-4 py-3 rounded-t-xl -mx-6 -mt-6 mb-4">
+                      <h2 className="text-lg font-medium  ">Edit Category</h2>
+                    </div>
+                    <CategoryForm
+                      id="private"
+                      value={updatingName}
+                      setValue={setUpdatingName}
+                      handleDelete={deleteCategoryHandler}
+                      handleSubmit={updateCategoryHandler}
+                      isLoadingDelete={isDeletingLoading}
+                      isLoadingSubmit={isUpdatingLoading}
+                      button="Update"
+                      className="space-y-4"
+                    />
+                  </div>
+                </Modale>
+              )}
+            </AnimatePresence>
+          </Suspense>
         </div>
       </div>
     </div>

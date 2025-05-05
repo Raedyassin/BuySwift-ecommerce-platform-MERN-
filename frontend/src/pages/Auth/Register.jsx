@@ -52,7 +52,7 @@ export default function Register() {
 
   return (
     <section
-      className="min-h-screen flex flex-col lg:flex-row items-center 
+      className="min-h-[calc(100vh-112px)] md:min-h-screen flex flex-col lg:flex-row items-center 
     justify-center bg-gradient-to-br from-white via-cream-50 to-gray-200
     relative overflow-hidden"
     >

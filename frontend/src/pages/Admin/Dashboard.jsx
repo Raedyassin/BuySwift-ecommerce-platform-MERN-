@@ -17,9 +17,10 @@ import {
   Legend,
   ArcElement,
 } from "chart.js";
+import {prefixImageUrl} from '../../utils/constance'
 import PageLoader from "../../components/PageLoader";
 import { useNavigate } from "react-router-dom";
-
+import Message from "../../components/Message";
 // Register Chart.js components
 ChartJS.register(
   CategoryScale,
@@ -43,9 +44,9 @@ export default function Dashboard() {
   if (isLoading) return <PageLoader height="h-screen" />;
   if (error)
     return (
-      <div className="p-4 text-red-500">
+      <Message variant="error">
         Error: {error?.data?.message || "Failed to load dashboard"}
-      </div>
+      </Message>
     );
 
   const {
@@ -229,7 +230,7 @@ export default function Dashboard() {
               <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 mb-4">
                 Top Sold Products
               </h2>
-              <ul className="space-y-1 grid grid-cols-2  pr-2">
+              <ul className="space-y-1 grid grid-cols-1 gap-1 md:grid-cols-2  pr-2">
                 {topSoldProducts?.length ? (
                   topSoldProducts.map((product) => (
                     <li
@@ -238,7 +239,7 @@ export default function Dashboard() {
                     >
                       <div className="flex items-center space-x-2 sm:space-x-3">
                         <img
-                          src={"/uploads/" + product.img.split("/").pop()}
+                          src={prefixImageUrl + product.img.split("/").pop()}
                           alt={product.name}
                           className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-fill"
                         />
@@ -267,7 +268,7 @@ export default function Dashboard() {
               <h2 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-700 mb-4">
                 Top Rated Products
               </h2>
-              <ul className="space-y-1 grid grid-cols-2  pr-2">
+              <ul className="space-y-1  grid grid-cols-1 md:grid-cols-2 gap-1  pr-2">
                 {topRatedProducts?.length ? (
                   topRatedProducts.map((product) => (
                     <li
@@ -276,7 +277,7 @@ export default function Dashboard() {
                     >
                       <div className="flex items-center space-x-2 sm:space-x-3">
                         <img
-                          src={"/uploads/" + product.img.split("/").pop()}
+                          src={prefixImageUrl + product.img.split("/").pop()}
                           alt={product.name}
                           className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-fill"
                         />
