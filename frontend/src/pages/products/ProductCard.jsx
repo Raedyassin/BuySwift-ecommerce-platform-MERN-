@@ -38,6 +38,7 @@ export default function ProductCard({ product, sold }) {
                 {product.discount}% off
               </div>
             )}
+            
             {(+product.sold > 99 || sold) && (
               <div
                 className="absolute top-0 right-0 bg-yellow-500 text-white text-xs

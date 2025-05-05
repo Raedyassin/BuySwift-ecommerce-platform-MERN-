@@ -284,6 +284,7 @@ export default function Sidebar({
           </button>
         )}
 
+        {/* Links for admin */}
         {((dropDownOpen && userInfo) || (showSidebarMenu && userInfo)) && (
           <ul
             className={`relative lg:absolute lg:left-0 lg:top-0 mt-22 lg:mt-0 lg:space-y-0  lg:w-48

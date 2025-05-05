@@ -50,7 +50,7 @@ app.use((err, req, res, next) => {
   if (err instanceof AppError) {
     return res.status(err.status).json({ status: err.statusText, message: err.message });
   }
-  // image error by multer
+  // image error by multer middleware
   else if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
@@ -58,12 +58,13 @@ app.use((err, req, res, next) => {
         message: 'Image size should not exceed 10MB',
       });
     }
+    // image error by multer middleware
     return res.status(400).json({
       status: FAIL,
       message: err.message,
     });
   }
-  return res.status(500).json({ status: ERROR, message: "Internal server error" });
+  return res.status(500).json({ status: ERROR, message: "Internal Server Error" });
 })
 
 app.listen(PORT, () => {
